@@ -1,0 +1,68 @@
+body{
+    /* background-color: rgb(187, 214, 221); */background-color: rgb(75, 73, 73);
+    max-height: 100%;
+}
+
+.Feed{
+    margin: 40px 120px ;
+}
+
+.mini-profile{
+    float: left;
+    border-radius: 5mm;
+    width: 440px;
+     height: 240px;
+    background-color: rgb(138, 181, 221); 
+}
+#dp{
+    float: left;
+    border-radius: 50%;
+    margin-top: 25px;
+    margin-left: 25px;
+}
+
+ #user{
+     font-size: xx-large; font-weight: bold;
+     padding: 25px 0px 0px 120px;
+
+} 
+
+.followinf{
+    padding-top: 20px; padding-left: 50px;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.news{
+    margin-left: 440px;
+    padding-left: 40px;
+}
+
+.view_post{
+    background-color: white;
+    margin-top: 32px ;
+    width: 580px;
+    border-style: solid;
+    border-width: thin;
+    border-color: transparent;
+}
+
+.view_post:hover{
+    border-color: rgba(192, 55, 55, 0.98);
+}
+
+.post_username{
+     
+    font-size: large;font-weight: bold;
+    padding-top: 18px;
+    padding-left: 32px; 
+}
+
+.post_txt{
+
+    padding: 0px 16px 16px; 
+    font-weight: 400; 
+    font-size: 16px; 
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+     Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
