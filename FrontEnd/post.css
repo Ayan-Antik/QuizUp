@@ -1,0 +1,31 @@
+
+body{
+    background-color:  rgb(75, 73, 73);
+}
+
+.view_post{
+
+    margin: 32px 650px 16px 256px;
+    padding-bottom: 1px;
+    width: 610px;
+    background-color: white;
+
+}
+
+.comments{
+
+    margin: 8px 650px 16px 256px;
+    padding-top: 12px;
+    width: 610px;
+    background-color: white;
+
+}
+
+
+/* .view_post:hover{
+    border-color: rgba(192, 55, 55, 0.98);
+} */
+
+#txt_area:focus{
+    outline: none;
+}
