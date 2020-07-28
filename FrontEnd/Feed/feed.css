@@ -1,5 +1,5 @@
 body{
-    /* background-color: rgb(187, 214, 221); */background-color: rgb(75, 73, 73);
+    /* background-color: rgb(187, 214, 221); */background-color: #eeeeee;
     max-height: 100%;
 }
 
@@ -7,30 +7,48 @@ body{
     margin: 40px 120px ;
 }
 
-.mini-profile{
+.sidebar{
+
+    
     float: left;
-    border-radius: 5mm;
     width: 440px;
-     height: 240px;
-    background-color: rgb(138, 181, 221); 
+
 }
+
+.mini-profile{
+    border-top-right-radius: 2mm;
+    border-top-left-radius: 2mm;
+    padding: 25px 25px 36px 25px;
+    background-color: #262626; 
+    box-shadow: -4px 4px 3px grey;
+}
+
 #dp{
     float: left;
     border-radius: 50%;
-    margin-top: 25px;
-    margin-left: 25px;
+  
 }
 
  #user{
      font-size: xx-large; font-weight: bold;
-     padding: 25px 0px 0px 120px;
+     padding-left: 25px;
+     color: white;
 
 } 
 
 .followinf{
-    padding-top: 20px; padding-left: 50px;
-    font-size: x-large;
-    font-weight: bold;
+    background-color: white;    
+    height: 96px;
+    box-shadow: -4px 4px 3px grey;  
+    
+}
+ .follower_info, .following_info{
+    height:96px;
+    width: 50%; text-align: center; 
+    padding-top: 8px; padding-bottom: 8px;
+    font-size: 24px; color: #262626;
+    border: 1px solid ;border-color: #b3b3b3; border-right: transparent;
+    float: left;
 }
 
 .news{
@@ -47,9 +65,6 @@ body{
     border-color: transparent;
 }
 
-.view_post:hover{
-    border-color: rgba(192, 55, 55, 0.98);
-}
 
 .post_username{
      
