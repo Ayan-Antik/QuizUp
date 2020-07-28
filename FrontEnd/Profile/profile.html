@@ -200,18 +200,18 @@
     </div>
 
     <div class="about">
-      <span style="font-size: 30px ; font-weight: bold; color: #0033cc;"> About</span>
+      <span style="font-size: 28px ; font-weight: 650; color: #0033cc;"> About</span>
       
       <hr style="margin: 8px 12px 8px 0px;">
       
-      <span style="font-size: 24px ; font-weight: 400; "> Email </span>
-      <span style="font-size: 20px ; font-weight: 400; float: right; padding-right: 14px;"> ayanantikkhan@gmail.com </span>
+      <span style="font-size: 20px ; font-weight: 400; "> Email </span>
+      <span style="font-size: 18px ; font-weight: 400; float: right; padding-right: 14px;"> ayanantikkhan@gmail.com </span>
       
       <hr style="margin: 8px 12px 8px 0px;">
 
       
-      <span style="font-size: 24px ; font-weight: 400; "> Age </span>
-      <span style="font-size: 20px ; font-weight: 500; float: right; padding-right: 14px;"> 21 </span>
+      <span style="font-size: 20px ; font-weight: 400; "> Age </span>
+      <span style="font-size: 18px ; font-weight: 500; float: right; padding-right: 14px;"> 21 </span>
 
     </div>
 
@@ -262,19 +262,12 @@
             var like_no = parseInt(like_cnt.innerHTML);
 
             if (elem.innerHTML == "Like") {
-                elem.innerHTML = "Liked";
-                elem.style.borderColor = "brown";
-                elem.style.borderWidth = "3px";
-
+                 elem.innerHTML = "Liked";
                 like_cnt.innerHTML = like_no + 1;
             }
             
             else {
-                elem.innerHTML = "Like";
-                elem.style.borderColor = "transparent";
-                elem.style.borderWidth = "1px";
-                
-                
+                 elem.innerHTML = "Like";             
                 like_cnt.innerHTML = like_no - 1;
 
             }  

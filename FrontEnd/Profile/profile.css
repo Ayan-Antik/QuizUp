@@ -103,7 +103,7 @@ body{
 .post_username{
      
     font-size: larger;
-    font-weight: bold;
+    font-weight: 600;
     padding-top: 18px;
     padding-left: 32px; 
 }
