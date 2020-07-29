@@ -133,16 +133,12 @@
 
                   if (elem.innerHTML == "Like") {
                       elem.innerHTML = "Liked";
-                      elem.style.borderColor = "brown";
-                      elem.style.borderWidth = "3px";
 
                       like_cnt.innerHTML = like_no + 1;
                   }
                   
                   else {
                       elem.innerHTML = "Like";
-                      elem.style.borderColor = "transparent";
-                      elem.style.borderWidth = "1px";
                       
                       
                       like_cnt.innerHTML = like_no - 1;
@@ -152,7 +148,7 @@
     
             </script>
             
-            <div class="show_img" style="">
+            <div class="show_img">
               <img src="tanjsim.jfif" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
             </div> 
            
