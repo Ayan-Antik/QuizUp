@@ -11,9 +11,14 @@ from django.forms.formsets import formset_factory
 def abc(request):
     with connection.cursor() as cursor:
         cursor.execute('SELECT * FROM USERS')
-        row = cursor.fetchone()
+        row = cursor.fetchall()
 
-        name = row[1]
-        email = row[3]
-        return HttpResponse(name + email)
+        #print(row)
+        a = ""
+        for r in row:
+            a = a + r[1] + " "
+            a = a + r[3] + " \t"
+
+        #print(userdict)
+        return HttpResponse(a)
 
