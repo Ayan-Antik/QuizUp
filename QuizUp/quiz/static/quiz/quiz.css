@@ -1,0 +1,7 @@
+.border{
+    display: inline;
+    margin: 5px;
+    padding: 5px;
+    box-shadow: 0px 0px 5px grey;
+    background-color: #ccffdd;
+}

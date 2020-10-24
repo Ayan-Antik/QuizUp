@@ -8,9 +8,9 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../static/topic/topic.css">
+    <link rel="stylesheet" href="../../static/quiz/quizDetail.css">
 
-    <title>{{ topic.1 }}</title>
+    <title>{{ quiz.3 }}</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #ff5454;">
@@ -47,52 +47,43 @@
       </div>
     </nav>
 
-    <div class="container-fluid">
+    <div class="container">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-6">
           <div class="border">
-              <img src="{% static topic.3 %}" class="img-fluid">
-          <h1 class="text-center"><img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50">{{topic.1}}</h1>
-          <form class="text-center">{% csrf_token %}
-              <input type="button" class="btn btn-success btn-sm" id="follow" value={{ is_follow }} />
-          </form>
+          <h1 class="text-center">{{ quiz.3 }}</h1>
+          <div class="text-center">
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#play">
+              Play Quiz</button></div>
           <table class="table mt-5">
             <tbody>
-              <tr class="text-center">
-                <td><h6>Followers</h6> <h4>{{ num_of_followers }}</h4></td>
-                <td><h6>Your Rank</h6> <h4>{{ rank }}</h4></td>
-                <td><h6>Quiz Completed</h6> <h4>{{ quiz_completed }}/{{ total_quiz }}</h4></td>
+              <tr>
+                <td>Topic</td>
+                <td>{{ topic }}</td>
+              </tr>
+              <tr>
+                <td>Setter</td>
+                <td>{{ quizmaster }}</td>
+              </tr>
+              <tr>
+                <td>Difficulty</td>
+                {% if quiz.4 == None %}
+                    <td>-</td>
+                {% else %}
+                    <td>{{ quiz.4 }}</td>
+                {% endif %}
+              </tr>
+              <tr>
+                <td>#Played</td>
+                <td>{{ num_of_played }}</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div class="border mt-3">
-          <h5 class="text-center">Quiz List</h5>
-          <table class="table">
-            <tbody>
-              <thead>
-                <tr>
-                  <th scope="col">Title</th>
-                  <th scope="col">Difficulty</th>
-                  <th scope="col">#Played</th>
-                </tr>
-              </thead>
-              {% for quiz in quiz_list %}
-                  <tr>
-                    <td><a href="{% url 'quiz_detail' quiz.0 %}" style="color:green;">{{ quiz.3 }}</a></td>
-                      {% if quiz.4 == None %}
-                          <td>-</td>
-                      {% else %}
-                          <td>{{ quiz.4 }}</td>
-                      {% endif %}
-                    <td>0</td>
-                  </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+        <div class="text-center"><button type="button" class="btn btn-success">See Answers</button></div>
+
         </div>
-        </div>
-        <div class="col-lg order-last">
+        <div class="col-lg-6">
           <div class="border" style="background-color:#e6fff2;">
           <h5 class="text-center">Leaderboard</h5>
           <table class="table">
@@ -101,7 +92,7 @@
                 <tr>
                   <th scope="col">Rank</th>
                   <th scope="col">Username</th>
-                  <th scope="col">Score{{ t }}</th>
+                  <th scope="col">Score</th>
                 </tr>
               </thead>
               <tr>
@@ -118,34 +109,33 @@
           </table>
         </div>
       </div>
-      <div class="col-lg-5">
+    </div>
+  </div>
+
+    <!-- Modal -->
+<div class="modal fade" id="play" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Play Confirmation</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you wanna play this quiz? You can't replay this quiz later.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Try later</button>
+          <a href="{% url 'play_quiz' quiz.0%}"><button type="button" class="btn btn-primary">Let's play!</button></a>
       </div>
     </div>
   </div>
+</div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script>
-        $('#follow').click(function () {
-            var is_follow = $(this).val();
-            $.ajax({
-                type: 'POST',
-                url: '{% url 'update_follow' %}',
-                data: {
-                    'topic_id': {{ topic.0 }},
-                    'is_follow': is_follow,
-                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
-                },
-                dataType: 'json',
-                success: function (response) {
-                    $('#follow').val(response['is_follow']);
-                },
-                error: function (response) {
-                }
-            });
-        });
-    </script>
   </body>
 </html>
