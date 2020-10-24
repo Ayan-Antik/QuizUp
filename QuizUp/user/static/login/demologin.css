@@ -1,0 +1,71 @@
+
+#quizup{
+    font-weight: bold;
+    font-size: 3rem;
+    color: white;    
+}
+h2{
+    
+    color: white; 
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+    Arial,"Noto Sans",sans-serif,
+    "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+#loginbtn1{
+    background-color: rgba(224, 62, 62, 0.98);
+    border-color: rgba(224, 62, 62, 0.98);
+    width: 100%;
+    
+}
+#loginbtn1:hover{background-color: rgba(192, 55, 55, 0.98);}
+
+#loginbtn2{
+    background-color: rgba(224, 62, 62, 0.98);
+    border-color: rgba(224, 62, 62, 0.98);
+    width: 100%; 
+
+}
+
+#loginbtn2:hover{background-color: rgba(192, 55, 55, 0.98);}
+
+#signup{
+    color: white;
+}
+
+body{
+    /* margin: 250px 200px 200px 200px; */
+    background-color: rgba(224, 62, 62, 0.9);
+    align-items: center;
+    padding-top: 150px;
+    padding-bottom: 50px;
+    height: 100%;
+}
+
+.form-signin{
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+
+}
+input:focus{
+    border-color: rgba(224, 62, 62, 0.98);
+}
+
+img{
+    width: 100px;
+    height: 100px;
+}
+
+#setQ{
+    font-size: medium;
+    color: white;
+}
+
+
+.setQ{
+    padding-top: 20px;
+    padding-right: 15px;
+    text-align: right;
+}
