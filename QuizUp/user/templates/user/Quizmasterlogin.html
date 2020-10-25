@@ -1,0 +1,49 @@
+<html>
+{% load static %}
+    <head>
+
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="{% static "QsetterLogin/QsetterLogin.css" %}">
+        <title>
+            Login & Set Questions!
+        </title>
+    </head>
+
+    <body>
+        
+        <div class="container">
+            <div class="setterHead">
+                <h1 class="display-4">Hey!</h1>
+                <p class="lead">Are you one of the Developers? Then Log in & improve the Database by setting Questions!</p>
+                <hr class="my-1" color="white">
+                
+            </div>
+        
+
+                <div class="img">
+                    <img src="{% static "QsetterLogin/quizup.png" %}" alt="img error">
+                </div>            
+                <form class="form-signin">
+                    {% csrf_token %}
+                    <div class="form-group">
+                    
+                        <h2 id="login">
+                        Log In
+                        </h2>
+                        <label for="inputUser" class="sr-only">Username</label>
+                        <input id="inputUser" name="username" type="text" placeholder = "Username" class="form-control"  aria-describedby="emailHelp" required>
+                  
+                        <label for="passwordinp" class="sr-only">Password</label>
+                        <input id = "passwordinp" name="password" type="password" class="form-control"  placeholder="Password" required>
+                
+                
+                    </div>   
+            
+                    <button type="submit" class="btn btn-primary" id="loginbtn1">Log in</button>
+                    <br><br>
+                </form>
+            
+        </div>
+    </body>
+</html>

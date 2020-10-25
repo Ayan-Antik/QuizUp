@@ -1,0 +1,51 @@
+<html>
+{% load static %}
+    <head>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+       
+        <link rel="stylesheet" href="{% static "login/demologin.css" %}">
+     <title>
+            QuizUp Login
+        </title>
+    </head>
+
+    <body class="text-center" id="bd">
+        <h1 id="quizup">
+            QUIZUP
+        </h1>
+
+        <img src="{% static "login/quizup.png" %}" alt="img error">
+
+        <div class="container">
+                      
+            <form class="form-signin" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    
+                    <h2>
+                        Log In
+                    </h2>
+                  <label for="inputUser" class="sr-only">Username</label>
+                  <input id="inputUser" name="username" type="text" placeholder = "Username" class="form-control"  aria-describedby="emailHelp" required>
+                  
+                  <label for="passwordinp" class="sr-only">Password</label>
+                  <input id = "passwordinp" name="password" type="password" class="form-control"  placeholder="Password" required>
+                
+                
+                </div>   
+            
+                <button type="submit" class="btn btn-primary" id="loginbtn1">Log in</button>
+                <br><br>
+                <small id="signup" class="form-text text-white"> Don't have an account?</small>
+                <button type="button" class="btn btn-primary" id="loginbtn2" href="{% url 'signup'%}">Sign Up</button>
+              
+            </form>
+
+        </div>
+        <br><br><br>
+        <div class="setQ">
+            <a href="{% url 'Quizmasterlogin' %}" id="setQ"><i>Set Questions (Developer) </i></a>
+        </div>
+    </body>
+
+</html>

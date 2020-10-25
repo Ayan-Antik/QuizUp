@@ -1,0 +1,66 @@
+
+#quizup{
+    font-weight: bold;
+    font-size: 3rem;
+    color: white;    
+}
+h2{
+    
+    color: white; 
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",
+    Arial,"Noto Sans",sans-serif,
+    "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+}
+
+#signupbtn{
+    background-color: rgba(224, 62, 62, 0.98);
+    border-color: rgba(224, 62, 62, 0.98);
+    width: 100%;
+    max-width: 330px;
+    
+}
+#signupbtn:hover{background-color: rgba(192, 55, 55, 0.98);}
+
+
+body{
+    /* margin: 250px 200px 200px 200px; */
+    background-color: rgba(224, 62, 62, 0.9);
+    align-items: center;
+    padding-top: 80px;
+    padding-bottom: 100px;
+    height: 100%;
+}
+
+.form-signin{
+    width: 100%;
+    padding: 15px;
+    margin: auto;
+
+}
+
+.form-control{
+    max-width: 330px;
+    margin: auto;
+}
+/*
+#inputUser{
+    max-width: 150px;
+    margin: auto;
+}
+
+#Birth{
+    max-width: 170px;
+    margin-left: 165px ;
+}*/
+input:active{
+    border-color: rgba(224, 62, 62, 0.98);
+}
+
+img{
+    width: 100px;
+    height: 100px;
+}
+
+a{
+    color: white;
+}

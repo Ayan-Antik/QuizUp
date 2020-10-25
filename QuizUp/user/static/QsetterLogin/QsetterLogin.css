@@ -1,0 +1,45 @@
+img{
+    width: 100px;
+    height: 100px;
+}
+
+.img{
+    padding-top: 30px;
+    margin-left: 485px;
+}
+
+body{
+    background-color:rgba(224, 62, 62, 0.9);
+
+}
+
+.setterHead{
+}
+
+.container{
+    width: 100%;
+    padding: 15px;
+    margin: auto;
+    color: white;
+
+}
+
+.form-signin{
+    max-width: 330px;
+    margin: auto;
+    padding: 15px;
+
+}
+
+#login{
+    margin-left: 85px;
+}
+
+
+#loginbtn1{
+    background-color: rgba(224, 62, 62, 0.98);
+    border-color: rgba(224, 62, 62, 0.98);
+    width: 100%;
+    
+}
+#loginbtn1:hover{background-color: rgba(192, 55, 55, 0.98);}
