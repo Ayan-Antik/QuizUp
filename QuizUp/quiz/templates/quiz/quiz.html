@@ -8,7 +8,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    <link rel="stylesheet" href="../../static/quiz/quiz.css">
+    <link rel="stylesheet" href="{% static 'quiz/quiz.css' %}">
 
     <title>{{ quiz.3 }}</title>
   </head>
@@ -17,39 +17,78 @@
     <div class="container">
       <h3 id="timer" class="border"></h3>
       <h1 class="text-center mb-5">{{ quiz.3 }}</h1>
-      <form action="{% url 'quiz_detail' quiz.0%}">
-          {% for question in questions %}
-              <fieldset class="form-group">
-                <legend>{{ forloop.counter }}. {{ question.2 }}</legend>
-                  <div class="form-check form-check-inline"> <!--option 1-->
-                    <input class="form-check-input" type="radio" name="q1" id="q11" value="{{ question.3 }}">
-                    <label class="form-check-label" for="q11">{{ question.3 }}</label>
-                  </div>
-                  <div class="form-check form-check-inline"> <!--option 2-->
-                    <input class="form-check-input" type="radio" name="q1" id="q12" value="{{ question.4 }}">
-                    <label class="form-check-label" for="q12">{{ question.4 }}</label>
-                  </div>
-                    <div class="form-check form-check-inline"> <!--option 3-->
-                    <input class="form-check-input" type="radio" name="q1" id="q12" value="{{ question.5 }}">
-                    <label class="form-check-label" for="q12">{{ question.5 }}</label>
-                  </div>
-                    <div class="form-check form-check-inline"> <!--option 4-->
-                    <input class="form-check-input" type="radio" name="q1" id="q12" value="{{ question.6 }}">
-                    <label class="form-check-label" for="q12">{{ question.6 }}</label>
-                  </div>
-              </fieldset>
-          {% endfor %}
-      <button class="btn btn-primary" onclick="showPrompt()">Submit</button>
-    </form>
-
+        <div id="question"></div>
     </div>
 
-    <script src="http://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script src="../../static/quiz/quiz.js"></script>
+    <!--<script src="{% static 'quiz/quiz.js' %}"></script>-->
+    <script>
+        var questions = [];
+        {% for question in questions %}
+            questions.push({'id': {{ question.0 }},
+                            'description': '{{question.2}}',
+                            'a': '{{question.3}}',
+                            'b': '{{question.4}}',
+                            'c': '{{question.5}}',
+                            'd': '{{question.6}}',
+                            'answer': '{{question.7}}',});
+        {% endfor %}
+
+        var timeLeft = 6;
+        var i = -1;
+        var question = $('#question');
+
+        var timer = setInterval(function() {
+            timeLeft--;
+            $('#timer').text("Time Left: "+timeLeft+" sec");
+            if(timeLeft === 5) {
+                i++;
+                if(i === 2) {
+                    window.location='{% url 'quiz_detail' quiz.0%}';
+                    clearInterval(timer);
+                }
+                add_question_and_button_listener(i);
+            }
+            if(timeLeft === 0) {
+                timeLeft = 6;
+            }
+        }, 1000);
+
+    function add_question_and_button_listener(i) {
+        question.html('<h5 class="mb-3">'+questions[i]['description']+'</h5>' +
+                        '<form id="form">'+ '{% csrf_token %}' +
+                        '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options">' +
+                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['a']+'"><br>' +
+                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['b']+'"><br>' +
+                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['c']+'"><br>' +
+                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['d']+'"><br>' +
+                      '</div>'+
+                      '</form>');
+        $('#buttons input').click(function() {
+                var score = timeLeft * (this.value === questions[i]['answer']);
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'update_score' %}',
+                    data: {
+                        'question_id': questions[i]['id'],
+                        'score': score,
+                        'choice': this.value,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                    },
+                });
+                timeLeft = 6;
+            });
+    }
+
+
+
+    </script>
   </body>
 </html>

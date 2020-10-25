@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.db import connection
 
@@ -26,3 +27,14 @@ def play_quiz(request, quiz_id):
         cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s', [quiz_id])
         questions = cursor.fetchall()
     return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
+
+
+def update_score(request):
+    with connection.cursor() as cursor:
+        question_id = request.POST.get('question_id')
+        score = request.POST.get('score')
+        choice = request.POST.get('choice')
+        print(question_id)
+        print(score)
+        print(choice)
+        return HttpResponse('')

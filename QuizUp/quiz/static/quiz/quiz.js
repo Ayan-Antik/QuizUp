@@ -13,7 +13,7 @@ function showPrompt() {
 }
 
 // Timer
-var timeLeft = 5;
+var timeLeft = 10;
 $('#timer').text("Time Left: "+timeLeft+" sec");
 
 var timer = setInterval(function() {
