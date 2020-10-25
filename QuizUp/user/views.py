@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
@@ -6,7 +5,6 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
 from . import forms
-from django.forms.formsets import formset_factory
 
 
 def abc(request):
@@ -32,11 +30,20 @@ def LogIn(request):
             # print("FORM IS VALID")
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            if authenticate(username, password):
+            if authenticate(username, password, pagehtml):
                 print("Login Successful")
 
+                request.session['username'] = username
+
+                if pagehtml == "login":
+                    request.session['type'] = "Player"
+
+                elif pagehtml == "Quizmasterlogin":
+                    request.session['type'] = "Quizmaster"
+
+                print("username: " + request.session['username'] + " Type of user: " + request.session['type'])
                 # TODO: send to homepage/ Question setter page
-                return render(request, 'user/' + pagehtml + '.html')
+                return render(request, 'user/signup.html')
             else:
                 # authentication error
                 return render(request, 'user/' + pagehtml + '.html')
@@ -49,15 +56,39 @@ def LogIn(request):
         return render(request, 'user/' + pagehtml + '.html')
 
 
-def authenticate(username, password):
+def authenticate(username, password, pagehtml):
     with connection.cursor() as cursor:
         cursor.execute('SELECT * FROM USERS WHERE USERNAME = %s', [username])
-        row = cursor.fetchone()
-        if row is not None:
-            if row[2] == password:
-                return True
+        user_row = cursor.fetchone()
+        #print(user_row)
+        user_id = user_row[0]
+
+        if user_row is not None:
+            if user_row[2] == password:
+                # check if user exists in player or quizmaster table
+                # 1 for player
+                if pagehtml == "login":
+
+                    cursor.execute('SELECT * FROM PLAYER WHERE PLAYER_ID = %s', [user_id])
+                    player_info = cursor.fetchone()
+
+                    if player_info is not None:
+                        return True
+                    else:
+                        print("User is not a player")
+                        return False
+
+                elif pagehtml == "Quizmasterlogin":
+                    cursor.execute('SELECT * FROM QUIZMASTER WHERE MASTER_ID = %s', [user_id])
+                    master_info = cursor.fetchone()
+
+                    if master_info is not None:
+                        return True
+                    else:
+                        print("User is not a Quizmaster")
+                        return False
             else:
-                print("Passowrd doesn't match")
+                print("Password doesn't match")
                 return False
 
         else:
@@ -78,13 +109,13 @@ def SignUp(request):
             password1 = signupform.cleaned_data['password1']
             password2 = signupform.cleaned_data['password2']
 
-            print(username, dob, email)
+            #print(username, dob, email)
 
             if validUsername(username) and (password1 == password2):
-               createPlayer(username, password1, email, dob)
-               print("User Created")
-               # TODO : send user to home
-               return render(request, 'user/login.html')
+                createPlayer(username, password1, email, dob)
+                print("User Created")
+                # TODO : send user to home
+                return render(request, 'user/login.html')
 
 
             else:
@@ -115,9 +146,12 @@ def createPlayer(username, password, email, dob):
         cursor.execute('SELECT COUNT(*) FROM USERS')
         row = cursor.fetchone()
         total_users = row[0]
-        query = '''
-            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'abc', %s)
+        user_query = '''
+            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'signup/default-dp.png', %s)
         
         '''
-
-        cursor.execute(query, [total_users + 1, username, password, email, dob])
+        player_query = '''
+            INSERT INTO PLAYER VALUES (%s, 1)
+        '''
+        cursor.execute(user_query, [total_users + 1, username, password, email, dob])
+        cursor.execute(player_query, [total_users + 1])
