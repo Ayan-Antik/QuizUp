@@ -37,25 +37,25 @@
                             'd': '{{question.6}}',
                             'answer': '{{question.7}}',});
         {% endfor %}
-
-        var timeLeft = 6;
-        var i = -1;
+        const timeLimit = 5;
+        var timeLeft = timeLimit;
+        var i = 0;
         var question = $('#question');
 
         var timer = setInterval(function() {
-            timeLeft--;
             $('#timer').text("Time Left: "+timeLeft+" sec");
-            if(timeLeft === 5) {
-                i++;
-                if(i === 2) {
+            if(timeLeft === timeLimit) {
+                if(i === 5) {
                     window.location='{% url 'quiz_detail' quiz.0%}';
-                    clearInterval(timer);
                 }
                 add_question_and_button_listener(i);
+                i++;
             }
             if(timeLeft === 0) {
-                timeLeft = 6;
+                timeLeft = timeLimit;
+                return;
             }
+            timeLeft--;
         }, 1000);
 
     function add_question_and_button_listener(i) {
@@ -83,7 +83,7 @@
                     success: function (response) {
                     },
                 });
-                timeLeft = 6;
+                timeLeft = timeLimit;
             });
     }
 

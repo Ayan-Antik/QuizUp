@@ -30,10 +30,11 @@ def LogIn(request):
             # print("FORM IS VALID")
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            if authenticate(username, password, pagehtml):
+            id = authenticate(username, password, pagehtml)
+            if id >= 0:
                 print("Login Successful")
 
-                request.session['username'] = username
+                request.session['id'] = id
 
                 if pagehtml == "login":
                     request.session['type'] = "Player"
@@ -41,7 +42,7 @@ def LogIn(request):
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
 
-                print("username: " + request.session['username'] + " Type of user: " + request.session['type'])
+                print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
                 # TODO: send to homepage/ Question setter page
                 return render(request, 'user/signup.html')
             else:
@@ -73,27 +74,27 @@ def authenticate(username, password, pagehtml):
                     player_info = cursor.fetchone()
 
                     if player_info is not None:
-                        return True
+                        return player_info[0]
                     else:
                         print("User is not a player")
-                        return False
+                        return -1
 
                 elif pagehtml == "Quizmasterlogin":
                     cursor.execute('SELECT * FROM QUIZMASTER WHERE MASTER_ID = %s', [user_id])
                     master_info = cursor.fetchone()
 
                     if master_info is not None:
-                        return True
+                        return master_info[0]
                     else:
                         print("User is not a Quizmaster")
-                        return False
+                        return -1
             else:
                 print("Password doesn't match")
-                return False
+                return -1
 
         else:
             print("No such User")
-            return False
+            return -1
 
 
 def SignUp(request):
