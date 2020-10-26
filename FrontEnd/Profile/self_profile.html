@@ -10,9 +10,9 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="self_profile.css">
 
-  <title>Profile</title>
+  <title>My Profile</title>
 </head>
 
 <body>
@@ -172,12 +172,22 @@
 
     </div>
 
+    <!--PLAYER RANK-->
+    <div class="player_rank">
+      
+      <span style="font-size: 30px ; font-weight: bold; color: #ff5454; ">Player Rank</span>
+      
+      <span style="border-radius: 10%; background-color: #ff5454; 
+      font-size: 30px ; font-weight: 500; color:white; float: right; padding-left: 10px; padding-right: 12px;"> 12</span>
+
+    </div>
+
     <!-- TOPICS -->
 
     <div class="topics">
 
        <span style="font-size: 30px ; font-weight: bold; color: #ff5454;"> Followed Topics</span>
-       <span style="font-size: 30px ; font-weight: 500; color: #00b5d9; float: right; padding-right: 12px;"> Rank</span>
+       <span style="font-size: 30px ; font-weight: 500; color: #00b5d9; float: right; padding-right: 12px;"> Level</span>
       <hr style="margin: 8px 12px 8px 0px;">
 
       <!-- LOOP -->
@@ -261,16 +271,16 @@
             var like_cnt = document.getElementById("like_count");
             var like_no = parseInt(like_cnt.innerHTML);
 
-            if (elem.innerHTML == "Like") {
-                 elem.innerHTML = "Liked";
+            if (elem.value == "Like") {
+                elem.value = "Liked";
                 like_cnt.innerHTML = like_no + 1;
             }
-            
+
             else {
-                 elem.innerHTML = "Like";             
+                elem.value = "Like";             
                 like_cnt.innerHTML = like_no - 1;
 
-            }  
+            }    
         }
 
       </script>
@@ -284,8 +294,9 @@
 
         <div class="post_react" style="margin: 16px 16px; height: 42px;">
           
-            <button class="btn btn-danger btn-small" id="btn_like" onclick="like()" >Like</button>
-           
+            <form action="" style="width: fit-content; float: left;">
+              <input type="button" class="btn btn-danger btn-small" id="btn_like" onclick="like()" value="Like">
+          </form>
           <b>&nbsp</b>  
           
           <a href="#">

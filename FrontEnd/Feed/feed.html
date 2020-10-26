@@ -105,7 +105,7 @@
               </div>
             
             </div>
-            <p class ="post_txt" onclick="remove()">
+            <p class ="post_txt" >
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Voluptas, minima. Dolore fugiat perferendis eaque exercitationem dolorem blanditiis quos veniam,
               libero quidem, minus pariatur! Atque id debitis quis deleniti eum sapiente!
@@ -131,14 +131,14 @@
                   var like_cnt = document.getElementById("like_count");
                   var like_no = parseInt(like_cnt.innerHTML);
 
-                  if (elem.innerHTML == "Like") {
-                      elem.innerHTML = "Liked";
+                  if (elem.value == "Like") {
+                      elem.value = "Liked";
 
                       like_cnt.innerHTML = like_no + 1;
                   }
                   
                   else {
-                      elem.innerHTML = "Like";
+                      elem.value = "Like";
                       
                       
                       like_cnt.innerHTML = like_no - 1;
@@ -149,7 +149,7 @@
             </script>
             
             <div class="show_img">
-              <img src="tanjsim.jfif" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
+              <img src="tanjim.jfif" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
             </div> 
            
 
@@ -157,7 +157,9 @@
 
               <div class="post_react" style="margin: 16px 16px; height: 42px;">
                 
-                  <button class="btn btn-danger btn-small" id="btn_like" onclick="like()" >Like</button>
+                <form action="" style="width: fit-content; float: left;">
+                  <input type="button" class="btn btn-danger btn-small" id="btn_like" onclick="like()" value="Like">
+                </form>
                  
                 <b>&nbsp</b>  
                 
