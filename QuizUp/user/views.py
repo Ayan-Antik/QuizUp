@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
 from . import forms
+from profiles.views import my_profile_detail
 
 
 def abc(request):
@@ -38,13 +39,17 @@ def LogIn(request):
 
                 if pagehtml == "login":
                     request.session['type'] = "Player"
+                    # sending to his own profile
+                    return HttpResponseRedirect(reverse('my_profile_detail'))
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
+                    return render(request, 'user/signup.html')
 
-                print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
+                #print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
                 # TODO: send to homepage/ Question setter page
-                return render(request, 'user/signup.html')
+
+                #return render(request, 'user/signup.html')
             else:
                 # authentication error
                 return render(request, 'user/' + pagehtml + '.html')
@@ -116,7 +121,7 @@ def SignUp(request):
                 createPlayer(username, password1, email, dob)
                 print("User Created")
                 # TODO : send user to home
-                return render(request, 'user/login.html')
+                return HttpResponseRedirect(reverse('login'))
 
 
             else:
