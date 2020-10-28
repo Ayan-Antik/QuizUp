@@ -5,7 +5,6 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
 from . import forms
-from profiles.views import my_profile_detail
 
 
 def abc(request):
@@ -161,3 +160,15 @@ def createPlayer(username, password, email, dob):
         '''
         cursor.execute(user_query, [total_users + 1, username, password, email, dob])
         cursor.execute(player_query, [total_users + 1])
+
+
+def Logout(request):
+    #try:
+        print(request.session['id'])
+        del request.session['id']
+        del request.session['type']
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+

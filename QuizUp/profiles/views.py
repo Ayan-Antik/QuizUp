@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.db import connection
+from django import forms
+from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 
 
@@ -10,16 +12,33 @@ from django.http import JsonResponse
 def my_profile_detail(request):
     print("HELLO HERE IN MY PROFILE DETAIL")
     if request.session['id'] > -1 and request.session['type'] == "Player":
+
         player_id = request.session['id']
-        print(player_id)
-        print(request.session['type'])
+        #print(player_id)
+        #print(request.session['type'])
+
+        if request.method == 'POST':
+            print("In post")
+            if request.FILES['dp_file']:
+                print("In dp")
+                image = request.FILES["dp_file"]
+                fs = FileSystemStorage(location='profiles/static/media/')
+                filename = fs.save(image.name, image)
+                file_url = fs.url(filename)
+                print(file_url)
+                storeImage(player_id, 'media/' + file_url)
+                return HttpResponseRedirect(reverse('my_profile_detail'))
+            else:
+                print("error in img upload")
+                return render(request, 'profiles/self_profile.html')
+
         with connection.cursor() as cursor:
             query = '''
                 SELECT RANK FROM PLAYER WHERE PLAYER_ID = %s
             '''
             cursor.execute(query, [player_id])
             rank = cursor.fetchone()
-            print(rank)
+            #print(rank)
 
             query = '''
                 SELECT USERNAME, EMAIL_ID, IMAGE, ROUND((SYSDATE - DATE_OF_BIRTH) / 365, 0) 
@@ -28,7 +47,7 @@ def my_profile_detail(request):
             '''
             cursor.execute(query, [player_id])
             player_info = cursor.fetchone()
-            print(player_info)
+            #print(player_info)
             query = '''
                 SELECT COUNT(QUIZ_ID) 
                 FROM QUIZ_ATTEMPT
@@ -65,7 +84,7 @@ def my_profile_detail(request):
             cursor.execute(query, [player_id])
             followed_topics = cursor.fetchall()
 
-            print(followed_topics)
+            #print(followed_topics)
             if len(followed_topics) == 0:
                 followed_topics = [("None", "-")]
 
@@ -102,7 +121,20 @@ def my_profile_detail(request):
                                                                   'follower_info': follower_info,
                                                                   'followee_info': followee_info,
 
+
                                                                                 })
+
 
     else:
         return HttpResponse("ELSED")
+
+
+def storeImage(player_id, location):
+    with connection.cursor() as cursor:
+        query = '''
+            UPDATE USERS
+            SET IMAGE = %s
+            WHERE USER_ID = %s
+        '''
+        cursor.execute(query, [location, player_id])
+        print(player_id, location)

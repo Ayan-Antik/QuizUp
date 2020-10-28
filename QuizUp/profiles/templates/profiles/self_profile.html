@@ -48,7 +48,7 @@
       </ul>
       <ul class="navbar-nav navbar-right">
         <li class="nav-item">
-          <a class="nav-link" href="#">Log Out</a>
+          <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
         </li>
       </ul>
     </div>
@@ -57,65 +57,23 @@
 
 
 
-  <script>
-    function fileclick() {
-      document.getElementById("dp_change").click();
-    }
 
-    /*function submitForm() {
-        document.getElementById('formid').submit();
-        console.log("Foprm submit");
-    }
-
-    var dp = document.getElementById('dp_change');
-    if(dp){
-    dp.addEventListener("change", submitForm);
-    }*/
-
-    function unhide(id) {
-      var list = id;
-      if (list.style.display != "block"){
-        list.style.display = "block";
-        
-      }
-      else {
-        
-        //console.log(follower_list.style.display);
-        list.style.display = "none";
-      }
-
-    }
-
-    // Lists go away if clicked anywhere else in the window
-    window.onclick = function (event) {
-      if (!event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.style.display == 'block') {
-            openDropdown.style.display = 'none';
-          }
-        }
-      }
-    }
-
-
-
-
-  </script>
 
   <div class="sidebar">
 
     <div class="sidebar_top">
-      <form action="" method="POST" id="formid">
-        <input id="dp_change" type="file" hidden>
-        <input type="button" value="Update Image" class="btn btn-dark btn-sm" id="dp_button" onclick="fileclick()"
+      <form action="" id="dp_form" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+        <input type="button" id="dp_button" value="Update Image" class="btn btn-dark btn-sm"  onclick="fileclick()"
           style="float: right; margin-top: 8px; margin-right: 8px; background-color: #262626; border: transparent; font-weight: bold;">
+        <input type="file" id="dp_file" name="dp_file"  accept="image/*"  hidden>
 
-        <input type="submit" value="Submit" hidden>
 
       </form>
+
+        <script>
+
+        </script>
 
       <div style="width: 480px; height: fit-content;">
 
@@ -243,7 +201,7 @@
     <div class="post_info" style="margin: 15px 15px; height: 80px;">
         
         <div class="post_dp">
-          <img src="witcher.jpg" alt="" height="48px" width="48px" 
+          <img src="" alt="" height="48px" width="48px"
           style="border-radius: 50%; float: left; margin: 12px 12px; ">
         </div>
 
@@ -257,43 +215,9 @@
         Voluptas, minima. Dolore fugiat perferendis eaque exercitationem dolorem blanditiis quos veniam,
         libero quidem, minus pariatur! Atque id debitis quis deleniti eum sapiente!
       </p>
-      <script>
-        function remove(){
-          console.log("In Image click");
-          
-          document.getElementById("img_post").style.display = 'none'; 
-          /*if(document.getElementById("img_post").style.display == 'none'){
-            
-            document.getElementById("img_post").style.display = 'block'; 
-          
-          }
-          else{
-            document.getElementById("img_post").style.display = 'none';  
-          } */   
-        }
 
-        function like(){
-
-            var elem = document.getElementById("btn_like");
-            var like_cnt = document.getElementById("like_count");
-            var like_no = parseInt(like_cnt.innerHTML);
-
-            if (elem.value == "Like") {
-                elem.value = "Liked";
-                like_cnt.innerHTML = like_no + 1;
-            }
-
-            else {
-                elem.value = "Like";             
-                like_cnt.innerHTML = like_no - 1;
-
-            }    
-        }
-
-      </script>
-      
       <div class="show_img">
-        <img src="witcher.jpg" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
+        <img src="" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
       </div> 
      
 
@@ -328,6 +252,90 @@
         </div>
     </div>
 
+
+    <script>
+    function fileclick() {
+      document.getElementById("dp_file").click();
+    }
+
+    /*function submitForm() {
+        document.getElementById('formid').submit();
+        console.log("Foprm submit");
+    }
+
+    var dp = document.getElementById('dp_change');
+    if(dp){
+    dp.addEventListener("change", submitForm);
+    }*/
+
+    function unhide(id) {
+      var list = id;
+      if (list.style.display != "block"){
+        list.style.display = "block";
+
+      }
+      else {
+
+        //console.log(follower_list.style.display);
+        list.style.display = "none";
+      }
+
+    }
+
+    // Lists go away if clicked anywhere else in the window
+    window.onclick = function (event) {
+      if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.style.display == 'block') {
+            openDropdown.style.display = 'none';
+          }
+        }
+      }
+    }
+    document.getElementById("dp_file").onchange = function() {
+        console.log('Hello');
+        document.getElementById("dp_form").submit();
+    }
+
+    function remove(){
+          console.log("In Image click");
+
+          document.getElementById("img_post").style.display = 'none';
+          /*if(document.getElementById("img_post").style.display == 'none'){
+
+            document.getElementById("img_post").style.display = 'block';
+
+          }
+          else{
+            document.getElementById("img_post").style.display = 'none';
+          } */
+        }
+
+        function like(){
+
+            var elem = document.getElementById("btn_like");
+            var like_cnt = document.getElementById("like_count");
+            var like_no = parseInt(like_cnt.innerHTML);
+
+            if (elem.value == "Like") {
+                elem.value = "Liked";
+                like_cnt.innerHTML = like_no + 1;
+            }
+
+            else {
+                elem.value = "Like";
+                like_cnt.innerHTML = like_no - 1;
+
+            }
+        }
+
+
+
+
+  </script>
 
 
 </body>

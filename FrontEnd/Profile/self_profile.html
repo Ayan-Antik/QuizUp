@@ -55,65 +55,17 @@
 
 
 
-  <script>
-    function fileclick() {
-      document.getElementById("dp_change").click();
-    }
-
-    /*function submitForm() {
-        document.getElementById('formid').submit();
-        console.log("Foprm submit");
-    }
-
-    var dp = document.getElementById('dp_change');
-    if(dp){
-    dp.addEventListener("change", submitForm);
-    }*/
-
-    function unhide(id) {
-      var list = id;
-      if (list.style.display != "block"){
-        list.style.display = "block";
-        
-      }
-      else {
-        
-        //console.log(follower_list.style.display);
-        list.style.display = "none";
-      }
-
-    }
-
-    // Lists go away if clicked anywhere else in the window
-    window.onclick = function (event) {
-      if (!event.target.matches('.dropbtn')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        var i;
-        for (i = 0; i < dropdowns.length; i++) {
-          var openDropdown = dropdowns[i];
-          if (openDropdown.style.display == 'block') {
-            openDropdown.style.display = 'none';
-          }
-        }
-      }
-    }
-
-
-
-
-  </script>
-
   <div class="sidebar">
 
     <div class="sidebar_top">
-      <form action="" method="POST" id="formid">
-        <input id="dp_change" type="file" hidden>
-        <input type="button" value="Change DP" class="btn btn-dark btn-sm" id="dp_button" onclick="fileclick()"
+      <form action="" method="post" id="dp_form">
+        <input id="dp_change" type="file" id="dp_file" hidden>
+        <input type="submit" value="Change DP" class="btn btn-dark btn-sm" id="dp_button" onclick="fileclick()"
           style="float: right; margin-top: 8px; margin-right: 8px; background-color: #262626; border: transparent; font-weight: bold; font-style: italic;">
-
-        <input type="submit" value="Submit" hidden>
+        
 
       </form>
+
 
       <div style="width: 480px; height: fit-content;">
 
@@ -322,6 +274,57 @@
     </div>
 
 
+
+    <script>
+      function fileclick() {
+        document.getElementById("dp_change").click();
+      }
+  
+      /*function submitForm() {
+          document.getElementById('formid').submit();
+          console.log("Foprm submit");
+      }
+  
+      var dp = document.getElementById('dp_change');
+      if(dp){
+      dp.addEventListener("change", submitForm);
+      }*/
+  
+      function unhide(id) {
+        var list = id;
+        if (list.style.display != "block"){
+          list.style.display = "block";
+          
+        }
+        else {
+          
+          //console.log(follower_list.style.display);
+          list.style.display = "none";
+        }
+  
+      }
+  
+      // Lists go away if clicked anywhere else in the window
+      window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display == 'block') {
+              openDropdown.style.display = 'none';
+            }
+          }
+        }
+      }
+  
+         document.getElementById("dp_file").onchange = function() {
+              print("DP FIle Changed");
+              document.getElementById("dp_form").submit();
+            }
+  
+  
+    </script>
 
 </body>
 
