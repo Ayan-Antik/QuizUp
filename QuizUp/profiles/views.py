@@ -110,6 +110,16 @@ def my_profile_detail(request):
             if followees[0] == 0:
                 followee_info = [("-", "-")]
 
+
+            query = '''
+                SELECT DESCRIPTION, IMAGE, TO_CHAR(TIME, 'HH:MI AM (Mon DD,YYYY)'), POST_ID
+                FROM POST
+                WHERE WRITER_ID = %s
+                ORDER BY TIME DESC 
+            '''
+            cursor.execute(query, [player_id])
+            all_posts = cursor.fetchall()
+
             return render(request, 'profiles/self_profile.html', {'rank': rank[0],
                                                                   'player_info': player_info,
                                                                   'games': games[0],
@@ -118,6 +128,7 @@ def my_profile_detail(request):
                                                                   'followed_topics': followed_topics,
                                                                   'follower_info': follower_info,
                                                                   'followee_info': followee_info,
+                                                                  'all_posts': all_posts,
 
 
                                                                                 })
@@ -136,3 +147,8 @@ def storeImage(player_id, location):
         '''
         cursor.execute(query, [location, player_id])
         print(player_id, location)
+
+
+#def update_like(request):
+    #if 'id' in request.session and request.session['type'] == "Player":
+        #player_id = request.session.get('id')
