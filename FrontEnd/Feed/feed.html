@@ -110,43 +110,7 @@
               Voluptas, minima. Dolore fugiat perferendis eaque exercitationem dolorem blanditiis quos veniam,
               libero quidem, minus pariatur! Atque id debitis quis deleniti eum sapiente!
             </p>
-            <script>
-              function remove(){
-                console.log("In Image click");
-                
-                document.getElementById("img_post").style.display = 'none'; 
-                /*if(document.getElementById("img_post").style.display == 'none'){
-                  
-                  document.getElementById("img_post").style.display = 'block'; 
-                
-                }
-                else{
-                  document.getElementById("img_post").style.display = 'none';  
-                } */   
-              }
-
-              function like(){
-
-                  var elem = document.getElementById("btn_like");
-                  var like_cnt = document.getElementById("like_count");
-                  var like_no = parseInt(like_cnt.innerHTML);
-
-                  if (elem.value == "Like") {
-                      elem.value = "Liked";
-
-                      like_cnt.innerHTML = like_no + 1;
-                  }
-                  
-                  else {
-                      elem.value = "Like";
-                      
-                      
-                      like_cnt.innerHTML = like_no - 1;
-
-                  }  
-              }
-    
-            </script>
+            
             
             <div class="show_img">
               <img src="tanjim.jfif" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
@@ -188,6 +152,46 @@
       </div>
       
     </div>
+    <script>
+
+      function remove(){
+        console.log("In Image click");
+        
+        document.getElementById("img_post").style.display = 'none'; 
+        /*if(document.getElementById("img_post").style.display == 'none'){
+          
+          document.getElementById("img_post").style.display = 'block'; 
+        
+        }
+        else{
+          document.getElementById("img_post").style.display = 'none';  
+        } */   
+      }
+
+      function like(){
+
+          var elem = document.getElementById("btn_like");
+          var like_cnt = document.getElementById("like_count");
+          var like_no = parseInt(like_cnt.innerHTML);
+
+          if (elem.value == "Like") {
+              elem.value = "Liked";
+
+              like_cnt.innerHTML = like_no + 1;
+          }
+          
+          else {
+              elem.value = "Like";
+              
+              
+              like_cnt.innerHTML = like_no - 1;
+
+          }  
+      }
+
+    </script>
+
+
 
   </body>
 </html>

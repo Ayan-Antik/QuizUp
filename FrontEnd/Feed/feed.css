@@ -12,7 +12,7 @@ body{
     
     float: left;
     width: 440px;
-
+    /*position: fixed;*/
 }
 
 .mini-profile{

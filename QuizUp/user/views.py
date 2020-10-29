@@ -152,7 +152,7 @@ def createPlayer(username, password, email, dob):
         row = cursor.fetchone()
         total_users = row[0]
         user_query = '''
-            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'signup/default-dp.png', %s)
+            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'media/dp/default-dp.png', %s)
         
         '''
         player_query = '''
