@@ -75,6 +75,7 @@
                     url: '{% url 'update_score' %}',
                     data: {
                         'question_id': questions[i]['id'],
+                        'quiz_id': '{{ quiz.0 }}',
                         'score': score,
                         'choice': this.value,
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()

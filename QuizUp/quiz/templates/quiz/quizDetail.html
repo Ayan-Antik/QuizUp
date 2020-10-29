@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'quiz/quizDetail.css' %}">
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>{{ quiz.3 }}</title>
   </head>
   <body>
@@ -34,8 +34,9 @@
               Topics<span class="sr-only">(current)</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Sports</a>
-              <a class="dropdown-item" href="#">History</a>
+              {% for topic in topics %}
+                    <a class="dropdown-item" href="{% url "topic_detail" topic.0%}">{{ topic.1 }}</a>
+                {% endfor %}
             </div>
           </li>
         </ul>
@@ -49,13 +50,20 @@
 
     <div class="container">
       <div class="row">
+        <div class="col-lg-3">
+        </div>
         <div class="col-lg-6">
-          <div class="border">
+          <div style="background-color: lightgray;">
           <h1 class="text-center">{{ quiz.3 }}</h1>
           <div class="text-center">
-              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#play">
-              Play Quiz</button></div>
-          <table class="table mt-5">
+              {% if score == -1 %}
+                  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#play">
+                  Play Quiz</button>
+                {% else %}
+                  Your Score : <b>{{ score }}</b>
+                {% endif %}
+          </div>
+          <table class="table mt-5" style="background-color: darkcyan; color: white;">
             <tbody>
               <tr>
                 <td>Topic</td>
@@ -67,46 +75,49 @@
               </tr>
               <tr>
                 <td>Difficulty</td>
-                {% if quiz.4 == None %}
-                    <td>-</td>
-                {% else %}
-                    <td>{{ quiz.4 }}</td>
-                {% endif %}
+                    <td>{{ difficulty }}</td>
               </tr>
               <tr>
                 <td>#Played</td>
                 <td>{{ num_of_played }}</td>
               </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="text-center"><button type="button" class="btn btn-success">See Answers</button></div>
-
-        </div>
-        <div class="col-lg-6">
-          <div class="border" style="background-color:#e6fff2;">
-          <h5 class="text-center">Leaderboard</h5>
-          <table class="table">
-            <tbody>
-              <thead>
-                <tr>
-                  <th scope="col">Rank</th>
-                  <th scope="col">Username</th>
-                  <th scope="col">Score</th>
-                </tr>
-              </thead>
-              <tr>
-                <td>1</td>
-                <td>Alex</td>
-                <td>100</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>John</td>
-                <td>90</td>
+            <tr>
+                <td>High Score</td>
+                {% if top_score is None %}
+                    <td> - </td>
+                {% else %}
+                    <td>{{ top_score.1 }} ({{ top_score.0 }})</td>
+                {% endif %}
               </tr>
             </tbody>
           </table>
+        </div>
+        </div>
+        <div class="col-lg-3">
+        </div>
+        <div class="col-lg">
+          <div class="border" style="background-color: darkslateblue; color: white;">
+          <h3 class="text-center">Quiz Statistics</h3>
+                {% for result in results %}
+                    <div class=" mb-3 ml-2">
+                    <b>{{ forloop.counter}}. {{ result.2 }}</b>
+                    <ul class="list-group list-group-horizontal" style="color: black;">
+                      <li class="list-group-item">{{ result.3 }}{% if result.3 == result.7 %}
+                      <i class="fa fa-check-circle" style="color: green;"></i>{% endif %}</li>
+                      <li class="list-group-item">{{ result.4 }}{% if result.4 == result.7 %}
+                      <i class="fa fa-check-circle" style="color: green;"></i>{% endif %}</li>
+                        <li class="list-group-item">{{ result.5 }}{% if result.5 == result.7 %}
+                      <i class="fa fa-check-circle" style="color: green;"></i>{% endif %}</li>
+                    <li class="list-group-item">{{ result.6 }}{% if result.6 == result.7 %}
+                      <i class="fa fa-check-circle" style="color: green;"></i>{% endif %}</li>
+                    </ul>
+                    {% if result.9 is None %}
+                        You didn't choose any option :(
+                    {% else%}
+                        Your answer: {{ result.10 }}, Score: {{ result.9 }}
+                    {% endif %}
+                    </div>
+                {% endfor %}
         </div>
       </div>
     </div>
@@ -132,10 +143,16 @@
     </div>
   </div>
 </div>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script>
+        $('#s1').click(function () {
+            $('#s1').css('color', 'yellow');
+        })
+    </script>
   </body>
 </html>

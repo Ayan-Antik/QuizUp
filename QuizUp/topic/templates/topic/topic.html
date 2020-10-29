@@ -9,7 +9,6 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'topic/topic.css' %}">
-
     <title>{{ topic.1 }}</title>
   </head>
   <body>
@@ -34,8 +33,9 @@
               Topics<span class="sr-only">(current)</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Sports</a>
-              <a class="dropdown-item" href="#">History</a>
+                {% for topic in topics %}
+                    <a class="dropdown-item" href="{% url "topic_detail" topic.0%}">{{ topic.1 }}</a>
+                {% endfor %}
             </div>
           </li>
         </ul>
@@ -49,14 +49,14 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-4">
-          <div class="border">
+        <div class="col-lg-3">
+          <div style="background-color: lightgray;">
               <img src="{% static topic.3 %}" class="img-fluid">
-          <h1 class="text-center"><img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50">{{topic.1}}</h1>
+          <h3 class="text-center"><img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50">{{topic.1}}</h3>
           <form class="text-center">{% csrf_token %}
-              <input type="button" class="btn btn-success btn-sm" id="follow" value={{ is_follow }} />
+                <input type="button" class="btn btn-success btn-sm" id="follow" value={{ is_follow }} />
           </form>
-          <table class="table mt-5">
+          <table class="table mt-2">
             <tbody>
               <tr class="text-center">
                 <td><h6>Followers</h6> <h4>{{ num_of_followers }}</h4></td>
@@ -66,11 +66,10 @@
             </tbody>
           </table>
         </div>
-        <div class="border mt-3">
-          <h5 class="text-center">Quiz List</h5>
-          <table class="table">
+          <h5 class="text-center mt-3">Quiz List</h5>
+          <table class="table" style="background-color:lightgray; color:black;">
             <tbody>
-              <thead>
+              <thead class="thead-dark">
                 <tr>
                   <th scope="col">Title</th>
                   <th scope="col">Difficulty</th>
@@ -85,19 +84,17 @@
                       {% else %}
                           <td>{{ quiz.4 }}</td>
                       {% endif %}
-                    <td>0</td>
+                    <td>pore korbo</td>
                   </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
-        </div>
         <div class="col-lg order-last">
-          <div class="border" style="background-color:#e6fff2;">
           <h5 class="text-center">Leaderboard</h5>
-          <table class="table">
+          <table class="table" style="background-color:lightgray; color:black;">
             <tbody>
-              <thead>
+              <thead class="thead-dark">
                 <tr>
                   <th scope="col">Rank</th>
                   <th scope="col">Username</th>
@@ -116,7 +113,6 @@
               </tr>
             </tbody>
           </table>
-        </div>
       </div>
       <div class="col-lg-5">
       </div>
