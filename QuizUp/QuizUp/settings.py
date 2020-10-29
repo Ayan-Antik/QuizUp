@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'topic.apps.TopicConfig',
     'quiz.apps.QuizConfig',
     'user.apps.UserConfig',
+    'profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [

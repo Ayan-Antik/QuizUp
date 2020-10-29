@@ -38,13 +38,17 @@ def LogIn(request):
 
                 if pagehtml == "login":
                     request.session['type'] = "Player"
+                    # sending to his own profile
+                    return HttpResponseRedirect(reverse('my_profile_detail'))
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
+                    return render(request, 'user/signup.html')
 
-                print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
+                #print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
                 # TODO: send to homepage/ Question setter page
-                return render(request, 'user/signup.html')
+
+                #return render(request, 'user/signup.html')
             else:
                 # authentication error
                 return render(request, 'user/' + pagehtml + '.html')
@@ -116,7 +120,7 @@ def SignUp(request):
                 createPlayer(username, password1, email, dob)
                 print("User Created")
                 # TODO : send user to home
-                return render(request, 'user/login.html')
+                return HttpResponseRedirect(reverse('login'))
 
 
             else:
@@ -156,3 +160,15 @@ def createPlayer(username, password, email, dob):
         '''
         cursor.execute(user_query, [total_users + 1, username, password, email, dob])
         cursor.execute(player_query, [total_users + 1])
+
+
+def Logout(request):
+    #try:
+        print(request.session['id'])
+        del request.session['id']
+        del request.session['type']
+        return HttpResponseRedirect(reverse('login'))
+
+
+
+

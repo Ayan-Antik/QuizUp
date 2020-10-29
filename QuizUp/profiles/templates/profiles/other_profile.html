@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en">
 
+{% load static %}
+
 <head>
   <!-- Required meta tags -->
   <meta charset="utf-8">
@@ -10,7 +12,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="{% static 'profiles/other_profile.css' %}">
 
   <title>Profile</title>
 </head>
@@ -30,7 +32,7 @@
         <li class="nav-item">
           <a class="nav-link" href="#">Home</a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="#">Profile</a>
         </li>
         <li class="nav-item dropdown">
@@ -52,13 +54,51 @@
     </div>
   </nav>
 
-
-
-
   <script>
-    function fileclick() {
-      document.getElementById("dp_change").click();
+    function remove(){
+      console.log("In Image click");
+      
+      document.getElementById("img_post").style.display = 'none'; 
+      /*if(document.getElementById("img_post").style.display == 'none'){
+        
+        document.getElementById("img_post").style.display = 'block'; 
+      
+      }
+      else{
+        document.getElementById("img_post").style.display = 'none';  
+      } */   
     }
+
+    function like(){
+
+        var elem = document.getElementById("btn_like");
+        var like_cnt = document.getElementById("like_count");
+        var like_no = parseInt(like_cnt.innerHTML);
+
+        if (elem.value == "Like") {
+             elem.value = "Liked";
+            like_cnt.innerHTML = like_no + 1;
+        }
+        
+        else {
+             elem.value = "Like";             
+            like_cnt.innerHTML = like_no - 1;
+
+        }  
+    }
+
+    function follow(){
+        var follow_btn = document.getElementById("follow_btn");
+
+        if(follow_btn.value == "Follow")
+        {
+            follow_btn.value = "Unfollow";
+        }
+        else{
+            follow_btn.value = "Follow";
+        }
+    }
+
 
     /*function submitForm() {
         document.getElementById('formid').submit();
@@ -106,25 +146,31 @@
   <div class="sidebar">
 
     <div class="sidebar_top">
-      <form action="" method="POST" id="formid">
-        <input id="dp_change" type="file" hidden>
-        <input type="button" value="Change DP" class="btn btn-dark btn-sm" id="dp_button" onclick="fileclick()"
-          style="float: right; margin-top: 8px; margin-right: 8px; background-color: #262626; border: transparent; font-weight: bold; font-style: italic;">
+      
 
-        <input type="submit" value="Submit" hidden>
-
-      </form>
-
-      <div style="width: 480px; height: fit-content;">
+        <div style="width: 480px; height: fit-content;">
 
         <img src="witcher.jpg" alt="" height="128px" width="128px"
-          style="border-radius: 50%; margin-top: 38px; margin-left: 38px;" id="sidebar_dp">
+            style="border-radius: 50%; margin-top: 38px; margin-left: 38px;" id="sidebar_dp">
 
-      </div>
+        </div>
 
-      <div class="sidebar_username">
-        <p>Ayan Antik Khan</p>
-      </div>
+        <div class="username_followbtn">
+
+            
+            <p style="float: left; font-weight: 400; color: white;
+            font-size: xx-large;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            ">Ayan Antik Khan</p>
+        
+
+        
+            <form action="" style="float: right; padding-top: 8px;"> 
+                <input type="button" id = "follow_btn" class="btn btn-success " value="Follow" onclick="follow()">
+            </form>
+
+
+        </div>      
 
     </div>
 
@@ -171,13 +217,22 @@
 
 
     </div>
+    <!--PLAYER RANK-->
+    <div class="player_rank">
+      
+        <span style="font-size: 30px ; font-weight: bold; color: #ff5454; ">Player Rank</span>
+        
+        <span style="border-radius: 10%; background-color: #ff5454; 
+        font-size: 30px ; font-weight: 500; color:white; float: right; padding-left: 10px; padding-right: 12px;"> 12</span>
+  
+      </div>
 
     <!-- TOPICS -->
 
     <div class="topics">
 
        <span style="font-size: 30px ; font-weight: bold; color: #ff5454;"> Followed Topics</span>
-       <span style="font-size: 30px ; font-weight: 500; color: #00b5d9; float: right; padding-right: 12px;"> Rank</span>
+       <span style="font-size: 30px ; font-weight: 500; color: #00b5d9; float: right; padding-right: 12px;"> Level</span>
       <hr style="margin: 8px 12px 8px 0px;">
 
       <!-- LOOP -->
@@ -218,7 +273,7 @@
   </div>
 
   
-    <!-- MY POSTS -->
+    <!--PROFILE POSTS -->
 
 
   <div class="view_post">
@@ -240,40 +295,7 @@
         Voluptas, minima. Dolore fugiat perferendis eaque exercitationem dolorem blanditiis quos veniam,
         libero quidem, minus pariatur! Atque id debitis quis deleniti eum sapiente!
       </p>
-      <script>
-        function remove(){
-          console.log("In Image click");
-          
-          document.getElementById("img_post").style.display = 'none'; 
-          /*if(document.getElementById("img_post").style.display == 'none'){
-            
-            document.getElementById("img_post").style.display = 'block'; 
-          
-          }
-          else{
-            document.getElementById("img_post").style.display = 'none';  
-          } */   
-        }
-
-        function like(){
-
-            var elem = document.getElementById("btn_like");
-            var like_cnt = document.getElementById("like_count");
-            var like_no = parseInt(like_cnt.innerHTML);
-
-            if (elem.innerHTML == "Like") {
-                 elem.innerHTML = "Liked";
-                like_cnt.innerHTML = like_no + 1;
-            }
-            
-            else {
-                 elem.innerHTML = "Like";             
-                like_cnt.innerHTML = like_no - 1;
-
-            }  
-        }
-
-      </script>
+      
       
       <div class="show_img">
         <img src="witcher.jpg" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
@@ -284,8 +306,9 @@
 
         <div class="post_react" style="margin: 16px 16px; height: 42px;">
           
-            <button class="btn btn-danger btn-small" id="btn_like" onclick="like()" >Like</button>
-           
+        <form action="" style="width: fit-content; float: left;">
+            <input type="button" class="btn btn-danger btn-small" id="btn_like" onclick="like()" value="Like">
+        </form>   
           <b>&nbsp</b>  
           
           <a href="#">
