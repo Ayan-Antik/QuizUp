@@ -37,9 +37,11 @@
                 <button type="submit" class="btn btn-primary" id="loginbtn1">Log in</button>
                 <br><br>
                 <small id="signup" class="form-text text-white"> Don't have an account?</small>
-                <button type="button" class="btn btn-primary" id="loginbtn2" href="{% url 'signup'%}">Sign Up</button>
+                <a href="{% url 'signup' %}">
+                <button type="button" class="btn btn-primary" id="loginbtn2" >Sign Up</button></a>
               
             </form>
+
 
         </div>
         <br><br><br>

@@ -10,7 +10,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 def my_profile_detail(request):
-    print("HELLO HERE IN MY PROFILE DETAIL")
+    #print("HELLO HERE IN MY PROFILE DETAIL")
     if request.session['id'] > -1 and request.session['type'] == "Player":
 
         player_id = request.session['id']
@@ -22,11 +22,9 @@ def my_profile_detail(request):
             if request.FILES['dp_file']:
                 print("In dp")
                 image = request.FILES["dp_file"]
-                fs = FileSystemStorage(location='profiles/static/media/')
-                filename = fs.save(image.name, image)
-                file_url = fs.url(filename)
-                print(file_url)
-                storeImage(player_id, 'media/' + file_url)
+                fs = FileSystemStorage(location='media/dp/')
+                fs.save(image.name, image)
+                storeImage(player_id, 'dp/' + image.name)
                 return HttpResponseRedirect(reverse('my_profile_detail'))
             else:
                 print("error in img upload")

@@ -20,7 +20,7 @@ def abc(request):
 def LogIn(request):
     # print("In Login")
     pagehtml = request.path.split('/')[2]
-    print(pagehtml)
+    #print(pagehtml)
 
     if request.method == 'POST':
         # print("method is POST")
@@ -57,7 +57,7 @@ def LogIn(request):
             return render(request, 'user/' + pagehtml + '.html')
 
     else:
-        print(request.method)
+        #print(request.method)
         return render(request, 'user/' + pagehtml + '.html')
 
 
@@ -131,7 +131,7 @@ def SignUp(request):
             return render(request, 'user/signup.html')
 
     else:
-        print("Not Post Method")
+        #print("Not Post Method")
         return render(request, 'user/signup.html')
 
 
@@ -152,7 +152,7 @@ def createPlayer(username, password, email, dob):
         row = cursor.fetchone()
         total_users = row[0]
         user_query = '''
-            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'media/dp/default-dp.png', %s)
+            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s)
         
         '''
         player_query = '''
@@ -163,12 +163,14 @@ def createPlayer(username, password, email, dob):
 
 
 def Logout(request):
-    #try:
+    try:
         print(request.session['id'])
         del request.session['id']
         del request.session['type']
         return HttpResponseRedirect(reverse('login'))
-
+    except:
+        print("Logout Error")
+        return HttpResponseRedirect(reverse('my_profile_detail'))
 
 
 
