@@ -112,13 +112,57 @@ def my_profile_detail(request):
 
 
             query = '''
-                SELECT DESCRIPTION, IMAGE, TO_CHAR(TIME, 'HH:MI AM (Mon DD,YYYY)'), POST_ID
-                FROM POST
-                WHERE WRITER_ID = %s
-                ORDER BY TIME DESC 
+                SELECT
+                    P.DESCRIPTION, P.IMAGE,
+                    TO_CHAR(P.TIME, 'HH:MI AM (Mon DD,YYYY)') AS POST_TIME,
+                    P.POST_ID,
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                FROM
+                    POST P, LIKES L, COMMENTS C
+
+                WHERE P.WRITER_ID = %s /*PLAYER_ID*/
+                /*AND L.PLAYER_ID = 3 REQUEST.SESSION['ID']*/
+                    AND P.POST_ID = L.POST_ID(+)
+                    AND P.POST_ID = C.POST_ID(+)
+                    
+                GROUP BY P.POST_ID, P.DESCRIPTION, P.IMAGE, TO_CHAR(P.TIME, 'HH:MI AM (Mon DD,YYYY)')
+                ORDER BY POST_TIME DESC
             '''
             cursor.execute(query, [player_id])
             all_posts = cursor.fetchall()
+            #print(all_posts)
+            #CHECK IF POST HAS BEEN LIKED BY THE USER IN SESSION
+
+
+            query = '''
+                SELECT  P.POST_ID
+                FROM POST P
+                WHERE P.WRITER_ID = %s /*PLAYER_ID*/
+                AND EXISTS
+                    (
+                        SELECT L.PLAYER_ID
+                        FROM LIKES L
+                        WHERE L.POST_ID = P.POST_ID
+                        AND L.PLAYER_ID = %s /*USER IN SESSION*/
+                    )
+            
+            '''
+            cursor.execute(query, [player_id, request.session['id']])
+            liked_posts = cursor.fetchall()
+            #change list of tuples (all_post) to list of lists
+            all_posts_list = [list(elem) for elem in all_posts]
+
+
+            for post in all_posts_list:
+                #print(post[3])
+                if post[3] in (like[0] for like in liked_posts):
+                    #print(post[3])
+                    post.append("Liked")
+                else:
+                    post.append("Like")
+
+            #print(all_posts)
+            #print(all_posts_list)
 
             return render(request, 'profiles/self_profile.html', {'rank': rank[0],
                                                                   'player_info': player_info,
@@ -128,8 +172,7 @@ def my_profile_detail(request):
                                                                   'followed_topics': followed_topics,
                                                                   'follower_info': follower_info,
                                                                   'followee_info': followee_info,
-                                                                  'all_posts': all_posts,
-
+                                                                  'all_posts_list': all_posts_list,
 
                                                                                 })
 
