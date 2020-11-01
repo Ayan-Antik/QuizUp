@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db import connection
 from . import forms
@@ -39,7 +39,8 @@ def LogIn(request):
                 if pagehtml == "login":
                     request.session['type'] = "Player"
                     # sending to his own profile
-                    return HttpResponseRedirect(reverse('my_profile_detail'))
+                    #return HttpResponseRedirect(reverse('my_profile_detail', player_id=request.session['id']))
+                    return redirect('my_profile_detail', player_id=request.session['id'])
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
@@ -170,7 +171,7 @@ def Logout(request):
         return HttpResponseRedirect(reverse('login'))
     except:
         print("Logout Error")
-        return HttpResponseRedirect(reverse('my_profile_detail'))
+        return redirect('my_profile_detail', player_id=request.session['id'])
 
 
 

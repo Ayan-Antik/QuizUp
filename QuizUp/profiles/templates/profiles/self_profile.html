@@ -33,7 +33,7 @@
           <a class="nav-link" href="#">Home</a>
         </li>
         <li class="nav-item active">
-          <a class="nav-link" href="#">Profile</a>
+          <a class="nav-link" href="{% url 'my_profile_detail' player_in_session %}">Profile</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -62,20 +62,22 @@
   <div class="sidebar">
 
     <div class="sidebar_top">
-      <form action="" id="dp_form" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-        <!--input type="button" id="dp_button" value="Update Image" class="btn btn-dark btn-sm"  onclick="fileclick()"
-          style="float: right; margin-top: 8px; margin-right: 8px; background-color: #262626; border: transparent; font-weight: bold;"-->
 
-          <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="#ff5454"
-                            xmlns="http://www.w3.org/2000/svg" onclick="fileclick()" style="float: right; margin-top: 8px; margin-right: 8px;">
-                            <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
-                            <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2
-                            2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
-                             2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
-                </svg>
-        <input type="file" id="dp_file" name="dp_file"  accept="image/*"  hidden>
+        {% if player_in_session == player_id %}
+          <form action="" id="dp_form" method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+            <!--input type="button" id="dp_button" value="Update Image" class="btn btn-dark btn-sm"  onclick="fileclick()"
+              style="float: right; margin-top: 8px; margin-right: 8px; background-color: #262626; border: transparent; font-weight: bold;"-->
 
+              <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="#ff5454"
+                                xmlns="http://www.w3.org/2000/svg" onclick="fileclick()" style="float: right; margin-top: 8px; margin-right: 8px;">
+                                <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2
+                                2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
+                                 2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                    </svg>
+            <input type="file" id="dp_file" name="dp_file"  accept="image/*"  hidden>
+        {% endif %}
 
       </form>
 
@@ -86,12 +88,22 @@
       <div style="width: 480px; height: fit-content;">
 
         <img src="{% get_media_prefix  %}{{ player_info.2 }} " alt="" height="128px" width="128px"
-          style="border-radius: 50%; margin-top: 38px; margin-left: 38px;" id="sidebar_dp">
+          style="border-radius: 50%; margin-top: 44px; margin-left: 38px;" id="sidebar_dp">
 
       </div>
 
-      <div class="sidebar_username">
-        <p>{{ player_info.0 }}</p>
+      <div class="username_followbtn" style=" height:100px;padding: 18px 18px 18px 30px;">
+
+        <p style="float: left; padding: 6px 0px 0px 24px; font-weight: 400; color: white; font-size: xx-large;
+           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+
+            {{ player_info.0 }}</p>
+        {% if player_in_session != player_id %}
+            <form action="" style="float: right; padding-top: 8px;">
+            {% csrf_token %}
+                <input type="button" id = "follow_btn" class="btn btn-success " value="{{ is_follow }}">
+            </form>
+        {% endif %}
       </div>
 
     </div>
@@ -113,7 +125,7 @@
         {% for follower in follower_info %}
             {% if follower.1 != '-' %}
               <img src="{% get_media_prefix %}{{ follower.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-              <a href="#" style="color: #ff5454; padding-left: 12px;"> {{ follower.0 }} </a>
+              <a href="{% url 'my_profile_detail' follower.2  %}" style="color: #ff5454; padding-left: 12px;"> {{ follower.0 }} </a>
               <hr style="margin: 8px 12px 8px 0px;">
             {% endif %}
         {% endfor %}
@@ -131,7 +143,7 @@
         {% for followee in followee_info %}
             {% if followee.1 != '-'%}
                   <img src="{% get_media_prefix %}{{ followee.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                  <a href="#" style="color: #ff5454; padding-left: 12px;"> {{ followee.0 }}</a>
+                  <a href="{% url 'my_profile_detail' followee.2 %}" style="color: #ff5454; padding-left: 12px;"> {{ followee.0 }}</a>
                   <hr style="margin: 8px 12px 8px 0px;">
             {% endif %}
         {% endfor %}
@@ -216,7 +228,7 @@
                 </div>
 
                 <div class="post_username">
-                    <a href="{% url 'my_profile_detail' %}" style="color: black;"> {{ player_info.0}} </a>
+                    <a href="{% url 'my_profile_detail' player_id %}" style="color: black;"> {{ player_info.0}} </a>
                 </div>
                 <div>
                     <p style="color: grey; font-size: 14px;">
@@ -238,8 +250,8 @@
 
             <div class="post_react" style="margin: 16px 16px; height: 42px;">
 
-                <form action="" style="width: fit-content; float: left;">{% csrf_token %}
-                    <input type="button" class="btn btn-danger btn-small" id="btn_like"  value={{ post.6 }}>
+                <form style="width: fit-content; float: left;">{% csrf_token %}
+                    <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.3 }}"  value={{ post.6 }} post_id= {{ post.3 }} >
 
                 </form>
               <b>&nbsp</b>
@@ -253,12 +265,13 @@
                       <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                     </svg>
 
-                    <b id="like_count"> {{ post.4 }} </b>
+                    <b id="like_count{{ post.3 }}"> {{ post.4 }} </b>
 
                     <b>&nbsp</b>
 
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chat-dots-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                      <path fill-rule="evenodd" d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744
+                      11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                     </svg>
 
                     <b id="comment_count"> {{ post.5 }} </b>
@@ -266,6 +279,10 @@
             </div>
         </div>
     {% endfor %}
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
 
     <script>
     function fileclick() {
@@ -309,9 +326,11 @@
         }
       }
     }
-    document.getElementById("dp_file").onchange = function() {
-        console.log('Hello');
-        document.getElementById("dp_form").submit();
+    if(document.getElementById("dp_file") != null) {
+        document.getElementById("dp_file").onchange = function () {
+            console.log('Hello');
+            document.getElementById("dp_form").submit();
+        }
     }
 
     function remove(){
@@ -338,28 +357,56 @@
             }
         }
 
+        {% for post in all_posts_list %}
+            $('#btn_like{{ post.3 }}').click(function () {
 
-        /*$('#btn_like').click(function () {
-            var is_liked = $(this).val();
+                var is_liked = $(this).val();
+                var post_id = $(this).attr("post_id");
+                var like_count = $('#like_count{{ post.3 }}').html();
+                console.log(like_count);
+
+                console.log("post id is: " + post_id);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'update_like' %}',
+                    data: {
+                        'post_id': post_id,
+                        'is_liked': is_liked,
+                        'like_count': like_count,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#btn_like{{ post.3 }}').val(response['is_liked']);
+                        $('#like_count{{ post.3 }}').html(response['like_count'])
+                    },
+                    error: function (response) {
+                    }
+                });
+            });
+
+        {% endfor %}
+
+
+        $('#follow_btn').click(function () {
+            var is_follow = $(this).val();
             $.ajax({
                 type: 'POST',
-                url: '/{/*% url 'update_like' %}',
+                url: '{% url 'update_player_follow' %}',
                 data: {
-                    'post_id': ,
+                    'followee_id': {{ player_id }},
                     'is_follow': is_follow,
                     'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                 },
                 dataType: 'json',
                 success: function (response) {
-                    $('#follow').val(response['is_follow']);
+                    $('#follow_btn').val(response['is_follow']);
                 },
                 error: function (response) {
                 }
             });
-        });*/
-
-
-
+        });
 
   </script>
 

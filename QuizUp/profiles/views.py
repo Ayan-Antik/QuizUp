@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db import connection
 from django import forms
@@ -9,23 +9,23 @@ from django.http import JsonResponse
 
 
 # Create your views here.
-def my_profile_detail(request):
+def my_profile_detail(request, player_id):
     #print("HELLO HERE IN MY PROFILE DETAIL")
     if request.session['id'] > -1 and request.session['type'] == "Player":
 
-        player_id = request.session['id']
+        #player_id = request.session['id']
         #print(player_id)
         #print(request.session['type'])
 
-        if request.method == 'POST':
-            print("In post")
+        if request.method == 'POST' and player_id == request.session['id']:
+            #print("In post")
             if request.FILES['dp_file']:
-                print("In dp")
+                #print("In dp")
                 image = request.FILES["dp_file"]
                 fs = FileSystemStorage(location='media/dp/')
                 fs.save(image.name, image)
                 storeImage(player_id, 'dp/' + image.name)
-                return HttpResponseRedirect(reverse('my_profile_detail'))
+                return redirect('my_profile_detail', player_id=request.session['id'])
             else:
                 print("error in img upload")
                 return render(request, 'profiles/self_profile.html')
@@ -87,7 +87,7 @@ def my_profile_detail(request):
                 followed_topics = [("None", "-")]
 
             query = '''
-                SELECT U.USERNAME, U.IMAGE
+                SELECT U.USERNAME, U.IMAGE, U.USER_ID
                 FROM PLAYER_FOLLOW PF, USERS U
                 WHERE PF.FOLLOWER_ID = U.USER_ID
                 AND PF.FOLLOWEE_ID = %s
@@ -99,7 +99,7 @@ def my_profile_detail(request):
                 follower_info = [("-", "-")]
 
             query = '''
-                SELECT U.USERNAME, U.IMAGE
+                SELECT U.USERNAME, U.IMAGE, U.USER_ID
                 FROM PLAYER_FOLLOW PF, USERS U
                 WHERE PF.FOLLOWEE_ID = U.USER_ID
                 AND PF.FOLLOWER_ID = %s
@@ -164,6 +164,15 @@ def my_profile_detail(request):
             #print(all_posts)
             #print(all_posts_list)
 
+            query = '''
+                SELECT * 
+                FROM PLAYER_FOLLOW
+                WHERE FOLLOWER_ID = %s
+                AND FOLLOWEE_ID = %s
+            '''
+            cursor.execute(query, [request.session['id'], player_id])
+            is_follow = 'Follow' if cursor.fetchone() is None else 'Following'
+
             return render(request, 'profiles/self_profile.html', {'rank': rank[0],
                                                                   'player_info': player_info,
                                                                   'games': games[0],
@@ -173,12 +182,16 @@ def my_profile_detail(request):
                                                                   'follower_info': follower_info,
                                                                   'followee_info': followee_info,
                                                                   'all_posts_list': all_posts_list,
+                                                                  'player_in_session': request.session['id'],
+                                                                  'player_id': player_id,
+                                                                  'is_follow': is_follow,
 
                                                                                 })
 
 
     else:
-        return HttpResponse("ELSED")
+        print("Elsed")
+        return HttpResponseRedirect(reverse("login"))
 
 
 def storeImage(player_id, location):
@@ -192,6 +205,55 @@ def storeImage(player_id, location):
         print(player_id, location)
 
 
-#def update_like(request):
-    #if 'id' in request.session and request.session['type'] == "Player":
-        #player_id = request.session.get('id')
+def update_like(request):
+    if 'id' in request.session and request.session['type'] == "Player":
+        player_id = request.session.get('id')
+        with connection.cursor() as cursor:
+            post_id = request.POST.get('post_id')
+            is_liked = request.POST.get('is_liked')
+            like_count = int(request.POST.get('like_count'))
+
+            if is_liked == "Like":
+                # print("In if, Liking the post...")
+                query = '''
+                    INSERT INTO LIKES VALUES(%s, %s)
+                
+                '''
+                cursor.execute(query, [post_id, player_id])
+                is_liked = "Liked"
+                like_count = like_count + 1
+            else:
+                # print("In Else, DisLiking the post...")
+                query = '''
+                    DELETE FROM LIKES 
+                    WHERE POST_ID = %s
+                    AND PLAYER_ID = %s
+                '''
+                cursor.execute(query, [post_id, player_id])
+                is_liked = "Like"
+                like_count = like_count - 1
+
+            return JsonResponse({'is_liked': is_liked,
+                                 'like_count': like_count})
+
+    else:
+        return HttpResponseRedirect(reverse('login'))
+
+
+def update_player_follow(request):
+    if 'id' in request.session and request.session['type'] == "Player":
+        follower_id = request.session.get('id')
+        with connection.cursor() as cursor:
+            followee_id = request.POST.get('followee_id')
+            is_follow = request.POST.get('is_follow')
+            if is_follow == 'Follow':
+                cursor.execute('INSERT INTO PLAYER_FOLLOW VALUES(%s, %s)', [followee_id, follower_id])
+                is_follow = 'Following'
+            else:
+                cursor.execute('DELETE FROM PLAYER_FOLLOW WHERE FOLLOWEE_ID = %s AND FOLLOWER_ID = %s',
+                               [followee_id, follower_id])
+                is_follow = 'Follow'
+            return JsonResponse({'is_follow': is_follow})
+
+    else:
+        return HttpResponseRedirect(reverse('login'))
