@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+    
+
     <link rel="stylesheet" href="feed.css">
     
 
@@ -48,9 +53,10 @@
 
       <div class="sidebar">
         <div class="mini-profile">
-          
-            <img src="witcher.jpg" alt="dp error" height="64px" width="64px" id="dp">
-            <a href="#" id="user" >Ayan Antik Khan</a>
+          <a href="#">
+          <img src="witcher.jpg" alt="dp error" height="64px" width="64px" id="dp">
+          </a>
+          <a href="#" id="user" >Ayan Antik Khan</a>
           
         </div>  
 
@@ -58,36 +64,92 @@
           
           <div class="follower_info">
             Followers <br>
-            <p style="margin: 0; font-size: larger; font-weight: 600; color: #02d174;"
+            <p onclick="unhide(follower_list)" class="dropbtn" 
+            style="margin: 0; font-size: larger; font-weight: 600; color: #02d174; cursor: pointer;"
               > 42 </p>
+
+              <div id="follower_list" class="dropdown-content">
+                <!-- LOOP -->
+      
+                <img src="voldy.jfif" alt="" height="32px" width="32px" style="border-radius: 50%;">
+                <a href="#" style="color: #ff5454; padding-left: 12px;"> Lord Voldemort</a>
+                <hr style="margin: 8px 12px 8px 0px;">
+      
+      
+              </div>
             
           </div>
 
           <div class="following_info">
             Following <br>
-            <p style="margin: 0; font-size: larger; font-weight: 600; color: #00b5d9;"
+            <p onclick="unhide(following_list)" class="dropbtn" 
+            style="margin: 0; font-size: larger; font-weight: 600; color: #00b5d9; cursor: pointer;"
               > 39 </p>
-            
+
+              <div id="following_list" class="dropdown-content">
+                <!-- LOOP -->
+      
+                <img src="voldy.jfif" alt="" height="32px" width="32px" style="border-radius: 50%;">
+                <a href="#" style="color: #ff5454; padding-left: 12px;"> Lord Voldemort</a>
+                <hr style="margin: 8px 12px 8px 0px;">
+      
+      
+              </div>
           </div>
-        </div>  
+
+          
+        </div> 
+        
+        <div class="followed_topics">
+          <p style="padding: 8px 0px 0px 8px; font-size: 30px; font-weight: 700; color: #ff5454;">
+            Followed Topics
+          </p>
+
+          <hr style="margin: 16px;">
+          <!--LOOP FOLLOWED TOPICS-->
+          <div class="topic_detail">
+            <a href="#">
+            <img src="Sports.png" alt="" style="height: 70px; width: 70px; border-radius: 12.5%;">
+           </a> 
+            <a href="#" style="color: #ff5454; font-size: large; font-weight: bold;">
+              Sports
+            </a>
+
+          </div>
+
+          <!--ENDLOOP-->
+
+        </div>
       
       </div>
       
       <div class="news">
           <div class="post" style="width: 580px;">
-            <form>
+            <form id="post_form" method="POST">
                 <textarea name="post" id="" cols="75" rows="6" placeholder="What's Up?" 
                           style="border-color: transparent; outline-color: transparent; padding: 15px 15px; border-radius: 3mm;" required></textarea>
                 
                 <svg width="2.5em" height="2.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="currentColor" 
-                            xmlns="http://www.w3.org/2000/svg">
+                            xmlns="http://www.w3.org/2000/svg" onclick="fileclick()" style="cursor: pointer;">
                             <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                             <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 
                             2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
                              2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
                 </svg>          
-                <button type="button" class="btn btn-info" >Add Image</button>
+                
+                <input type="file" id="post_img" name="post_img"  accept="image/*"  hidden>
                 <button type="submit" class="btn btn-danger" style="float: right;">Post</button>
+
+               <div class="selector" style="float: right;"> 
+                <select class="selectpicker" multiple name="Topics" form="post_form">
+                  <!--LOOP TOPICS-->
+                  <option> <img src="Sports.png" alt=""> Sports</option>
+                  <option> History</option>
+                  <option>Mythology</option>
+                </select>
+              </div>  
+
+            
             </form> 
           </div>
           <!-- ALL POSTS  -->
@@ -96,8 +158,12 @@
             <div class="post_info" style="margin: 15px 15px; height: 80px;">
               
               <div class="post_dp">
+
+                <a href="#">
                 <img src="tanjim.jfif" alt="" height="48px" width="48px" 
                 style="border-radius: 50%; float: left; margin: 12px 12px;">
+                </a>
+
               </div>
 
               <div class="post_username"> 
@@ -122,7 +188,7 @@
               <div class="post_react" style="margin: 16px 16px; height: 42px;">
                 
                 <form action="" style="width: fit-content; float: left;">
-                  <input type="button" class="btn btn-danger btn-small" id="btn_like" onclick="like()" value="Like">
+                  <input type="button" class="btn btn-danger btn-small" id="btn_like"  value="Like">
                 </form>
                  
                 <b>&nbsp</b>  
@@ -152,41 +218,45 @@
       </div>
       
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+  
     <script>
 
-      function remove(){
-        console.log("In Image click");
-        
-        document.getElementById("img_post").style.display = 'none'; 
-        /*if(document.getElementById("img_post").style.display == 'none'){
+    function fileclick() {
+      document.getElementById("post_img").click();
+    }
+
+    $('select').selectpicker();
+
+    function unhide(id) {
+        var list = id;
+        if (list.style.display != "block"){
+          list.style.display = "block";
           
-          document.getElementById("img_post").style.display = 'block'; 
-        
         }
-        else{
-          document.getElementById("img_post").style.display = 'none';  
-        } */   
-      }
-
-      function like(){
-
-          var elem = document.getElementById("btn_like");
-          var like_cnt = document.getElementById("like_count");
-          var like_no = parseInt(like_cnt.innerHTML);
-
-          if (elem.value == "Like") {
-              elem.value = "Liked";
-
-              like_cnt.innerHTML = like_no + 1;
-          }
+        else {
           
-          else {
-              elem.value = "Like";
-              
-              
-              like_cnt.innerHTML = like_no - 1;
-
-          }  
+          //console.log(follower_list.style.display);
+          list.style.display = "none";
+        }
+  
+      }
+  
+      // Lists go away if clicked anywhere else in the window
+      window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display == 'block') {
+              openDropdown.style.display = 'none';
+            }
+          }
+        }
       }
 
     </script>
