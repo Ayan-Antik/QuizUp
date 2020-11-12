@@ -6,7 +6,7 @@ from django.db import connection
 from django import forms
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
-
+from feed.views import time_edit
 
 # Create your views here.
 def my_profile_detail(request, player_name):
@@ -121,7 +121,7 @@ def my_profile_detail(request, player_name):
             query = '''
                 SELECT
                     P.DESCRIPTION, P.IMAGE,
-                    TO_CHAR(P.TIME, 'HH:MI AM (Mon DD,YYYY)') AS POST_TIME,
+                    P.TIME AS POST_TIME,
                     P.POST_ID,
                     COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
                 FROM
@@ -132,7 +132,7 @@ def my_profile_detail(request, player_name):
                     AND P.POST_ID = L.POST_ID(+)
                     AND P.POST_ID = C.POST_ID(+)
                     
-                GROUP BY P.POST_ID, P.DESCRIPTION, P.IMAGE, TO_CHAR(P.TIME, 'HH:MI AM (Mon DD,YYYY)')
+                GROUP BY P.POST_ID, P.DESCRIPTION, P.IMAGE, P.TIME
                 ORDER BY POST_TIME DESC
             '''
             cursor.execute(query, [player_id])
@@ -162,6 +162,7 @@ def my_profile_detail(request, player_name):
 
             for post in all_posts_list:
                 #print(post[3])
+                post[2] = time_edit(post[2])
                 if post[3] in (like[0] for like in liked_posts):
                     #print(post[3])
                     post.append("Liked")

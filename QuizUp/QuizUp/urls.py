@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from user import views
 
 urlpatterns = [
+    path('', views.abc),
     path('user/', include('user.urls')),
     path('topic/', include('topic.urls')),
     path('quiz/', include('quiz.urls')),

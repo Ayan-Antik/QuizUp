@@ -9,7 +9,7 @@ from . import forms
 
 def abc(request):
 
-     return HttpResponseRedirect(reverse('login'))
+     return HttpResponseRedirect('http://127.0.0.1:8000/user/login')
 
 
 def LogIn(request):

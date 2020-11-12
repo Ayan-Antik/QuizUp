@@ -57,12 +57,12 @@
         <div class="post_info" style="margin: 15px 5px; height: 80px;">
 
           <div class="post_dp">
-            <a href=""><img src="{% get_media_prefix %}{{ post_info.1 }}" alt="" height="48px" width="48px"
+            <a href="{% url 'my_profile_detail' post_info.0 %}"><img src="{% get_media_prefix %}{{ post_info.1 }}" alt="" height="48px" width="48px"
               style="border-radius: 50%; float: left; margin: 12px 12px; height: 100%;"></a>
           </div>
 
-          <div class="post_username" style="padding-top: 12px;">
-              <a href="#" style="color: black; font-weight: 600;"> {{ post_info.0 }}</a>
+          <div class="post_username" style="padding-top: 12px; font-weight: 500; font-size: large;">
+              <a href="{% url 'my_profile_detail' post_info.0 %}" style="color: black; font-weight: 600;"> {{ post_info.0 }}</a>
           </div>
           <div>
             <p style="color: grey; font-size: 14px;">
@@ -141,7 +141,7 @@
               </div>
 
               <div class="comment_text" style="margin: 2px 2px 2px 72px;
-                 max-width: 348px; background-color: #d9d9d9; width: fit-content;height: fit-content;
+                 max-width: 348px; background-color: #eeeeee; width: fit-content;height: fit-content;
                  padding: 8px 12px; border-radius: 5mm;">
                   <p style="margin-bottom: 0px">{{ comment.2}}</p>
               </div>
@@ -159,7 +159,7 @@
 
               </div-->
 
-                <hr style="height: 4px; color: #8c8c8c; margin-top: 16px;">
+                <hr style="height: 4px; color: #8c8c8c; margin: 16px 12px;">
 
             <!--ENDLOOP-->
             {% endfor %}
@@ -177,7 +177,7 @@
                  style="border-color: transparent; background-color: #d9d9d9; border-radius: 5mm; padding: 10px 10px;" required-->
                 
                  <textarea name="comment" id="txt_area" cols="43" rows="3" 
-                 style="border-color: transparent; background-color: #d9d9d9; border-radius: 5mm; padding: 10px 10px;"
+                 style="border-color: transparent; background-color: #eeeeee; border-radius: 5mm; padding: 10px 10px;"
                  placeholder="Write a comment..."  required></textarea>
                  
                 <button type="submit" class="btn btn-sm btn-danger" style="margin-left: 8px; margin-bottom: 24px; ">Comment</button>
