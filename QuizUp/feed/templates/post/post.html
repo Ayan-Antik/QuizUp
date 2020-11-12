@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+{% load static %}
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -9,7 +10,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="post.css">
+    <link rel="stylesheet" href= "{% static 'post/post.css' %}">
 
 
     <title>Post</title>
@@ -18,7 +19,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #ff5454;">
       <a class="navbar-brand" href="#">
-        <img src="quizup1.png" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+        <img src="{% static 'post/quizup1.png' %}" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -31,7 +32,7 @@
             <a class="nav-link" href="#">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Profile</a>
+            <a class="nav-link" href="{% url 'my_profile_detail' player_in_session_name %}">Profile</a>
           </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -45,7 +46,7 @@
         </ul>
         <ul class="navbar-nav navbar-right">
           <li class="nav-item">
-            <a class="nav-link" href="#">Log Out</a>
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
           </li>
         </ul>
       </div>
@@ -56,54 +57,56 @@
         <div class="post_info" style="margin: 15px 5px; height: 80px;">
 
           <div class="post_dp">
-            <a href=""><img src="tanjim.jfif" alt="" height="48px" width="48px"
+            <a href=""><img src="{% get_media_prefix %}{{ post_info.1 }}" alt="" height="48px" width="48px"
               style="border-radius: 50%; float: left; margin: 12px 12px; height: 100%;"></a>
           </div>
 
           <div class="post_username" style="padding-top: 12px;">
-              <a href="#" style="color: black; font-weight: 600;"> Tanjim Ahmed Khan</a>
+              <a href="#" style="color: black; font-weight: 600;"> {{ post_info.0 }}</a>
           </div>
           <div>
             <p style="color: grey; font-size: 14px;">
-                9:40
+                {{ post_info.4 }}
             </p>
         </div>
 
         </div>
 
-        <p class ="post_txt" style="padding-left: 5px;">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Voluptas, minima. Dolore fugiat perferendis eaque exercitationem dolorem blanditiis quos veniam,
-          libero quidem, minus pariatur! Atque id debitis quis deleniti eum sapiente!
+        <p class ="post_txt" style="padding-left: 12px; padding-right: 12px;">
+            {{ post_info.2 }}
         </p>
 
        
-
-        <div class="show_img">
-          <img src="tanjim.jfif" alt=" " style = "max-height: 680px; width: 610px;"  id="img_post" onerror="remove()">
-        </div> 
-       
+        {% if post_info.3 != None %}
+            <div class="show_img">
+              <img src="{% get_media_prefix %}{{ post_info.3 }}" alt=" " style = "max-height: 680px; width: 610px;"  id="img_post" onerror="remove()">
+            </div>
+       {% endif %}
 
         <hr style="margin: 16px 16px 16px;">
 
         <div class="post_react" style="margin: 16px 16px; height: 42px;">
 
-            <button class="btn btn-danger btn-small" id="btn_like" onclick="like()" >Like</button>
+            <!--button class="btn btn-danger btn-small" id="btn_like" onclick="like()" >Like</button-->
 
+            <form style="width: fit-content; float: left;">{% csrf_token %}
+                    <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post_info.5 }}"  value={{ post_info.6 }} post_id= {{ post_info.5 }} >
+
+                </form>
             <div class="react_count" style="float: right;">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
                   <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                 </svg>
 
-                <b id="like_count" class = 'dropbtn' onclick="unhide(like_list)" style="cursor: pointer;"> 13 </b>
+                <b id="like_count" class = 'dropbtn' onclick="unhide(like_list)" style="cursor: pointer;"> {{ react_count.0 }} </b>
 
                 <div id="like_list" class="dropdown-content" >
                   <!-- LOOP -->
-        
-                  <img src="voldy.jfif" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                  <a href="#" style="color: #ff5454; padding-left: 12px;"> Lord Voldemort</a>
-                  <hr style="margin: 8px 12px 8px 0px;">
-                  
+                    {% for liker in like_list %}
+                          <a href="{% url 'my_profile_detail' liker.0 %}"><img src="{% get_media_prefix %}{{ liker.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;"></a>
+                          <a href="{% url 'my_profile_detail' liker.0 %}" style="color: #ff5454; padding-left: 12px;"> {{ liker.0 }}</a>
+                          <hr style="margin: 8px 12px 8px 0px;">
+                  {% endfor %}
         
         
                 </div>
@@ -114,7 +117,7 @@
                   <path fill-rule="evenodd" d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                 </svg>
 
-                <b id="comment_count"> 5 </b>
+                <b id="comment_count">{{ react_count.1 }} </b>
             </div>
 
         </div>
@@ -126,49 +129,49 @@
       <div class="comments">
 
         <!--Loop-->
+        {% for comment in comments %}
+              <div class="comment_dp">
+                  <a href="{% url 'my_profile_detail' comment.0 %}"><img src="{% get_media_prefix %}{{ comment.1 }}" alt="" height="48px" width="48px"
+                    style="border-radius: 50%; float: left; margin: 6px 12px;"></a>
+              </div>
 
-          <div class="comment_dp">
-              <a href=""><img src="voldy.jfif" alt="" height="48px" width="48px"
-                style="border-radius: 50%; float: left; margin: 6px 12px;"></a>
-          </div>
-            
-          <div class="old_comment_user">
-              <a href="" style="color: black; font-weight: 600;"> Lord Voldemort</a> 
-              <p style="color: grey; font-size: 14px;"> 12:30</p>
-          </div>
+              <div class="old_comment_user">
+                  <a href="{% url 'my_profile_detail' comment.0 %}" style="color: black; font-weight: 600;"> {{ comment.0 }}</a>
+                  <p style="color: grey; font-size: 14px;"> {{ comment.3 }}</p>
+              </div>
 
-          <div class="comment_text" style="margin: 2px 2px 2px 72px;
-             max-width: 348px; background-color: #d9d9d9; width: fit-content; height: min-content;
-             padding: 8px 12px; border-radius: 5mm;">
-              <p style="margin-bottom: 0px;">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus eius dolorem, voluptatem molestias repellendus, reiciendis doloribus debitis numquam vel excepturi tempora laborum culpa assumenda quaerat nihil, officiis veritatis consequuntur animi.</p>
-          </div>
+              <div class="comment_text" style="margin: 2px 2px 2px 72px;
+                 max-width: 348px; background-color: #d9d9d9; width: fit-content;height: fit-content;
+                 padding: 8px 12px; border-radius: 5mm;">
+                  <p style="margin-bottom: 0px">{{ comment.2}}</p>
+              </div>
 
-          <!--div class="comment_react" style="margin: 4px 0px 4px 78px">
+              <!--div class="comment_react" style="margin: 4px 0px 4px 78px">
 
-                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" >
-                </svg>
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z" >
+                    </svg>
 
-                
-              <b id="react_count"> 3 </b>
-            
-              <button class="btn btn-link" id="like_btn" style="padding-top: 0%; color: #e62e00;" onclick="cmnt_liked()">Like</button>
 
-          </div-->
+                  <b id="react_count"> 3 </b>
 
-            <hr style="height: 4px; color: #8c8c8c; margin-top: 16px;"> 
+                  <button class="btn btn-link" id="like_btn" style="padding-top: 0%; color: #e62e00;" onclick="cmnt_liked()">Like</button>
+
+              </div-->
+
+                <hr style="height: 4px; color: #8c8c8c; margin-top: 16px;">
 
             <!--ENDLOOP-->
-
+            {% endfor %}
             <div class="my_comment">
 
               <div class="my_dp">
-                <img src="witcher.jpg" alt="" height="48px" width="48px"
+                <img src="{% get_media_prefix %}{{ my_dp }}" alt="" height="48px" width="48px"
                 style="border-radius: 50%; float: left; margin: 6px 12px;">
 
               </div>
 
-              <form method= "post" >
+              <form method= "post" >{% csrf_token %}
 
                 <!--input type="text" aria-colcount="43" aria-rowcount="3" placeholder="Write a comment..."
                  style="border-color: transparent; background-color: #d9d9d9; border-radius: 5mm; padding: 10px 10px;" required-->
@@ -186,6 +189,7 @@
 
         </div>
 
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 
 <script>
   function remove(){
@@ -279,6 +283,52 @@
       }
     }
   }
+
+
+
+
+  $('#btn_like{{ post_info.5 }}').click(function () {
+
+                var is_liked = $(this).val();
+                var post_id = $(this).attr("post_id");
+                var like_count = $('#like_count').html();
+                console.log(like_count);
+
+                console.log("post id is: " + post_id);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'update_like' %}',
+                    data: {
+                        'post_id': post_id,
+                        'is_liked': is_liked,
+                        'like_count': like_count,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#btn_like{{ post_info.5 }}').val(response['is_liked']);
+                        $('#like_count').html(response['like_count'])
+                    },
+                    error: function (response) {
+                    }
+                });
+            });
+
+            $('#btn_like{{ post_info.5 }}').mouseenter(function () {
+            var btn = document.getElementById("btn_like{{ post_info.5 }}");
+               if (btn.value == "Liked"){
+                   btn.value = "Dislike";
+               }
+
+        });
+            $('#btn_like{{ post_info.5 }}').mouseleave(function () {
+                    var btn = document.getElementById("btn_like{{ post_info.5 }}");
+                   if (btn.value == "Dislike"){
+                       btn.value = "Liked";
+                   }
+
+            });
 
 </script>
 

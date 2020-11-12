@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'quiz.apps.QuizConfig',
     'user.apps.UserConfig',
     'profiles.apps.ProfilesConfig',
+    'feed.apps.FeedConfig',
 ]
 
 MIDDLEWARE = [

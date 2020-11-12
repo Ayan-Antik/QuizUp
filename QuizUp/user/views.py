@@ -8,13 +8,8 @@ from . import forms
 
 
 def abc(request):
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT count(*) FROM USERS')
-        row = cursor.fetchone()
 
-
-        # print(userdict)
-        return HttpResponse("Hi")
+     return HttpResponseRedirect(reverse('login'))
 
 
 def LogIn(request):

@@ -23,5 +23,6 @@ urlpatterns = [
     path('topic/', include('topic.urls')),
     path('quiz/', include('quiz.urls')),
     path('profiles/', include('profiles.urls')),
+    path('feed/', include('feed.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
