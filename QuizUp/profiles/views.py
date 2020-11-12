@@ -9,7 +9,7 @@ from django.http import JsonResponse
 
 
 # Create your views here.
-def my_profile_detail(request, player_id):
+def my_profile_detail(request, player_name):
     #print("HELLO HERE IN MY PROFILE DETAIL")
     if request.session['id'] > -1 and request.session['type'] == "Player":
 
@@ -17,20 +17,27 @@ def my_profile_detail(request, player_id):
         #print(player_id)
         #print(request.session['type'])
 
-        if request.method == 'POST' and player_id == request.session['id']:
+        if request.method == 'POST' and player_name == request.session['username']:
             #print("In post")
             if request.FILES['dp_file']:
                 #print("In dp")
                 image = request.FILES["dp_file"]
                 fs = FileSystemStorage(location='media/dp/')
                 fs.save(image.name, image)
-                storeImage(player_id, 'dp/' + image.name)
-                return redirect('my_profile_detail', player_id=request.session['id'])
+                storeImage(request.session['id'], 'dp/' + image.name)
+                return redirect('my_profile_detail', player_name=request.session['username'])
             else:
                 print("error in img upload")
                 return render(request, 'profiles/self_profile.html')
 
         with connection.cursor() as cursor:
+            query = '''
+                SELECT USER_ID FROM USERS WHERE USERNAME = %s
+            '''
+            cursor.execute(query, [player_name])
+            player_inf = cursor.fetchone()
+            player_id = player_inf[0]
+
             query = '''
                 SELECT RANK FROM PLAYER WHERE PLAYER_ID = %s
             '''
@@ -182,7 +189,8 @@ def my_profile_detail(request, player_id):
                                                                   'follower_info': follower_info,
                                                                   'followee_info': followee_info,
                                                                   'all_posts_list': all_posts_list,
-                                                                  'player_in_session': request.session['id'],
+                                                                  'player_in_session': request.session['username'],
+                                                                  'player_name': player_name,
                                                                   'player_id': player_id,
                                                                   'is_follow': is_follow,
 

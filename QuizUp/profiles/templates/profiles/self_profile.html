@@ -63,7 +63,7 @@
 
     <div class="sidebar_top">
 
-        {% if player_in_session == player_id %}
+        {% if player_in_session == player_name %}
           <form action="" id="dp_form" method="post" enctype="multipart/form-data">
               {% csrf_token %}
             <!--input type="button" id="dp_button" value="Update Image" class="btn btn-dark btn-sm"  onclick="fileclick()"
@@ -98,7 +98,7 @@
            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
 
             {{ player_info.0 }}</p>
-        {% if player_in_session != player_id %}
+        {% if player_in_session != player_name %}
             <form action="" style="float: right; padding-top: 8px;">
             {% csrf_token %}
                 <input type="button" id = "follow_btn" class="btn btn-success " value="{{ is_follow }}">
@@ -125,7 +125,7 @@
         {% for follower in follower_info %}
             {% if follower.1 != '-' %}
               <img src="{% get_media_prefix %}{{ follower.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-              <a href="{% url 'my_profile_detail' follower.2  %}" style="color: #ff5454; padding-left: 12px;"> {{ follower.0 }} </a>
+              <a href="{% url 'my_profile_detail' follower.0  %}" style="color: #ff5454; padding-left: 12px;"> {{ follower.0 }} </a>
               <hr style="margin: 8px 12px 8px 0px;">
             {% endif %}
         {% endfor %}
@@ -143,7 +143,7 @@
         {% for followee in followee_info %}
             {% if followee.1 != '-'%}
                   <img src="{% get_media_prefix %}{{ followee.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                  <a href="{% url 'my_profile_detail' followee.2 %}" style="color: #ff5454; padding-left: 12px;"> {{ followee.0 }}</a>
+                  <a href="{% url 'my_profile_detail' followee.0 %}" style="color: #ff5454; padding-left: 12px;"> {{ followee.0 }}</a>
                   <hr style="margin: 8px 12px 8px 0px;">
             {% endif %}
         {% endfor %}
@@ -228,7 +228,7 @@
                 </div>
 
                 <div class="post_username">
-                    <a href="{% url 'my_profile_detail' player_id %}" style="color: black;"> {{ player_info.0}} </a>
+                    <a href="{% url 'my_profile_detail' player_name %}" style="color: black;"> {{ player_info.0}} </a>
                 </div>
                 <div>
                     <p style="color: grey; font-size: 14px;">
@@ -339,23 +339,24 @@
           document.getElementById("img_post").style.display = 'none';
         }
 
-        function like(){
 
-            var elem = document.getElementById("btn_like");
-            var like_cnt = document.getElementById("like_count");
-            var like_no = parseInt(like_cnt.innerHTML);
+    {% if player_in_session != player_name %}
+        $('#follow_btn').mouseenter(function () {
+            var btn = document.getElementById("follow_btn");
+               if (btn.value == "Following"){
+                   btn.value = "Unfollow";
+               }
 
-            if (elem.value == "Like") {
-                elem.value = "Liked";
-                like_cnt.innerHTML = like_no + 1;
-            }
+        });
+        $('#follow_btn').mouseleave(function () {
+                var btn = document.getElementById("follow_btn");
+               if (btn.value == "Unfollow"){
+                   btn.value = "Following";
+               }
 
-            else {
-                elem.value = "Like";
-                like_cnt.innerHTML = like_no - 1;
+        });
 
-            }
-        }
+    {% endif %}
 
         {% for post in all_posts_list %}
             $('#btn_like{{ post.3 }}').click(function () {
@@ -385,6 +386,23 @@
                     }
                 });
             });
+
+            $('#btn_like{{ post.3 }}').mouseenter(function () {
+            var btn = document.getElementById("btn_like{{ post.3 }}");
+               if (btn.value == "Liked"){
+                   btn.value = "Dislike";
+               }
+
+        });
+            $('#btn_like{{ post.3 }}').mouseleave(function () {
+                    var btn = document.getElementById("btn_like{{ post.3 }}");
+                   if (btn.value == "Dislike"){
+                       btn.value = "Liked";
+                   }
+
+            });
+
+
 
         {% endfor %}
 

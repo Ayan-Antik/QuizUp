@@ -35,12 +35,13 @@ def LogIn(request):
                 print("Login Successful")
 
                 request.session['id'] = id
+                request.session['username'] = username
 
                 if pagehtml == "login":
                     request.session['type'] = "Player"
                     # sending to his own profile
                     #return HttpResponseRedirect(reverse('my_profile_detail', player_id=request.session['id']))
-                    return redirect('my_profile_detail', player_id=request.session['id'])
+                    return redirect('my_profile_detail', player_name=username)
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
