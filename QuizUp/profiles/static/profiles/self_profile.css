@@ -50,6 +50,8 @@ body{
 .dropdown-content{
 
     position: absolute;  /* comes on top of background element */
+    max-height: 200px;
+    overflow: scroll;
     min-width: 240px; background-color: white; 
     border:1px solid #b3b3b3; 
     margin-top: 10px; 

@@ -33,13 +33,13 @@ def time_edit(diff):
             time = str(month) + " months ago"
     elif days != 0:
         if days == 1:
-            time = "one day ago"
+            time = "yesterday"
         else:
             time = str(days) + " days ago"
 
     elif hour != 0:
         if hour == 1:
-            time = "one hour ago"
+            time = "an hour ago"
         else:
             time = str(hour) + " hours ago"
 
@@ -50,7 +50,10 @@ def time_edit(diff):
             time = str(minute) + " minutes ago"
 
     else:
-        time = str(round(diff_time.seconds)) + " seconds ago"
+        if diff_time.seconds < 10:
+            time = "a few seconds ago"
+        else:
+            time = str(round(diff_time.seconds)) + " seconds ago"
 
     # print(time)
     return time
@@ -184,6 +187,9 @@ def post_detail(request, post_id):
             cursor.execute(query, [post_id])
             like_list = cursor.fetchall()
 
+            cursor.execute('SELECT * FROM TOPIC')
+            topics = cursor.fetchall()
+
             return render(request, 'post/post.html',  {'post_info' : post_info,
                                                        'player_in_session_name': player_in_session_name,
                                                        'player_in_session_id': player_in_session_id,
@@ -191,5 +197,6 @@ def post_detail(request, post_id):
                                                        'comments': comments,
                                                        'my_dp': my_dp[0],
                                                        'like_list': like_list,
+                                                       'topics': topics,
 
                                                       })

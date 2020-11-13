@@ -33,9 +33,9 @@
               Topics<span class="sr-only">(current)</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                {% for topic in topics %}
-                    <a class="dropdown-item" href="{% url "topic_detail" topic.0%}">{{ topic.1 }}</a>
-                {% endfor %}
+            {% for topic in topics %}
+                <a class="dropdown-item" href="{% url "topic_detail" topic.0%}">{{ topic.1 }}</a>
+            {% endfor %}
             </div>
           </li>
         </ul>

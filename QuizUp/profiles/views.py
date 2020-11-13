@@ -181,6 +181,9 @@ def my_profile_detail(request, player_name):
             cursor.execute(query, [request.session['id'], player_id])
             is_follow = 'Follow' if cursor.fetchone() is None else 'Following'
 
+            cursor.execute('SELECT * FROM TOPIC')
+            topics = cursor.fetchall()
+
             return render(request, 'profiles/self_profile.html', {'rank': rank[0],
                                                                   'player_info': player_info,
                                                                   'games': games[0],
@@ -194,6 +197,7 @@ def my_profile_detail(request, player_name):
                                                                   'player_name': player_name,
                                                                   'player_id': player_id,
                                                                   'is_follow': is_follow,
+                                                                  'topics': topics,
 
                                                                                 })
 
