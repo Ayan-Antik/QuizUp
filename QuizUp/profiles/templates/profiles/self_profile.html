@@ -19,7 +19,7 @@
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #ff5454;">
-    <a class="navbar-brand" href="#">
+    <a class="navbar-brand" href="{% url 'feed_detail' %}">
       <img src="{% static 'profiles/quizup1.png' %}" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -30,7 +30,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#">Home</a>
+          <a class="nav-link" href="{% url 'feed_detail' %}">Home</a>
         </li>
         <li class="nav-item active">
           <a class="nav-link" href="{% url 'my_profile_detail' player_in_session %}">Profile</a>
@@ -182,7 +182,7 @@
                 <img id = "topic_img" src="{% static topic.2 %}" alt="" height="40" width="40px" style="border-radius: 2mm;">
 
                 <span>
-                  <a href="#">{{ topic.0 }}</a>
+                  <a href="{% url 'topic_detail' topic.3 %}">{{ topic.0 }}</a>
                 </span>
 
                 <span style="font-size: 24px ; font-weight: 500; color: #2451aa; float: right; padding-right: 12px;">

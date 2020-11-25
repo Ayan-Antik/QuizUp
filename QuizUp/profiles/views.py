@@ -80,7 +80,7 @@ def my_profile_detail(request, player_name):
             followees = cursor.fetchone()
 
             query = '''
-                SELECT T.NAME, NVL(TA.TOPIC_RANK, 1), T.LOGO
+                SELECT T.NAME, NVL(TA.TOPIC_RANK, 1), T.LOGO, T.TOPIC_ID
                 FROM TOPIC_FOLLOW TF, TOPIC_ATTEMPT TA, TOPIC T
                 WHERE TF.TOPIC_ID = TA.TOPIC_ID(+)
                 AND T.TOPIC_ID = TF.TOPIC_ID
@@ -137,8 +137,8 @@ def my_profile_detail(request, player_name):
             '''
             cursor.execute(query, [player_id])
             all_posts = cursor.fetchall()
-            #print(all_posts)
-            #CHECK IF POST HAS BEEN LIKED BY THE USER IN SESSION
+            # print(all_posts)
+            # CHECK IF POST HAS BEEN LIKED BY THE USER IN SESSION
 
 
             query = '''
@@ -156,7 +156,7 @@ def my_profile_detail(request, player_name):
             '''
             cursor.execute(query, [player_id, request.session['id']])
             liked_posts = cursor.fetchall()
-            #change list of tuples (all_post) to list of lists
+            # change list of tuples (all_post) to list of lists
             all_posts_list = [list(elem) for elem in all_posts]
 
 

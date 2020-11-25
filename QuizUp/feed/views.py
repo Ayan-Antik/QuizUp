@@ -5,8 +5,11 @@ from django.urls import reverse
 from django.db import connection
 from django import forms
 from datetime import datetime
+from django.core.files.storage import FileSystemStorage
+from . import forms
 from django.http import JsonResponse
 # Create your views here.
+
 
 
 def time_edit(diff):
@@ -59,10 +62,6 @@ def time_edit(diff):
     return time
 
 
-class CommentForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea)
-
-
 def insert_comment(comment, post_id, writer_id):
     with connection.cursor() as cursor:
         query = '''
@@ -89,7 +88,7 @@ def post_detail(request, post_id):
         player_in_session_id = request.session['id']
 
         if request.method == 'POST':
-            form = CommentForm(request.POST)
+            form = forms.CommentForm(request.POST)
 
             if form.is_valid():
                 comment = form.cleaned_data['comment']
@@ -190,7 +189,7 @@ def post_detail(request, post_id):
             cursor.execute('SELECT * FROM TOPIC')
             topics = cursor.fetchall()
 
-            return render(request, 'post/post.html',  {'post_info' : post_info,
+            return render(request, 'post/post.html',  {'post_info': post_info,
                                                        'player_in_session_name': player_in_session_name,
                                                        'player_in_session_id': player_in_session_id,
                                                        'react_count': react_count,
@@ -200,3 +199,159 @@ def post_detail(request, post_id):
                                                        'topics': topics,
 
                                                       })
+
+    else:
+        return redirect('login')
+
+
+def feed_detail(request):
+
+    if request.session['id'] > -1 and request.session['type'] == "Player":
+
+        player_in_session_name = request.session['username']
+        player_in_session_id = request.session['id']
+
+        if request.method == 'POST':
+            print("In Post Form")
+            postform = forms.PostForm(request.POST)
+
+            print(request.POST['post'])
+            print(postform.errors)
+            if postform.is_valid():
+                print("Post form is valid")
+                text = postform.cleaned_data['post']
+                topics = request.POST.getlist('Topics', False)
+                img = request.FILES.get('post_img', False)
+                # file = request.FILES.get('post_img', False)
+
+                print(text, topics, img)
+                insert_post(text, topics, img, player_in_session_id)
+                return redirect('feed_detail')
+
+            else:
+                print("Post form is not valid")
+                return redirect('feed_detail')
+        with connection.cursor() as cursor:
+
+            query = '''
+                SELECT USERNAME, IMAGE
+                FROM USERS
+                WHERE USER_ID = %s
+            '''
+
+            cursor.execute(query, [player_in_session_id])
+            player_info = cursor.fetchone()
+
+            query = '''
+                            SELECT COUNT(FOLLOWER_ID)
+                            FROM PLAYER_FOLLOW
+                            WHERE FOLLOWEE_ID = %s
+                        '''
+            cursor.execute(query, [player_in_session_id])
+            followers = cursor.fetchone()
+
+            query = '''
+                            SELECT COUNT(FOLLOWEE_ID)
+                            FROM PLAYER_FOLLOW
+                            WHERE FOLLOWER_ID = %s
+                        '''
+            cursor.execute(query, [player_in_session_id])
+            followees = cursor.fetchone()
+
+            query = '''
+                SELECT T.NAME, T.LOGO, T.TOPIC_ID
+                FROM TOPIC T, TOPIC_FOLLOW TF 
+                WHERE TF.FOLLOWER_ID = %s 
+                AND T.TOPIC_ID = TF.TOPIC_ID
+            '''
+
+            cursor.execute(query, [player_in_session_id])
+            followed_topics = cursor.fetchall()
+
+            cursor.execute('SELECT * FROM TOPIC')
+            topics = cursor.fetchall()
+
+            #topic_list = []
+           # for topic in topics:
+             #   topic_list.append(topic[1])
+
+           # forms.PostForm.choices = tuple(topic_list)
+
+            query = '''
+                SELECT U.USERNAME, U.IMAGE, U.USER_ID
+                FROM PLAYER_FOLLOW PF, USERS U
+                WHERE PF.FOLLOWER_ID = U.USER_ID
+                AND PF.FOLLOWEE_ID = %s
+
+            '''
+            cursor.execute(query, [player_in_session_id])
+            follower_info = cursor.fetchall()
+            if followers[0] == 0:
+                follower_info = [("-", "-")]
+
+            query = '''
+                SELECT U.USERNAME, U.IMAGE, U.USER_ID
+                FROM PLAYER_FOLLOW PF, USERS U
+                WHERE PF.FOLLOWEE_ID = U.USER_ID
+                AND PF.FOLLOWER_ID = %s
+
+                        '''
+            cursor.execute(query, [player_in_session_id])
+            followee_info = cursor.fetchall()
+            if followees[0] == 0:
+                followee_info = [("-", "-")]
+
+            return render(request, 'feed/feed.html', {'player_info': player_info,
+                                                      'followers': followers[0],
+                                                      'followees': followees[0],
+                                                      'follower_info': follower_info,
+                                                      'followee_info': followee_info,
+                                                      'followed_topics': followed_topics,
+                                                      'topics': topics,
+
+
+
+
+                                                  })
+
+    else:
+        return redirect('login')
+
+
+def insert_post(text, topics, image, player_id):
+    with connection.cursor() as cursor:
+
+        cursor.execute("SELECT COUNT(*) FROM POST")
+        row = cursor.fetchone()
+        post_id = row[0] + 1
+
+        if image is not False:
+            fs = FileSystemStorage(location='media/post/')
+            fs.save(image.name, image)
+
+            query = '''
+                INSERT INTO POST VALUES(%s, %s, %s, %s, SYSDATE)
+            '''
+            cursor.execute(query, [post_id, player_id, text, 'post/' + image.name])
+
+        elif image is False:
+            query = '''
+                            INSERT INTO POST VALUES(%s, %s, %s, NULL, SYSDATE)
+                        '''
+            cursor.execute(query, [post_id, player_id, text])
+
+        if topics is not False:
+            for topic in topics:
+                query = '''
+                    SELECT TOPIC_ID FROM TOPIC WHERE NAME = %s
+                '''
+                cursor.execute(query, [topic])
+                row = cursor.fetchone()
+                topic_id = row[0]
+                print(str(topic_id) + ": " + topic)
+
+                query = '''
+                    INSERT INTO TAG VALUES (%s, %s)
+                '''
+
+                cursor.execute(query, [post_id, topic_id])

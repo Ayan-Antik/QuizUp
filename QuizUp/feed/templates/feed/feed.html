@@ -1,5 +1,7 @@
 <!doctype html>
 <html lang="en">
+
+{% load static %}
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,15 +16,15 @@
 
     
 
-    <link rel="stylesheet" href="feed.css">
+    <link rel="stylesheet" href="{% static 'feed/feed.css' %}">
     
 
     <title>News Feed</title>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #ff5454;">
-      <a class="navbar-brand" href="#">
-        <img src="quizup1.png" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+      <a class="navbar-brand" href="{% url 'feed_detail' %}">
+        <img src="{% static 'feed/quizup1.png' %}" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
       aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -32,18 +34,25 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home</a>
+            <a class="nav-link" href="{% url 'feed_detail' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Profile</a>
+            <a class="nav-link" href="{% url 'my_profile_detail' player_info.0 %}">Profile</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Topics<span class="sr-only">(current)</span></a>
+           <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Topics<span class="sr-only">(current)</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for topic in topics %}
+                  <a class="dropdown-item" href="{% url "topic_detail" topic.0%}">{{ topic.1 }}</a>
+              {% endfor %}
+            </div>
           </li>
         </ul>
         <ul class="navbar-nav navbar-right">
           <li class="nav-item">
-            <a class="nav-link" href="#">Log Out</a>
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
           </li>
         </ul>
       </div>
@@ -53,10 +62,10 @@
 
       <div class="sidebar">
         <div class="mini-profile">
-          <a href="#">
-          <img src="witcher.jpg" alt="dp error" height="64px" width="64px" id="dp">
+          <a href="{% url 'my_profile_detail' player_info.0 %}">
+          <img src="{% get_media_prefix %}{{ player_info.1 }}" alt="dp error" height="64px" width="64px" id="dp">
           </a>
-          <a href="#" id="user" >Ayan Antik Khan</a>
+          <a href="{% url 'my_profile_detail' player_info.0 %}" id="user" >{{ player_info.0 }}</a>
           
         </div>  
 
@@ -66,15 +75,17 @@
             Followers <br>
             <p onclick="unhide(follower_list)" class="dropbtn" 
             style="margin: 0; font-size: larger; font-weight: 600; color: #02d174; cursor: pointer;"
-              > 42 </p>
+              > {{ followers }} </p>
 
               <div id="follower_list" class="dropdown-content">
-                <!-- LOOP -->
-      
-                <img src="voldy.jfif" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                <a href="#" style="color: #ff5454; padding-left: 12px;"> Lord Voldemort</a>
-                <hr style="margin: 8px 12px 8px 0px;">
-      
+                  {% for follower in follower_info %}
+                    {% if follower.1 != '-' %}
+                        <img src="{% get_media_prefix %}{{ follower.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
+                        <a href="{% url 'my_profile_detail' follower.0 %}" style="color: #ff5454; padding-left: 12px;">
+                            {{ follower.0}}</a>
+                        <hr style="margin: 8px 12px 8px 0px;">
+                      {% endif %}
+                {% endfor %}
       
               </div>
             
@@ -84,15 +95,19 @@
             Following <br>
             <p onclick="unhide(following_list)" class="dropbtn" 
             style="margin: 0; font-size: larger; font-weight: 600; color: #00b5d9; cursor: pointer;"
-              > 39 </p>
+              > {{ followees }} </p>
 
               <div id="following_list" class="dropdown-content">
                 <!-- LOOP -->
-      
-                <img src="voldy.jfif" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                <a href="#" style="color: #ff5454; padding-left: 12px;"> Lord Voldemort</a>
-                <hr style="margin: 8px 12px 8px 0px;">
-      
+                {% for followee in followee_info %}
+                    {% if followee.1 != '-' %}
+                        <img src="{% get_media_prefix %}{{ followee.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
+                        <a href="{% url 'my_profile_detail' followee.0 %}" style="color: #ff5454; padding-left: 12px;">
+                            {{ followee.0}}</a>
+
+                        <hr style="margin: 8px 12px 8px 0px;">
+                    {% endif %}
+                {% endfor %}
       
               </div>
           </div>
@@ -107,16 +122,19 @@
 
           <hr style="margin: 16px;">
           <!--LOOP FOLLOWED TOPICS-->
-          <div class="topic_detail">
-            <a href="#">
-            <img src="Sports.png" alt="" style="height: 70px; width: 70px; border-radius: 12.5%;">
-           </a> 
-            <a href="#" style="color: #ff5454; font-size: large; font-weight: bold;">
-              Sports
-            </a>
+            {% for topic in followed_topics %}
+                {% if topic.0 != 'None' %}
+                  <div class="topic_detail">
+                    <a href="{% url 'topic_detail' topic.2 %}">
+                    <img src="{% static topic.1 %}" alt="" style="height: 70px; width: 70px; border-radius: 12.5%;">
+                   </a>
+                    <a href="{% url 'topic_detail' topic.2 %}" style="color: #ff5454; font-size: large; font-weight: bold;">
+                        {{ topic.0 }}
+                    </a>
 
-          </div>
-
+                  </div>
+                {% endif %}
+            {% endfor %}
           <!--ENDLOOP-->
 
         </div>
@@ -149,7 +167,8 @@
       
       <div class="news">
           <div class="post" style="width: 580px;">
-            <form id="post_form" method="POST">
+            <form id="post_form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
                 <textarea name="post" id="" cols="75" rows="6" placeholder="What's Up?" 
                           style="border-color: transparent; outline-color: transparent; padding: 15px 15px; border-radius: 3mm;" required></textarea>
                 
@@ -165,11 +184,11 @@
                 <button type="submit" class="btn btn-danger" style="float: right;">Post</button>
 
                <div class="selector" style="float: right;"> 
-                <select class="selectpicker" multiple name="Topics" form="post_form">
+                <select class="selectpicker" multiple id="Topics" name="Topics" form="post_form">
                   <!--LOOP TOPICS-->
-                  <option> <img src="Sports.png" alt=""> Sports</option>
-                  <option> History</option>
-                  <option>Mythology</option>
+                    {%  for topic in topics %}
+                          <option> {{ topic.1 }}</option>
+                    {%  endfor %}
                 </select>
               </div>  
 

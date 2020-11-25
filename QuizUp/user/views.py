@@ -152,11 +152,9 @@ def createPlayer(username, password, email, dob):
             INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s)
         
         '''
-        player_query = '''
-            INSERT INTO PLAYER VALUES (%s, 1)
-        '''
+
         cursor.execute(user_query, [total_users + 1, username, password, email, dob])
-        cursor.execute(player_query, [total_users + 1])
+        # cursor.execute(player_query, [total_users + 1])
 
 
 def Logout(request):
