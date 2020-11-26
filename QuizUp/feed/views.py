@@ -366,6 +366,24 @@ def feed_detail(request):
                     post.append("Liked")
                 else:
                     post.append("Like")
+            query = '''
+                
+                SELECT U.USERNAME, P.RANK
+                FROM PLAYER P, USERS U
+                WHERE P.PLAYER_ID = U.USER_ID
+                AND ROWNUM <= 5
+                ORDER BY P.RANK DESC
+            
+            '''
+
+            cursor.execute(query)
+            leaderboard = cursor.fetchall()
+
+            leaderboard = [list(elem) for elem in leaderboard]
+            position = 1
+            for row in leaderboard:
+                row.append(position)
+                position += 1
 
             cursor.close()
             return render(request, 'feed/feed.html', {'player_info': player_info,
@@ -376,6 +394,7 @@ def feed_detail(request):
                                                       'followed_topics': followed_topics,
                                                       'topics': topics,
                                                       'all_posts_list': all_posts_list,
+                                                      'leaderboard': leaderboard,
 
 
 

@@ -150,12 +150,13 @@
               </tr>
             </thead>
             <tbody>
+            {% for player in leaderboard %}
               <tr>
-                <th scope="row">1</th>
-                <td><a href="" style="color: black;">Mark</a></td>
-                <td>27</td>
+                <th scope="row">{{ player.2 }}</th>
+                <td><a href="{% url 'my_profile_detail' player.0 %}" style="color: black;">{{ player.0 }}</a></td>
+                <td>{{ player.1 }}</td>
               </tr>
-              
+            {% endfor %}
               
             </tbody>
           </table>

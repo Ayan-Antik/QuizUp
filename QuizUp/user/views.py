@@ -106,6 +106,7 @@ def SignUp(request):
         if signupform.is_valid():
             print("Form is val")
             username = signupform.cleaned_data['username']
+            fullname = signupform.cleaned_data['fullname']
             dob = signupform.cleaned_data['dob']
             email = signupform.cleaned_data['email']
             password1 = signupform.cleaned_data['password1']
@@ -114,7 +115,7 @@ def SignUp(request):
             #print(username, dob, email)
 
             if validUsername(username) and (password1 == password2):
-                createPlayer(username, password1, email, dob)
+                createPlayer(username, fullname, password1, email, dob)
                 print("User Created")
                 # TODO : send user to home
                 return HttpResponseRedirect(reverse('login'))
@@ -143,24 +144,26 @@ def validUsername(username):
             return False
 
 
-def createPlayer(username, password, email, dob):
+def createPlayer(username, fullname, password, email, dob):
     with connection.cursor() as cursor:
         cursor.execute('SELECT COUNT(*) FROM USERS')
         row = cursor.fetchone()
         total_users = row[0]
         user_query = '''
-            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s)
+            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s, %s)
         
         '''
 
-        cursor.execute(user_query, [total_users + 1, username, password, email, dob])
+        cursor.execute(user_query, [total_users + 1, username, password, email, dob, fullname])
         # cursor.execute(player_query, [total_users + 1])
 
 
 def Logout(request):
     try:
+        print("Logging Out...")
         print(request.session['id'])
         del request.session['id']
+        del request.session['username']
         del request.session['type']
         return HttpResponseRedirect(reverse('login'))
     except:
