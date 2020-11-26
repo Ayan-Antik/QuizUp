@@ -222,7 +222,6 @@ def feed_detail(request):
                 text = postform.cleaned_data['post']
                 topics = request.POST.getlist('Topics', False)
                 img = request.FILES.get('post_img', False)
-                # file = request.FILES.get('post_img', False)
 
                 print(text, topics, img)
                 insert_post(text, topics, img, player_in_session_id)
@@ -231,6 +230,7 @@ def feed_detail(request):
             else:
                 print("Post form is not valid")
                 return redirect('feed_detail')
+
         with connection.cursor() as cursor:
 
             query = '''
@@ -271,12 +271,6 @@ def feed_detail(request):
             cursor.execute('SELECT * FROM TOPIC')
             topics = cursor.fetchall()
 
-            #topic_list = []
-           # for topic in topics:
-             #   topic_list.append(topic[1])
-
-           # forms.PostForm.choices = tuple(topic_list)
-
             query = '''
                 SELECT U.USERNAME, U.IMAGE, U.USER_ID
                 FROM PLAYER_FOLLOW PF, USERS U
@@ -301,6 +295,79 @@ def feed_detail(request):
             if followees[0] == 0:
                 followee_info = [("-", "-")]
 
+            query = '''
+                SELECT U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME,
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                FROM POST P, USERS U, LIKES L, COMMENTS C
+                WHERE P.WRITER_ID IN (SELECT FOLLOWEE_ID FROM PLAYER_FOLLOW WHERE FOLLOWER_ID = %s)
+                AND P.WRITER_ID = U.USER_ID
+                AND P.POST_ID = L.POST_ID(+)
+                AND P.POST_ID = C.POST_ID(+)
+                GROUP BY U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME
+                UNION
+                SELECT U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME,
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                FROM POST P, USERS U, LIKES L, COMMENTS C
+                WHERE P.POST_ID IN (
+                    SELECT DISTINCT (T.POST_ID)
+                    FROM TAG T
+                    WHERE T.TOPIC_ID IN (SELECT TF.TOPIC_ID FROM TOPIC_FOLLOW TF WHERE FOLLOWER_ID = %s)
+                    )
+                AND P.WRITER_ID = U.USER_ID
+                
+                AND P.POST_ID = L.POST_ID(+)
+                AND P.POST_ID = C.POST_ID(+)
+                GROUP BY U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME
+                ORDER BY TIME DESC
+            
+            '''
+            cursor.execute(query, [player_in_session_id, player_in_session_id])
+            all_posts = cursor.fetchall()
+
+            query = '''
+                SELECT  P.POST_ID
+                FROM POST P
+                WHERE P.WRITER_ID IN (SELECT FOLLOWEE_ID FROM PLAYER_FOLLOW WHERE FOLLOWER_ID = %s) /*PLAYER_ID*/
+                AND EXISTS
+                (
+                    SELECT L.PLAYER_ID
+                    FROM LIKES L
+                    WHERE L.POST_ID = P.POST_ID
+                    AND L.PLAYER_ID = %s /*USER IN SESSION*/
+                )
+                UNION
+                SELECT  P.POST_ID
+                FROM POST P
+                WHERE P.POST_ID IN (
+                    SELECT DISTINCT (T.POST_ID)
+                    FROM TAG T
+                    WHERE T.TOPIC_ID IN (SELECT TF.TOPIC_ID FROM TOPIC_FOLLOW TF WHERE FOLLOWER_ID = %s)
+                    )
+                AND EXISTS
+                (
+                    SELECT L.PLAYER_ID
+                    FROM LIKES L
+                    WHERE L.POST_ID = P.POST_ID
+                    AND L.PLAYER_ID = %s /*USER IN SESSION*/
+                )
+            '''
+
+            cursor.execute(query, [player_in_session_id, player_in_session_id, player_in_session_id, player_in_session_id])
+            liked_posts = cursor.fetchall()
+
+            # change list of tuples (all_post) to list of lists
+            all_posts_list = [list(elem) for elem in all_posts]
+
+            for post in all_posts_list:
+                # print(post[2])
+                post[6] = time_edit(post[6])
+                if post[2] in (like[0] for like in liked_posts):
+                    # print(post[2])
+                    post.append("Liked")
+                else:
+                    post.append("Like")
+
+            cursor.close()
             return render(request, 'feed/feed.html', {'player_info': player_info,
                                                       'followers': followers[0],
                                                       'followees': followees[0],
@@ -308,6 +375,7 @@ def feed_detail(request):
                                                       'followee_info': followee_info,
                                                       'followed_topics': followed_topics,
                                                       'topics': topics,
+                                                      'all_posts_list': all_posts_list,
 
 
 
@@ -355,3 +423,5 @@ def insert_post(text, topics, image, player_id):
                 '''
 
                 cursor.execute(query, [post_id, topic_id])
+
+    cursor.close()

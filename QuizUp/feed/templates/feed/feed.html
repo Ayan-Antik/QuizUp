@@ -196,47 +196,50 @@
             </form> 
           </div>
           <!-- ALL POSTS  -->
-          
+
+      {% for post in all_posts_list %}
           <div class="view_post">
             <div class="post_info" style="margin: 15px 15px; height: 80px;">
               
               <div class="post_dp">
 
-                <a href="#">
-                <img src="tanjim.jfif" alt="" height="48px" width="48px" 
+                <a href="{% url 'my_profile_detail' post.0 %}">
+                <img src="{% get_media_prefix %}{{ post.1 }}" alt="" height="48px" width="48px"
                 style="border-radius: 50%; float: left; margin: 12px 12px;">
                 </a>
 
               </div>
 
               <div class="post_username"> 
-                  <a href="#" style="color: black;"> Tanjim Ahmed Khan</a>  
+                  <a href="{% url 'my_profile_detail' post.0 %}" style="color: black;"> {{ post.0 }}</a>
               </div>
-            
+                <div>
+                    <p style="color: grey; font-size: 14px;">
+                        {{ post.6}}
+                    </p>
+                </div>
             </div>
             <p class ="post_txt" >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Voluptas, minima. Dolore fugiat perferendis eaque exercitationem dolorem blanditiis quos veniam,
-              libero quidem, minus pariatur! Atque id debitis quis deleniti eum sapiente!
+              {{ post.4 }}
             </p>
             
-            
-            <div class="show_img">
-              <img src="tanjim.jfif" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
-            </div> 
-           
+            {% if post.5 != None %}
+                <div class="show_img">
+                  <img src="{% get_media_prefix %}{{ post.5 }}" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
+                </div>
+           {% endif %}
 
               <hr style="margin: 16px 16px 16px;">
 
               <div class="post_react" style="margin: 16px 16px; height: 42px;">
                 
-                <form action="" style="width: fit-content; float: left;">
-                  <input type="button" class="btn btn-danger btn-small" id="btn_like"  value="Like">
+                <form style="width: fit-content; float: left;">{% csrf_token %}
+                  <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.2 }}"  value= {{ post.9 }} post_id = {{ post.2 }}>
                 </form>
                  
                 <b>&nbsp</b>  
                 
-                <a href="#">
+                <a href="{% url 'post_detail' post.2 %}">
                 <button class="btn btn-danger btn-small" id="btn_comment" >Comment</button>  
                 </a>    
 
@@ -245,7 +248,7 @@
                         <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                       </svg>
                       
-                      <b id="like_count"> 13 </b>
+                      <b id="like_count{{ post.2 }}"> {{ post.7 }} </b>
                       
                       <b>&nbsp</b>
 
@@ -253,17 +256,24 @@
                         <path fill-rule="evenodd" d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                       </svg>
                       
-                      <b id="comment_count"> 5 </b>
+                      <b id="comment_count"> {{ post.8 }} </b>
                     </div>
               </div>
           </div>
+      {% endfor %}
           
       </div>
       
     </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 
   
     <script>
@@ -301,7 +311,54 @@
           }
         }
       }
+    {% for post in all_posts_list %}
+            $('#btn_like{{ post.2 }}').click(function () {
 
+                var is_liked = $(this).val();
+                var post_id = $(this).attr("post_id");
+                var like_count = $('#like_count{{ post.2 }}').html();
+                console.log(like_count);
+
+                console.log("post id is: " + post_id);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'update_like' %}',
+                    data: {
+                        'post_id': post_id,
+                        'is_liked': is_liked,
+                        'like_count': like_count,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#btn_like{{ post.2 }}').val(response['is_liked']);
+                        $('#like_count{{ post.2 }}').html(response['like_count'])
+                    },
+                    error: function (response) {
+                    }
+                });
+            });
+
+            $('#btn_like{{ post.2 }}').mouseenter(function () {
+            var btn = document.getElementById("btn_like{{ post.2 }}");
+               if (btn.value == "Liked"){
+                   btn.value = "Dislike";
+               }
+
+             });
+
+            $('#btn_like{{ post.2 }}').mouseleave(function () {
+                    var btn = document.getElementById("btn_like{{ post.2 }}");
+                   if (btn.value == "Dislike"){
+                       btn.value = "Liked";
+                   }
+
+            });
+
+
+
+        {% endfor %}
     </script>
 
 
