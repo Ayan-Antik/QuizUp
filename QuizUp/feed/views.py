@@ -318,10 +318,20 @@ def feed_detail(request):
                 AND P.POST_ID = L.POST_ID(+)
                 AND P.POST_ID = C.POST_ID(+)
                 GROUP BY U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME
+                UNION
+                SELECT U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME,
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                FROM POST P, USERS U, LIKES L, COMMENTS C
+                WHERE P.WRITER_ID = %s
+                AND P.WRITER_ID = U.USER_ID
+                
+                AND P.POST_ID = L.POST_ID(+)
+                AND P.POST_ID = C.POST_ID(+)
+                GROUP BY U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME
                 ORDER BY TIME DESC
             
             '''
-            cursor.execute(query, [player_in_session_id, player_in_session_id])
+            cursor.execute(query, [player_in_session_id, player_in_session_id, player_in_session_id])
             all_posts = cursor.fetchall()
 
             query = '''
@@ -350,9 +360,21 @@ def feed_detail(request):
                     WHERE L.POST_ID = P.POST_ID
                     AND L.PLAYER_ID = %s /*USER IN SESSION*/
                 )
+                UNION
+                SELECT P.POST_ID
+                FROM POST P
+                WHERE P.WRITER_ID = %s
+                AND EXISTS 
+                (
+                    SELECT L.PLAYER_ID
+                    FROM LIKES L
+                    WHERE L.POST_ID = P.POST_ID
+                    AND L.PLAYER_ID = %s /*USER IN SESSION*/
+                )
             '''
 
-            cursor.execute(query, [player_in_session_id, player_in_session_id, player_in_session_id, player_in_session_id])
+            cursor.execute(query, [player_in_session_id, player_in_session_id, player_in_session_id,
+                                   player_in_session_id, player_in_session_id, player_in_session_id])
             liked_posts = cursor.fetchall()
 
             # change list of tuples (all_post) to list of lists

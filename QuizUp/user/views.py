@@ -63,9 +63,9 @@ def authenticate(username, password, pagehtml):
         cursor.execute('SELECT * FROM USERS WHERE USERNAME = %s', [username])
         user_row = cursor.fetchone()
         #print(user_row)
-        user_id = user_row[0]
 
         if user_row is not None:
+            user_id = user_row[0]
             if user_row[2] == password:
                 # check if user exists in player or quizmaster table
                 # 1 for player
