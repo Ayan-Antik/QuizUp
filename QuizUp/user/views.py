@@ -1,3 +1,5 @@
+import hashlib
+
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
@@ -8,8 +10,8 @@ from . import forms
 
 
 def abc(request):
-
-     return HttpResponseRedirect('http://127.0.0.1:8000/user/login')
+    print(request.build_absolute_uri())
+    return HttpResponseRedirect(request.build_absolute_uri() + "user/login")
 
 
 def LogIn(request):
@@ -66,7 +68,9 @@ def authenticate(username, password, pagehtml):
 
         if user_row is not None:
             user_id = user_row[0]
-            if user_row[2] == password:
+            hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+            if user_row[2] == hashed_password:
                 # check if user exists in player or quizmaster table
                 # 1 for player
                 if pagehtml == "login":
@@ -145,6 +149,8 @@ def validUsername(username):
 
 
 def createPlayer(username, fullname, password, email, dob):
+
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
     with connection.cursor() as cursor:
         cursor.execute('SELECT COUNT(*) FROM USERS')
         row = cursor.fetchone()
@@ -154,7 +160,7 @@ def createPlayer(username, fullname, password, email, dob):
         
         '''
 
-        cursor.execute(user_query, [total_users + 1, username, password, email, dob, fullname])
+        cursor.execute(user_query, [total_users + 1, username, hashed_password, email, dob, fullname])
         # cursor.execute(player_query, [total_users + 1])
 
 
