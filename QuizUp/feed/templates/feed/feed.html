@@ -179,13 +179,14 @@
                             <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 
                             2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
                              2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                    <title>Add Photos</title>
                 </svg>          
                 
-                <input type="file" id="post_img" name="post_img"  accept="image/*"  hidden>
+                <input type="file" id="post_img" name="post_img" accept="image/*"  hidden>
                 <button type="submit" class="btn btn-danger" style="float: right;">Post</button>
 
                <div class="selector" style="float: right;"> 
-                <select class="selectpicker" multiple id="Topics" name="Topics" form="post_form">
+                <select class="selectpicker" multiple id="Topics" title="Select Topic" name="Topics" form="post_form">
                   <!--LOOP TOPICS-->
                     {%  for topic in topics %}
                           <option> {{ topic.1 }}</option>

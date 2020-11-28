@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{% static 'topic/topic.css' %}">
     <title>{{ topic.1 }}</title>
   </head>
-  <body>
+  <body style="padding: 70px 30px;">
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #ff5454;">
       <a class="navbar-brand" href="{% url 'feed_detail' %}">
         <img src="{% static 'topic/quizup1.png' %}" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
@@ -41,7 +41,7 @@
         </ul>
         <ul class="navbar-nav navbar-right">
           <li class="nav-item">
-            <a class="nav-link" href="#">Log Out</a>
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
           </li>
         </ul>
       </div>
@@ -50,11 +50,11 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-3">
-          <div style="background-color: lightgray;">
+          <div style="background-color: white;  box-shadow: -4px 4px 3px grey;">
               <img src="{% static topic.3 %}" class="img-fluid">
-          <h3 class="text-center"><img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50">{{topic.1}}</h3>
+          <h3 style="padding: 8px 0px 0px 55px;"><img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50">{{topic.1}}</h3>
           <form class="text-center">{% csrf_token %}
-                <input type="button" class="btn btn-success btn-sm" id="follow" value={{ is_follow }} />
+                <input type="button" class="btn btn-success btn-sm" id="follow"  value={{ is_follow }} />
           </form>
           <table class="table mt-2">
             <tbody>
@@ -67,7 +67,7 @@
           </table>
         </div>
           <h5 class="text-center mt-3">Quiz List</h5>
-          <table class="table" style="background-color:lightgray; color:black;">
+          <table class="table table-striped" style="background-color:white; color:black;  box-shadow: -4px 4px 3px grey;">
             <tbody>
               <thead class="thead-dark">
                 <tr>
@@ -92,7 +92,7 @@
         </div>
         <div class="col-lg order-last">
           <h5 class="text-center">Leaderboard</h5>
-          <table class="table" style="background-color:lightgray; color:black;">
+          <table class="table table-striped" style="background-color:white; color:black;  box-shadow: -4px 4px 3px grey;">
             <tbody>
               <thead class="thead-dark">
                 <tr>
@@ -103,13 +103,8 @@
               </thead>
               <tr>
                 <td>1</td>
-                <td>Alex</td>
+                <td><a href="" style= "color: black;"> Alex</a> </td>
                 <td>100</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>John</td>
-                <td>90</td>
               </tr>
             </tbody>
           </table>
@@ -141,6 +136,21 @@
                 error: function (response) {
                 }
             });
+        });
+
+        $('#follow').mouseenter(function () {
+            var btn = document.getElementById("follow");
+               if (btn.value == "Following"){
+                   btn.value = "Unfollow";
+               }
+
+        });
+        $('#follow').mouseleave(function () {
+                var btn = document.getElementById("follow");
+               if (btn.value == "Unfollow"){
+                   btn.value = "Following";
+               }
+
         });
     </script>
   </body>

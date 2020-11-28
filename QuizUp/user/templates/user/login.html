@@ -25,6 +25,9 @@
                     <h2>
                         Log In
                     </h2>
+                    {% if error %}
+                        <p style="color: white"> ({{ error }})</p>
+                    {% endif %}
                   <label for="inputUser" class="sr-only">Username</label>
                   <input id="inputUser" name="username" type="text" placeholder = "Username" class="form-control"  aria-describedby="emailHelp" required>
                   
@@ -34,11 +37,11 @@
                 
                 </div>   
             
-                <button type="submit" class="btn btn-primary" id="loginbtn1">Log in</button>
+                <button type="submit" class="btn btn-danger" id="loginbtn1">Log in</button>
                 <br><br>
                 <small id="signup" class="form-text text-white"> Don't have an account?</small>
                 <a href="{% url 'signup' %}">
-                <button type="button" class="btn btn-primary" id="loginbtn2" >Sign Up</button></a>
+                <button type="button" class="btn btn-danger" id="loginbtn2" >Sign Up</button></a>
               
             </form>
 
