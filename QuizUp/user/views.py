@@ -10,8 +10,7 @@ from . import forms
 
 
 def abc(request):
-    print(request.build_absolute_uri())
-    return HttpResponseRedirect(request.build_absolute_uri() + "user/login")
+    return redirect('login')
 
 
 def LogIn(request):

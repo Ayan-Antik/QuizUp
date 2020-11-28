@@ -205,7 +205,8 @@ def post_detail(request, post_id):
 
 
 def feed_detail(request):
-
+    if request.session.get('id', False) is False:
+        return redirect('login')
     if request.session['id'] > -1 and request.session['type'] == "Player":
 
         player_in_session_name = request.session['username']
@@ -234,7 +235,7 @@ def feed_detail(request):
         with connection.cursor() as cursor:
 
             query = '''
-                SELECT USERNAME, IMAGE
+                SELECT USERNAME, IMAGE, FULLNAME
                 FROM USERS
                 WHERE USER_ID = %s
             '''

@@ -16,8 +16,6 @@ body{
 }
 
 .mini-profile{
-    border-top-right-radius: 2mm;
-    border-top-left-radius: 2mm;
     padding: 25px 25px 36px 25px;
     background-color: #262626; 
     box-shadow: -4px 4px 3px grey;
@@ -53,7 +51,9 @@ body{
 .dropdown-content{
 
     position: absolute;  /* comes on top of background element */
-    min-width: 240px; background-color: white; 
+    min-width: 240px; background-color: white;
+    max-height: 200px;
+    overflow: scroll;
     border:1px solid #b3b3b3; 
     margin-top: 10px; 
     text-align: left; 
