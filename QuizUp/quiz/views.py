@@ -44,13 +44,13 @@ def quiz_detail(request, quiz_id):
             cursor.execute('SELECT AVG(SCORE) FROM QUIZ_ATTEMPT WHERE QUIZ_ID = %s', [quiz_id])
             row = cursor.fetchone()
             difficulty = '-'
-            if row[0] is not None: # can do it in oracle function
+            '''if row[0] is None: # can do it in oracle function
                 if row[0] >= 20:
                     difficulty = 'Easy'
                 elif row[0] >= 15:
                     difficulty = 'Medium'
                 if row[0] > 20:
-                    difficulty = 'Hard'
+                    difficulty = 'Hard'''''
             return render(request, 'quiz/quizDetail.html', {'topics': topics, 'quiz': quiz, 'topic': topic,
                                                             'quizmaster': quizmaster, 'num_of_played': num_of_played,
                                                             'score': score, 'top_score': top_score, 'results': results,
