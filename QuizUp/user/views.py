@@ -7,9 +7,8 @@ from django.db import connection
 from . import forms
 
 
-def abc(request):
-
-     return HttpResponseRedirect('http://127.0.0.1:8000/user/login')
+def root(request):
+     return redirect('login')
 
 
 def LogIn(request):
@@ -40,7 +39,7 @@ def LogIn(request):
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
-                    return render(request, 'user/signup.html')
+                    return redirect('master_home', master_name=username)
 
                 #print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
                 # TODO: send to homepage/ Question setter page

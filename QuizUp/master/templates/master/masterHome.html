@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+
+{% load static %}
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'topic/topic.css' %}">
+    <title>Master Home</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #7c818a;">
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'master/quizup-admin.png' %}" width="96" height="38" class="d-inline-block align-top" alt="" loading="lazy">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Create Game</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav navbar-right">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Log Out</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="border" style="background-color:lightsalmon;">
+          <div class="heading">
+          <img src="{% static 'master/admin_logo.png' %}" style="float: left; height: 150px; width: 150px; margin: 10px 10px;">
+          <h2 class="text-center" style="padding: 50px 0;">{{ username }}</h2>
+        </div>
+          <table class="table">
+            <tbody>
+              <tr class="text-center">
+                <td><h6>Quiz Created</h6> <h4>{{ quizzes|length }}</h4></td>
+                <td><h6>Topics Covered</h6> <h4>-</h4></td>
+                <td><h6>Favourite Topic</h6> <h4>-</h4></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+          <h3 class="text-center heading">Quiz List</h3>
+          <table class="table" style="background-color:lightgray; color:black;">
+            <tbody>
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Topic</th>
+                  <th scope="col">#Played</th>
+                </tr>
+              </thead>
+              {% for quiz in quizzes %}
+                <tr>
+                    <td class="title" id={{ quiz.0 }}><a href="#">{{ quiz.3 }}</a></td>
+                    <td>-</td>
+                    <td>-</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      <div class="col-lg" id="question_list">
+            <div class="alert alert-primary" role="alert">
+                Click a title in quiz list to see questions.</div>
+        </div>
+    </div>
+  </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script>
+        $('.title').click(function() {
+            var title = $(this).text();
+          $.ajax({
+                type:"GET",
+                url: '{% url "show_questions" %}',
+                data:{quiz_id: $(this).attr('id')},
+                success: function( data ){
+                    var question_list = $('#question_list');
+                   question_list.empty();
+                   question_list.append('<h6 class="text-center">Quiz Name: '+title+'</h6>');
+                   questions = data['questions'];
+                   for(var i=0; i<questions.length; i++) {
+                       question_list.append(i+1 + '. ' + questions[i][2] + '<br>'
+                       +'a) ' + questions[i][3] + '<br>' +'b) ' + questions[i][4] + '<br>'
+                       +'c) ' + questions[i][5] + '<br>' +'d) ' + questions[i][6] + '<br>'
+                       +'Ans: ' + questions[i][7] + '<br><br>');
+                    }
+                }
+             })
+
+        });
+    </script>
+  </body>
+</html>
