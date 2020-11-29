@@ -1,3 +1,5 @@
+import hashlib
+
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
@@ -35,7 +37,7 @@ def LogIn(request):
                     request.session['type'] = "Player"
                     # sending to his own profile
                     #return HttpResponseRedirect(reverse('my_profile_detail', player_id=request.session['id']))
-                    return redirect('my_profile_detail', player_name=username)
+                    return redirect('my_profile_detail',  player_name=username)
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
@@ -47,7 +49,7 @@ def LogIn(request):
                 #return render(request, 'user/signup.html')
             else:
                 # authentication error
-                return render(request, 'user/' + pagehtml + '.html')
+                return render(request, 'user/' + pagehtml + '.html', {'error': 'Incorrect Username or Password!'})
         else:
             print("FORM NOT VALID???")
             return render(request, 'user/' + pagehtml + '.html')
@@ -62,10 +64,12 @@ def authenticate(username, password, pagehtml):
         cursor.execute('SELECT * FROM USERS WHERE USERNAME = %s', [username])
         user_row = cursor.fetchone()
         #print(user_row)
-        user_id = user_row[0]
 
         if user_row is not None:
-            if user_row[2] == password:
+            user_id = user_row[0]
+            hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+            if user_row[2] == hashed_password:
                 # check if user exists in player or quizmaster table
                 # 1 for player
                 if pagehtml == "login":
@@ -105,6 +109,7 @@ def SignUp(request):
         if signupform.is_valid():
             print("Form is val")
             username = signupform.cleaned_data['username']
+            fullname = signupform.cleaned_data['fullname']
             dob = signupform.cleaned_data['dob']
             email = signupform.cleaned_data['email']
             password1 = signupform.cleaned_data['password1']
@@ -113,7 +118,7 @@ def SignUp(request):
             #print(username, dob, email)
 
             if validUsername(username) and (password1 == password2):
-                createPlayer(username, password1, email, dob)
+                createPlayer(username, fullname, password1, email, dob)
                 print("User Created")
                 # TODO : send user to home
                 return HttpResponseRedirect(reverse('login'))
@@ -142,26 +147,28 @@ def validUsername(username):
             return False
 
 
-def createPlayer(username, password, email, dob):
+def createPlayer(username, fullname, password, email, dob):
+
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
     with connection.cursor() as cursor:
         cursor.execute('SELECT COUNT(*) FROM USERS')
         row = cursor.fetchone()
         total_users = row[0]
         user_query = '''
-            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s)
+            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s, %s)
         
         '''
-        player_query = '''
-            INSERT INTO PLAYER VALUES (%s, 1)
-        '''
-        cursor.execute(user_query, [total_users + 1, username, password, email, dob])
-        cursor.execute(player_query, [total_users + 1])
+
+        cursor.execute(user_query, [total_users + 1, username, hashed_password, email, dob, fullname])
+        # cursor.execute(player_query, [total_users + 1])
 
 
 def Logout(request):
     try:
+        print("Logging Out...")
         print(request.session['id'])
         del request.session['id']
+        del request.session['username']
         del request.session['type']
         return HttpResponseRedirect(reverse('login'))
     except:

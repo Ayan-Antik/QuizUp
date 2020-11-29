@@ -8,19 +8,20 @@ from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from feed.views import time_edit
 
+
 # Create your views here.
 def my_profile_detail(request, player_name):
-    #print("HELLO HERE IN MY PROFILE DETAIL")
+    # print("HELLO HERE IN MY PROFILE DETAIL")
     if request.session['id'] > -1 and request.session['type'] == "Player":
 
-        #player_id = request.session['id']
-        #print(player_id)
-        #print(request.session['type'])
+        # player_id = request.session['id']
+        # print(player_id)
+        # print(request.session['type'])
 
         if request.method == 'POST' and player_name == request.session['username']:
-            #print("In post")
+            # print("In post")
             if request.FILES['dp_file']:
-                #print("In dp")
+                # print("In dp")
                 image = request.FILES["dp_file"]
                 fs = FileSystemStorage(location='media/dp/')
                 fs.save(image.name, image)
@@ -43,16 +44,16 @@ def my_profile_detail(request, player_name):
             '''
             cursor.execute(query, [player_id])
             rank = cursor.fetchone()
-            #print(rank)
+            # print(rank)
 
             query = '''
-                SELECT USERNAME, EMAIL_ID, IMAGE, ROUND((SYSDATE - DATE_OF_BIRTH) / 365, 0) 
+                SELECT USERNAME, EMAIL_ID, IMAGE, ROUND((SYSDATE - DATE_OF_BIRTH) / 365, 0), FULLNAME
                 FROM USERS
                 WHERE USER_ID = %s
             '''
             cursor.execute(query, [player_id])
             player_info = cursor.fetchone()
-            #print(player_info)
+            # print(player_info)
             query = '''
                 SELECT COUNT(QUIZ_ID) 
                 FROM QUIZ_ATTEMPT
@@ -61,7 +62,7 @@ def my_profile_detail(request, player_name):
             cursor.execute(query, [player_id])
             games = cursor.fetchone()
 
-            #print(games[0])
+            # print(games[0])
 
             query = '''
                 SELECT COUNT(FOLLOWER_ID)
@@ -80,7 +81,7 @@ def my_profile_detail(request, player_name):
             followees = cursor.fetchone()
 
             query = '''
-                SELECT T.NAME, NVL(TA.TOPIC_RANK, 1), T.LOGO
+                SELECT T.NAME, NVL(TA.TOPIC_RANK, 1), T.LOGO, T.TOPIC_ID
                 FROM TOPIC_FOLLOW TF, TOPIC_ATTEMPT TA, TOPIC T
                 WHERE TF.TOPIC_ID = TA.TOPIC_ID(+)
                 AND T.TOPIC_ID = TF.TOPIC_ID
@@ -89,7 +90,7 @@ def my_profile_detail(request, player_name):
             cursor.execute(query, [player_id])
             followed_topics = cursor.fetchall()
 
-            #print(followed_topics)
+            # print(followed_topics)
             if len(followed_topics) == 0:
                 followed_topics = [("None", "-")]
 
@@ -117,7 +118,6 @@ def my_profile_detail(request, player_name):
             if followees[0] == 0:
                 followee_info = [("-", "-")]
 
-
             query = '''
                 SELECT
                     P.DESCRIPTION, P.IMAGE,
@@ -137,9 +137,8 @@ def my_profile_detail(request, player_name):
             '''
             cursor.execute(query, [player_id])
             all_posts = cursor.fetchall()
-            #print(all_posts)
-            #CHECK IF POST HAS BEEN LIKED BY THE USER IN SESSION
-
+            # print(all_posts)
+            # CHECK IF POST HAS BEEN LIKED BY THE USER IN SESSION
 
             query = '''
                 SELECT  P.POST_ID
@@ -156,21 +155,20 @@ def my_profile_detail(request, player_name):
             '''
             cursor.execute(query, [player_id, request.session['id']])
             liked_posts = cursor.fetchall()
-            #change list of tuples (all_post) to list of lists
+            # change list of tuples (all_post) to list of lists
             all_posts_list = [list(elem) for elem in all_posts]
 
-
             for post in all_posts_list:
-                #print(post[3])
+                # print(post[3])
                 post[2] = time_edit(post[2])
                 if post[3] in (like[0] for like in liked_posts):
-                    #print(post[3])
+                    # print(post[3])
                     post.append("Liked")
                 else:
                     post.append("Like")
 
-            #print(all_posts)
-            #print(all_posts_list)
+            # print(all_posts)
+            # print(all_posts_list)
 
             query = '''
                 SELECT * 
@@ -199,7 +197,7 @@ def my_profile_detail(request, player_name):
                                                                   'is_follow': is_follow,
                                                                   'topics': topics,
 
-                                                                                })
+                                                                  })
 
 
     else:

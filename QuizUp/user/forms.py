@@ -8,6 +8,7 @@ class LoginForm(forms.Form):
 
 class SignUpForm(forms.Form):
     username = forms.CharField()
+    fullname = forms.CharField()
     dob = forms.DateField()
     email = forms.EmailField()
     password1 = forms.CharField()

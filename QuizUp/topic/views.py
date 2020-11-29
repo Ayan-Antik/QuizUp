@@ -50,10 +50,13 @@ def topic_detail(request, topic_id):
             quiz_list = cursor.fetchall()
             if quiz_list is None:
                 quiz_list = []
+
+            cursor.execute('''SELECT USERNAME FROM USERS WHERE USER_ID = %s''', [player_id])
+            player_info = cursor.fetchone()
             return render(request, 'topic/topic.html', {'topics': topics, 'topic': topic, 'is_follow': is_follow,
                                                         'num_of_followers': num_of_followers, 'rank': rank,
                                                         'quiz_completed': quiz_completed, 'total_quiz': total_quiz,
-                                                        'quiz_list': quiz_list})
+                                                        'quiz_list': quiz_list, 'player_info': player_info})
     else:
         return HttpResponseRedirect(reverse('login'))
 
