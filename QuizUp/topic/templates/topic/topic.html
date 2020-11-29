@@ -49,25 +49,42 @@
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-3">
+        <div class="col-lg-4" >
           <div style="background-color: white;  box-shadow: -4px 4px 3px grey;">
               <img src="{% static topic.3 %}" class="img-fluid">
-          <h3 style="padding: 8px 0px 0px 55px;"><img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50">{{topic.1}}</h3>
-          <form class="text-center">{% csrf_token %}
-                <input type="button" class="btn btn-success btn-sm" id="follow"  value={{ is_follow }} />
-          </form>
+             <div style="padding: 22px 20px 20px 16px;">
+                 <img src="{% static topic.2 %}" class="mt-1 mr-3 rounded" width="50" height="50" style="float: left;">
+                 <h3 style="padding: 12px 0px 0px 16px; ">{{topic.1}}
+                  <form class="text-center" style="float: right; padding: 0px 12px 12px 12px;">{% csrf_token %}
+                        <input type="button" class="btn btn-success" id="follow"  value={{ is_follow }} />
+                  </form></h3>
+             </div>
           <table class="table mt-2">
             <tbody>
               <tr class="text-center">
-                <td><h6>Followers</h6> <h4>{{ num_of_followers }}</h4></td>
+                <td><h6>Followers</h6> <h4>
+                     <p style="margin: 0; font-size: larger; font-weight: 600; color: #02d174; cursor: pointer;"
+                          onclick="unhide(follower_list)" class="dropbtn"> {{ num_of_followers }} </p>
+                        <div id="follower_list" class="dropdown-content">
+                          <!-- LOOP -->
+                        {% for follower in follower_info %}
+                            {% if follower is not None %}
+                              <img src="{% get_media_prefix %}{{ follower.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
+                              <a href="{% url 'my_profile_detail' follower.0  %}" style="color: #ff5454; padding-left: 12px;"> {{ follower.0 }} </a>
+                              <hr style="margin: 8px 12px 8px 0px;">
+                            {% endif %}
+                        {% endfor %}
+                        </div>
+                </h4></td>
                 <td><h6>Your Rank</h6> <h4>{{ rank }}</h4></td>
                 <td><h6>Quiz Completed</h6> <h4>{{ quiz_completed }}/{{ total_quiz }}</h4></td>
               </tr>
             </tbody>
           </table>
         </div>
-          <h5 class="text-center mt-3">Quiz List</h5>
-          <table class="table table-striped" style="background-color:white; color:black;  box-shadow: -4px 4px 3px grey;">
+          <div style="background: white; padding-top: 1px; box-shadow: -4px 4px 3px grey;">
+            <h3 class="text-center mt-3" style="color: #ff5454; padding-bottom: 4px">Quiz List</h3>
+          <table class="table table-striped" style="background-color:white; color:black; ">
             <tbody>
               <thead class="thead-dark">
                 <tr>
@@ -76,6 +93,7 @@
                   <th scope="col">#Played</th>
                 </tr>
               </thead>
+
               {% for quiz in quiz_list %}
                   <tr>
                     <td><a href="{% url 'quiz_detail' quiz.0 %}" style="color:green;">{{ quiz.3 }}</a></td>
@@ -89,9 +107,11 @@
               {% endfor %}
             </tbody>
           </table>
+          </div>
         </div>
-        <div class="col-lg order-last">
-          <h5 class="text-center">Leaderboard</h5>
+        <div class="col-lg-3 order-last">
+            <div style="background: white;  box-shadow: -4px 4px 3px grey;">
+            <h3 class="text-center" style="padding: 8px 0px; color: #ff5454">Leaderboard</h3>
           <table class="table table-striped" style="background-color:white; color:black;  box-shadow: -4px 4px 3px grey;">
             <tbody>
               <thead class="thead-dark">
@@ -107,9 +127,92 @@
                 <td>100</td>
               </tr>
             </tbody>
-          </table>
+          </table></div>
       </div>
       <div class="col-lg-5">
+          <div class="post">
+            <form id="post_form" method="post" enctype="multipart/form-data" style="width: 560px">
+            {% csrf_token %}
+                <textarea name="post" id="" cols="71" rows="6" placeholder="What's Up?"
+                          style="border-color: transparent; outline-color: transparent; padding: 15px 15px; border-radius: 3mm;" required></textarea>
+
+                <svg width="2.5em" height="2.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg" onclick="fileclick()" style="cursor: pointer;">
+                            <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                            <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2
+                            2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
+                             2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                    <title>Add Photos</title>
+                </svg>
+
+                <input type="file" id="post_img" name="post_img" accept="image/*"  hidden>
+                <button type="submit" class="btn btn-danger" style="float: right; ">Post</button>
+
+            </form>
+              {% for post in topic_posts %}
+              <div class="view_post">
+              <div class="post_info" style="margin: 15px 15px; height: 80px;">
+
+              <div class="post_dp">
+
+                <a href="{% url 'my_profile_detail' post.0 %}">
+                <img src="{% get_media_prefix %}{{ post.1 }}" alt="" height="48px" width="48px"
+                style="border-radius: 50%; float: left; margin: 12px 12px;">
+                </a>
+
+              </div>
+
+              <div class="post_username"><!--  url 'my_profile_detail' post.0 -->
+                  <a href="{% url 'my_profile_detail' post.0 %}" style="color: black;"> {{ post.0 }}</a>
+              </div>
+                <div>
+                    <p style="color: grey; font-size: 14px;">
+                       {{ post.6 }}
+                    </p>
+                </div>
+            </div>
+            <p class ="post_txt" >
+              {{ post.4 }}
+            </p>
+                  {%  if post.5 != None %}
+                    <div class="show_img">
+                      <img src="{% get_media_prefix %}{{ post.5 }}" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
+                    </div>
+                 {% endif  %}
+
+              <hr style="margin: 16px 16px 16px;">
+
+              <div class="post_react" style="margin: 16px 16px; height: 42px;">
+
+                <form style="width: fit-content; float: left;">{% csrf_token %}
+                  <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.2 }}"  value= {{ post.9 }} post_id = {{ post.2 }}>
+                </form>
+
+                <b>&nbsp</b>
+
+                <a href="{% url 'post_detail' post.2 %}">
+                <button class="btn btn-danger btn-small" id="btn_comment" >Comment</button>
+                </a>
+
+                    <div class="react_count" style="float: right;">
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-heart-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                      </svg>
+
+                      <b id="like_count{{ post.2 }}"> {{ post.7 }} </b>
+
+                      <b>&nbsp</b>
+
+                      <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chat-dots-fill" fill="red" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M16 8c0 3.866-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7zM5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                      </svg>
+
+                      <b id="comment_count"> {{ post.8 }} </b>
+                    </div>
+              </div>
+          </div>
+          {% endfor %}
+          </div>
       </div>
     </div>
   </div>
@@ -152,6 +255,87 @@
                }
 
         });
+
+            {% for post in topic_posts %}
+            $('#btn_like{{ post.2 }}').click(function () {
+
+                var is_liked = $(this).val();
+                var post_id = $(this).attr("post_id");
+                var like_count = $('#like_count{{ post.2 }}').html();
+                console.log(like_count);
+
+                console.log("post id is: " + post_id);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'update_like' %}',
+                    data: {
+                        'post_id': post_id,
+                        'is_liked': is_liked,
+                        'like_count': like_count,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#btn_like{{ post.2 }}').val(response['is_liked']);
+                        $('#like_count{{ post.2 }}').html(response['like_count'])
+                    },
+                    error: function (response) {
+                    }
+                });
+            });
+
+            $('#btn_like{{ post.2 }}').mouseenter(function () {
+            var btn = document.getElementById("btn_like{{ post.2 }}");
+               if (btn.value == "Liked"){
+                   btn.value = "Dislike";
+               }
+
+             });
+
+            $('#btn_like{{ post.2 }}').mouseleave(function () {
+                    var btn = document.getElementById("btn_like{{ post.2 }}");
+                   if (btn.value == "Dislike"){
+                       btn.value = "Liked";
+                   }
+
+            });
+
+
+
+        {% endfor %}
+
+     function fileclick() {
+      document.getElementById("post_img").click();
+    }
+
+    function unhide(id) {
+        var list = id;
+        if (list.style.display != "block"){
+          list.style.display = "block";
+
+        }
+        else {
+
+          //console.log(follower_list.style.display);
+          list.style.display = "none";
+        }
+
+      }
+
+      // Lists go away if clicked anywhere else in the window
+      window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+          var dropdowns = document.getElementsByClassName("dropdown-content");
+          var i;
+          for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display == 'block') {
+              openDropdown.style.display = 'none';
+            }
+          }
+        }
+      }
     </script>
   </body>
 </html>

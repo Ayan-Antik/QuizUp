@@ -11,17 +11,29 @@ from django.http import JsonResponse
 # Create your views here.
 
 
-
 def time_edit(diff):
+
     diff_time = datetime.now() - diff
+    # print(type(diff)) <class 'datetime.datetime'>
+    exact_time = diff.strftime("%I:%M %p")
+    exact_date = diff.strftime("%b %d")
     # print(diff_time)
-    # print(type(diff_time))
+    # print(type(diff_time))<class 'datetime.timedelta'>
     year = round(diff_time.days/365)
     month = round(diff_time.days / 30)
     days = diff_time.days
     hour = round(diff_time.seconds / 3600)
     minute = round(diff_time.seconds / 60)
     time = 'hello'
+    '''ap = 'hi'
+    if hour > 12 :
+        if datetime.now().strftime("%p") == 'PM':
+            ap = 'AM'
+        else:
+            ap = 'PM'
+
+    else:
+        ap = datetime.now().strftime("%p")'''
 
     if year != 0:
         if year == 1:
@@ -31,20 +43,21 @@ def time_edit(diff):
 
     elif month != 0:
         if month == 1:
-            time = "one month ago"
+            time = exact_date + " at " + exact_time#"one month ago"
         else:
-            time = str(month) + " months ago"
+            time = exact_date + " at " + exact_time #str(month) + " months ago"
     elif days != 0:
         if days == 1:
-            time = "yesterday"
+            time = "Yesterday at " + exact_time
         else:
-            time = str(days) + " days ago"
+            # time = str(days) + " days ago"
+            time = exact_date + " at " + exact_time
 
     elif hour != 0:
         if hour == 1:
-            time = "an hour ago"
+            time = exact_time #"an hour ago"
         else:
-            time = str(hour) + " hours ago"
+            time = exact_time #str(hour) + " hours ago"
 
     elif minute != 0:
         if minute == 1:

@@ -81,7 +81,7 @@
                   {% for follower in follower_info %}
                     {% if follower.1 != '-' %}
                         <img src="{% get_media_prefix %}{{ follower.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                        <a href="{% url 'my_profile_detail' follower.0 %}" style="color: #ff5454; padding-left: 12px;">
+                        <a href="{% url 'my_profile_detail' follower.0 %}" style="color: #ff5454; padding-left: 12px; font-size: large">
                             {{ follower.0}}</a>
                         <hr style="margin: 8px 12px 8px 0px;">
                       {% endif %}
@@ -102,7 +102,7 @@
                 {% for followee in followee_info %}
                     {% if followee.1 != '-' %}
                         <img src="{% get_media_prefix %}{{ followee.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                        <a href="{% url 'my_profile_detail' followee.0 %}" style="color: #ff5454; padding-left: 12px;">
+                        <a href="{% url 'my_profile_detail' followee.0 %}" style="color: #ff5454; padding-left: 12px;font-size: large">
                             {{ followee.0}}</a>
 
                         <hr style="margin: 8px 12px 8px 0px;">
