@@ -21,7 +21,8 @@ def time_edit(diff):
     # print(type(diff_time))<class 'datetime.timedelta'>
     year = round(diff_time.days/365)
     month = round(diff_time.days / 30)
-    days = diff_time.days
+    days = int(datetime.now().strftime("%d")) - int(diff.strftime("%d"))
+    #print(days)
     hour = round(diff_time.seconds / 3600)
     minute = round(diff_time.seconds / 60)
     time = 'hello'
@@ -115,7 +116,7 @@ def post_detail(request, post_id):
 
         with connection.cursor() as cursor:
             query = '''
-                SELECT U.USERNAME, U.IMAGE, P.DESCRIPTION, P.IMAGE, P.TIME, P.POST_ID
+                SELECT U.USERNAME, U.IMAGE, P.DESCRIPTION, P.IMAGE, P.TIME, P.POST_ID, GET_TAG(P.POST_ID)
                 FROM POST P, USERS U
                 WHERE P.POST_ID = %s
                 AND P.WRITER_ID = U.USER_ID
@@ -142,6 +143,10 @@ def post_detail(request, post_id):
             '''
             cursor.execute(query, [post_id, player_in_session_id])
             liked = cursor.fetchone()
+
+            if post_info[6] is not None:
+                post_info[6] = list(post_info[6].split(" "))
+                post_info[6].pop(0)
 
             if liked is None:
                 post_info.append("Like")
@@ -311,7 +316,7 @@ def feed_detail(request):
 
             query = '''
                 SELECT U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME,
-                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS, GET_TAG(P.POST_ID)
                 FROM POST P, USERS U, LIKES L, COMMENTS C
                 WHERE P.WRITER_ID IN (SELECT FOLLOWEE_ID FROM PLAYER_FOLLOW WHERE FOLLOWER_ID = %s)
                 AND P.WRITER_ID = U.USER_ID
@@ -320,7 +325,7 @@ def feed_detail(request):
                 GROUP BY U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME
                 UNION
                 SELECT U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME,
-                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS, GET_TAG(P.POST_ID)
                 FROM POST P, USERS U, LIKES L, COMMENTS C
                 WHERE P.POST_ID IN (
                     SELECT DISTINCT (T.POST_ID)
@@ -334,7 +339,7 @@ def feed_detail(request):
                 GROUP BY U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME
                 UNION
                 SELECT U.USERNAME,U.IMAGE ,P.POST_ID, P.WRITER_ID,P.DESCRIPTION, P.IMAGE, P.TIME,
-                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS, GET_TAG(P.POST_ID)
                 FROM POST P, USERS U, LIKES L, COMMENTS C
                 WHERE P.WRITER_ID = %s
                 AND P.WRITER_ID = U.USER_ID
@@ -395,13 +400,18 @@ def feed_detail(request):
             all_posts_list = [list(elem) for elem in all_posts]
 
             for post in all_posts_list:
-                # print(post[2])
+
                 post[6] = time_edit(post[6])
+                if post[9] is not None:
+                    post[9] = list(post[9].split(" "))
+                    post[9].pop(0)
+
                 if post[2] in (like[0] for like in liked_posts):
                     # print(post[2])
                     post.append("Liked")
                 else:
                     post.append("Like")
+               # print(post)
             query = '''
                 
                 SELECT U.USERNAME, P.RANK

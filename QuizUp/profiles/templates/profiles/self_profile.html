@@ -243,7 +243,12 @@
 
              </div>
             <p class ="post_txt">
-                {{ post.0 }}
+                {{ post.0 }} <br>
+                 {% if post.6 is not None %}
+                    {% for tag in post.6 %}
+                        <b style="font-size: 20px;padding-bottom: 4px; color: #ff5454">#{{ tag }} </b>
+                    {% endfor %}
+                {% endif %}
             </p>
             {% if post.1 != None %}
                 <div class="show_img">
@@ -257,7 +262,7 @@
 
                 <form style="width: fit-content; float: left;">{% csrf_token %}
 
-                    <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.3 }}"  value={{ post.6 }} post_id= {{ post.3 }} >
+                    <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.3 }}"  value={{ post.7 }} post_id= {{ post.3 }} >
                 </form>
               <b>&nbsp</b>
 
