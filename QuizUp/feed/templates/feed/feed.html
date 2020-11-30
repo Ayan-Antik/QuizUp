@@ -81,7 +81,7 @@
                   {% for follower in follower_info %}
                     {% if follower.1 != '-' %}
                         <img src="{% get_media_prefix %}{{ follower.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                        <a href="{% url 'my_profile_detail' follower.0 %}" style="color: #ff5454; padding-left: 12px;">
+                        <a href="{% url 'my_profile_detail' follower.0 %}" style="color: #ff5454; padding-left: 12px; font-size: large">
                             {{ follower.0}}</a>
                         <hr style="margin: 8px 12px 8px 0px;">
                       {% endif %}
@@ -102,7 +102,7 @@
                 {% for followee in followee_info %}
                     {% if followee.1 != '-' %}
                         <img src="{% get_media_prefix %}{{ followee.1 }}" alt="" height="32px" width="32px" style="border-radius: 50%;">
-                        <a href="{% url 'my_profile_detail' followee.0 %}" style="color: #ff5454; padding-left: 12px;">
+                        <a href="{% url 'my_profile_detail' followee.0 %}" style="color: #ff5454; padding-left: 12px;font-size: large">
                             {{ followee.0}}</a>
 
                         <hr style="margin: 8px 12px 8px 0px;">
@@ -222,9 +222,14 @@
                 </div>
             </div>
             <p class ="post_txt" >
-              {{ post.4 }}
+              {{ post.4 }} <br>
+                 {% if post.9 is not None %}
+                    {% for tag in post.9 %}
+                        <b style="font-size: 20px;padding-bottom: 4px; color: #ff5454">#{{ tag }} </b>
+                    {% endfor %}
+                {% endif %}
             </p>
-            
+
             {% if post.5 != None %}
                 <div class="show_img">
                   <img src="{% get_media_prefix %}{{ post.5 }}" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
@@ -236,7 +241,7 @@
               <div class="post_react" style="margin: 16px 16px; height: 42px;">
                 
                 <form style="width: fit-content; float: left;">{% csrf_token %}
-                  <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.2 }}"  value= {{ post.9 }} post_id = {{ post.2 }}>
+                  <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post.2 }}"  value= {{ post.10 }} post_id = {{ post.2 }}>
                 </form>
                  
                 <b>&nbsp</b>  

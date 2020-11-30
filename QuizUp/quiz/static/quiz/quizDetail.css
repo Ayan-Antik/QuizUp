@@ -1,3 +1,11 @@
 body {
     padding-top: 65px;
+    background-image: url("bg.png");
+    padding-bottom: 40px;
 }
+
+.statistics{
+    background-color: white;
+}
+
+

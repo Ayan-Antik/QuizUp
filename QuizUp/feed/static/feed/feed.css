@@ -17,7 +17,8 @@ body{
 
 .mini-profile{
     padding: 25px 25px 36px 25px;
-    background-color: #262626; 
+    background-image: url("bg.png");
+    background-size: cover;
     box-shadow: -4px 4px 3px grey;
 }
 
@@ -104,7 +105,8 @@ body{
 
 .post_txt{
 
-    padding: 0px 16px 16px; 
+    padding: 0px 16px;
+    margin-bottom: 12px;
     font-weight: 400; 
     font-size: 16px; 
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,

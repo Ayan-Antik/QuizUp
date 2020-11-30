@@ -123,7 +123,7 @@ def my_profile_detail(request, player_name):
                     P.DESCRIPTION, P.IMAGE,
                     P.TIME AS POST_TIME,
                     P.POST_ID,
-                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS
+                    COUNT(DISTINCT L.PLAYER_ID) AS LIKES, COUNT(DISTINCT C.COMMENT_ID) AS COMMENTS, GET_TAG(P.POST_ID)
                 FROM
                     POST P, LIKES L, COMMENTS C
 
@@ -161,6 +161,9 @@ def my_profile_detail(request, player_name):
             for post in all_posts_list:
                 # print(post[3])
                 post[2] = time_edit(post[2])
+                if post[6] is not None:
+                    post[6] = list(post[6].split(" "))
+                    post[6].pop(0)
                 if post[3] in (like[0] for like in liked_posts):
                     # print(post[3])
                     post.append("Liked")

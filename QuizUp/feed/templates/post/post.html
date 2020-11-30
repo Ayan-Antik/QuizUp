@@ -74,7 +74,12 @@
         </div>
 
         <p class ="post_txt" style="padding-left: 12px; padding-right: 12px;">
-            {{ post_info.2 }}
+            {{ post_info.2 }}<br>
+             {% if post_info.6 is not None %}
+                {% for tag in post_info.6 %}
+                    <b style="padding-bottom: 8px; font-size: 20px ;color: #ff5454">#{{ tag }} </b>
+                {% endfor %}
+            {% endif %}
         </p>
 
        
@@ -91,7 +96,7 @@
             <!--button class="btn btn-danger btn-small" id="btn_like" onclick="like()" >Like</button-->
 
             <form style="width: fit-content; float: left;">{% csrf_token %}
-                    <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post_info.5 }}"  value={{ post_info.6 }} post_id= {{ post_info.5 }} >
+                    <input type="button" class="btn btn-danger btn-small" id="btn_like{{ post_info.5 }}"  value={{ post_info.7 }} post_id= {{ post_info.5 }} >
 
                 </form>
             <div class="react_count" style="float: right;">

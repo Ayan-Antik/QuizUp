@@ -35,6 +35,13 @@ def LogIn(request):
             id = authenticate(username, password, pagehtml)
             if id >= 0:
                 print("Login Successful")
+                # clear all prev log ins
+                try:
+                    del request.session['id']
+                    del request.session['type']
+                    del request.session['username']
+                except KeyError:
+                    pass
 
                 request.session['id'] = id
                 request.session['username'] = username
