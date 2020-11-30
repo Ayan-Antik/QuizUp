@@ -50,58 +50,65 @@
 
     <div class="container">
       <div class="row">
-        <!--div class="col-lg-3">
-        </div-->
-        <div class="col-lg-6" style="float: left">
-          <div style="background-color: white; box-shadow: -4px 4px 3px grey; padding-top: 8px; border-radius: 15px 15px 0px 0px; ">
-          <h1 class="text-center">{{ quiz.3 }}</h1>
+        <div class="col-lg-2">
+        </div>
+        <div class="col-lg-8" style="">
+          <div style="background-color: white; border-radius: 3mm">
+          <div id="headerbg">
+              <h1 class="text-center" style="color:#ff5454; padding-top: 12px">{{ quiz.3 }}</h1>
           <div class="text-center">
               {% if score == -1 %}
                   <button type="button" class="btn btn-success" data-toggle="modal" data-target="#play">
                   Play Quiz</button>
                 {% else %}
-                  Your Score : <b>{{ score }}</b>
+                  <h4 style="color: #ff5454; padding-bottom: 18px;">Your Score : <b>{{ score }}</b></h4>
                 {% endif %}
           </div>
-          <table class="table mt-4" style="background-color: #ff5454; color: white; margin-bottom: 0px">
+          </div>
+          <div style="padding: 12px">
+          <table class="table mt-0 table-striped" style="color:#ff5454; margin-bottom: 0px">
             <tbody>
               <thead>
-                <td>Topic</td>
-                <td>{{ topic }}</td>
+                <td><h5>Topic</h5></td>
+                <td><h5>{{ topic }}</h5></td>
               </thead>
               <tr>
-                <td>Setter</td>
-                <td>{{ quizmaster }}</td>
+                <td><h5>Quizmaster</h5></td>
+                <td><h5>{{ quizmaster }}</h5></td>
               </tr>
               <tr>
-                <td>Difficulty</td>
-                    <td>{{ difficulty }}</td>
+                <td><h5>Quiz Difficulty</h5></td>
+                    <td><h5>{{ difficulty }}</h5></td>
               </tr>
               <tr>
-                <td>#Played</td>
-                <td>{{ num_of_played }}</td>
+                <td><h5>#Played</h5></td>
+                <td><h5>{{ num_of_played }}</h5></td>
               </tr>
             <tr>
-                <td>High Score</td>
+                <td><h5>High Score</h5></td>
                 {% if top_score is None %}
                     <td> - </td>
                 {% else %}
-                    <td>{{ top_score.1 }} ({{ top_score.0 }})</td>
+                    <td><h5>{{ top_score.1 }} (<a href="{% url 'my_profile_detail' top_score.0 %}" style="color: #ff5454">{{ top_score.0 }}</a>)</h5></td>
                 {% endif %}
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
         </div>
-        <div class="col-lg-3">
+        <div class="col-lg-2">
         </div>
         <div class="col-lg">
-          <div class="border" style="background-color: darkslateblue; color: white; margin-top: 16px">
-          <h3 class="text-center">Quiz Statistics</h3>
+          <div class="statistics" style="padding: 16px 24px; border-style: hidden; color: #262626; margin-top: 16px; border-radius: 3mm">
+          <h1 class="text-center" style="padding-bottom: 0px">Quiz Statistics</h1>
+
+              <table class="table-striped">
                 {% for result in results %}
-                    <div class=" mb-3 ml-2">
-                    <b>{{ forloop.counter}}. {{ result.2 }}</b>
-                    <ul class="list-group list-group-horizontal" style="color: black;">
+                    <tr><td>
+                    <div class=" mb-3 ml-2" style="padding: 12px">
+                        <h5>{{ forloop.counter}}. {{ result.2 }}</h5>
+                    <ul class="list-group list-group-horizontal" style="color: black; font-size: 18px; padding: 10px 0px">
                       <li class="list-group-item">{{ result.3 }}{% if result.3 == result.7 %}
                       <i class="fa fa-check-circle" style="color: green;"></i>{% endif %}</li>
                       <li class="list-group-item">{{ result.4 }}{% if result.4 == result.7 %}
@@ -112,12 +119,13 @@
                       <i class="fa fa-check-circle" style="color: green;"></i>{% endif %}</li>
                     </ul>
                     {% if result.9 is None %}
-                        You didn't choose any option :(
+                       <h4 style="color: #ff3333"> You didn't choose any option :( </h4>
                     {% else%}
-                        Your answer: {{ result.10 }}, Score: {{ result.9 }}
+                       <h4 style="color: #ff3333"> <span> Your answer - <b>{{ result.10 }}</b></span> <span style="padding-left: 30px">Score: <b>{{ result.9 }} </b></span></h4>
                     {% endif %}
-                    </div>
+                    </div></td></tr>
                 {% endfor %}
+              </table>
         </div>
       </div>
     </div>
