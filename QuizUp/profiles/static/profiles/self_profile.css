@@ -13,6 +13,8 @@ body{
 }
 
 .sidebar_top{
+    background-image: url("bg.png");
+    background-size: cover;
     border-top-left-radius: 1mm;
     border-top-right-radius: 1mm;
     background-color: #262626;

@@ -17,7 +17,8 @@ body{
 
 .mini-profile{
     padding: 25px 25px 36px 25px;
-    background-color: #262626; 
+    background-image: url("bg.png");
+    background-size: cover;
     box-shadow: -4px 4px 3px grey;
 }
 

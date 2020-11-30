@@ -14,7 +14,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #ff5454;">
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="{% url 'feed_detail' %}">
         <img src="{% static 'topic/quizup1.png' %}" width="96" height="30" class="d-inline-block align-top" alt="" loading="lazy">
       </a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -24,13 +24,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">Home</a>
+            <a class="nav-link" href="{% url 'feed_detail' %}">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Profile</a>
           </li>
           <li class="nav-item dropdown active">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Topics<span class="sr-only">(current)</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -42,7 +42,7 @@
         </ul>
         <ul class="navbar-nav navbar-right">
           <li class="nav-item">
-            <a class="nav-link" href="#">Log Out</a>
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
           </li>
         </ul>
       </div>
@@ -50,10 +50,10 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-lg-3">
-        </div>
-        <div class="col-lg-6">
-          <div style="background-color: lightgray;">
+        <!--div class="col-lg-3">
+        </div-->
+        <div class="col-lg-6" style="float: left">
+          <div style="background-color: white; box-shadow: -4px 4px 3px grey; padding-top: 8px; border-radius: 15px 15px 0px 0px; ">
           <h1 class="text-center">{{ quiz.3 }}</h1>
           <div class="text-center">
               {% if score == -1 %}
@@ -63,12 +63,12 @@
                   Your Score : <b>{{ score }}</b>
                 {% endif %}
           </div>
-          <table class="table mt-5" style="background-color: darkcyan; color: white;">
+          <table class="table mt-4" style="background-color: #ff5454; color: white; margin-bottom: 0px">
             <tbody>
-              <tr>
+              <thead>
                 <td>Topic</td>
                 <td>{{ topic }}</td>
-              </tr>
+              </thead>
               <tr>
                 <td>Setter</td>
                 <td>{{ quizmaster }}</td>
@@ -96,7 +96,7 @@
         <div class="col-lg-3">
         </div>
         <div class="col-lg">
-          <div class="border" style="background-color: darkslateblue; color: white;">
+          <div class="border" style="background-color: darkslateblue; color: white; margin-top: 16px">
           <h3 class="text-center">Quiz Statistics</h3>
                 {% for result in results %}
                     <div class=" mb-3 ml-2">
