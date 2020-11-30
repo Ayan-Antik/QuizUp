@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db import connection
 from django.http import JsonResponse
-from .forms import QuizForm
 from django.forms import formset_factory
 
 
