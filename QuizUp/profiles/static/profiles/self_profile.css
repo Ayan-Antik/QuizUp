@@ -21,7 +21,12 @@ body{
     box-shadow: -4px 4px 3px grey;
 
 }
-
+#camera{
+    opacity: 0.8;
+}
+#camera:hover{
+    opacity: 1;
+}
 .user_info{
     background-color: white;
     height: 72px;
