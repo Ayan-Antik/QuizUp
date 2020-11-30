@@ -23,16 +23,28 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+        {% if curr_name == master_name %}<li class="nav-item active">
+        {% else %}<li class="nav-item">{% endif %}
+            <a class="nav-link" href="{% url 'master_profile' curr_name %}">My Profile<span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Create Game</a>
+            <a class="nav-link" href="{% url 'create_quiz' %}">Create Quiz</a>
+          </li>
+          {% if curr_name != master_name %}<li class="nav-item dropdown active">
+            {% else %}<li class="nav-item dropdown">{% endif %}
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Other Quizmasters
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% for master in masters %}
+              <a class="dropdown-item" href="{% url 'master_profile' master.1%}">{{ master.1 }}</a>
+                {% endfor %}
+            </div>
           </li>
         </ul>
         <ul class="navbar-nav navbar-right">
           <li class="nav-item">
-            <a class="nav-link" href="#">Log Out</a>
+            <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
           </li>
         </ul>
       </div>
@@ -44,19 +56,19 @@
           <div class="border" style="background-color:lightsalmon;">
           <div class="heading">
           <img src="{% static 'master/admin_logo.png' %}" style="float: left; height: 150px; width: 150px; margin: 10px 10px;">
-          <h2 class="text-center" style="padding: 50px 0;">{{ username }}</h2>
+          <h2 class="text-center" style="padding: 50px 0;">{{ master_name }}</h2>
         </div>
           <table class="table">
             <tbody>
               <tr class="text-center">
-                <td><h6>Quiz Created</h6> <h4>{{ quizzes|length }}</h4></td>
-                <td><h6>Topics Covered</h6> <h4>-</h4></td>
-                <td><h6>Favourite Topic</h6> <h4>-</h4></td>
+                <td><h6>Quiz Created</h6> <h4>{{ quiz_infos|length }}</h4></td>
+                <td><h6>Topics Covered</h6> <h4>{{ topic_count }}</h4></td>
+                <td><h6>Favourite Topic</h6> <h4>{{ favourite_topic }}</h4></td>
               </tr>
             </tbody>
           </table>
         </div>
-          <h3 class="text-center heading">Quiz List</h3>
+          <h3 class="text-center heading mt-3">Quiz List</h3>
           <table class="table" style="background-color:lightgray; color:black;">
             <tbody>
               <thead class="thead-dark">
@@ -64,13 +76,15 @@
                   <th scope="col">Title</th>
                   <th scope="col">Topic</th>
                   <th scope="col">#Played</th>
+                  <th scope="col">Avg Score</th>
                 </tr>
               </thead>
-              {% for quiz in quizzes %}
+              {% for quiz_info in quiz_infos %}
                 <tr>
-                    <td class="title" id={{ quiz.0 }}><a href="#">{{ quiz.3 }}</a></td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td class="title" id={{ quiz.0 }}><a href="#" style="color: darkblue;">{{ quiz_info.0 }}</a></td>
+                    <td>{{ quiz_info.1 }}</td>
+                    <td>{{ quiz_info.2 }}</td>
+                    <td>{{ quiz_info.3 }}</td>
                 </tr>
               {% endfor %}
             </tbody>

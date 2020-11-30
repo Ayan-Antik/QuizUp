@@ -10,7 +10,13 @@ from . import forms
 
 
 def root(request):
-     return redirect('login')
+    if 'id' in request.session:
+        if request.session['type'] == 'Player':
+            return redirect('feed_detail')
+        else:
+            return redirect('master_profile', master_name=request.session['username'])
+    else:
+        return redirect('login')
 
 
 def LogIn(request):
@@ -41,7 +47,7 @@ def LogIn(request):
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
-                    return redirect('master_home', master_name=username)
+                    return redirect('master_profile', master_name=username)
 
                 #print("id: " + str(request.session['id']) + " Type of user: " + request.session['type'])
                 # TODO: send to homepage/ Question setter page
