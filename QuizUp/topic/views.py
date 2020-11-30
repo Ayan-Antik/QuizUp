@@ -1,10 +1,13 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db import connection
 from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
 from feed.views import time_edit
+import feed.forms
+
 
 def update_follow(request):
     if 'id' in request.session and request.session['type'] == "Player":
@@ -23,9 +26,50 @@ def update_follow(request):
         return HttpResponseRedirect(reverse('login'))
 
 
+def insert_post(text, img, player_id, topic_id):
+    with connection.cursor() as cursor:
+
+        cursor.execute("SELECT COUNT(*) FROM POST")
+        row = cursor.fetchone()
+        post_id = row[0] + 1
+
+        if img is not False:
+            fs = FileSystemStorage(location='media/post/')
+            fs.save(img.name, img)
+
+            query = '''
+                INSERT INTO POST VALUES(%s, %s, %s, %s, SYSDATE)
+            '''
+            cursor.execute(query, [post_id, player_id, text, 'post/' + img.name])
+
+        elif img is False:
+            query = '''INSERT INTO POST VALUES(%s, %s, %s, NULL, SYSDATE)'''
+            cursor.execute(query, [post_id, player_id, text])
+
+        query = '''INSERT INTO TAG VALUES (%s, %s)'''
+        cursor.execute(query, [post_id, topic_id])
+        cursor.close()
+
+
 def topic_detail(request, topic_id):
     if 'id' in request.session and request.session['type'] == "Player":
         player_id = request.session.get('id')
+
+        # POST
+        if request.method == 'POST':
+            print("In Post Form")
+            postform = feed.forms.PostForm(request.POST)
+
+            print(request.POST['post'])
+            print(postform.errors)
+            if postform.is_valid():
+                print("Post form is valid")
+                text = postform.cleaned_data['post']
+                img = request.FILES.get('post_img', False)
+
+                print(text, img)
+                insert_post(text, img, player_id, topic_id)
+                return redirect('topic_detail', topic_id = topic_id)
         with connection.cursor() as cursor:
             cursor.execute('SELECT * FROM TOPIC')
             topics = cursor.fetchall()
