@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db import connection
 from django.http import JsonResponse
-from .forms import QuizForm
 from django.forms import formset_factory
 
 
@@ -13,7 +12,7 @@ def master_profile(request, master_name):
         with connection.cursor() as cursor:
             cursor.execute('SELECT * FROM USERS WHERE USERNAME = %s', [master_name])
             master_id = cursor.fetchone()[0]
-            cursor.execute('''SELECT NAME,
+            cursor.execute('''SELECT QUIZ_ID,NAME,
             (SELECT NAME FROM TOPIC WHERE TOPIC.TOPIC_ID = QUIZ.TOPIC_ID),
             (SELECT COUNT(*) FROM QUIZ_ATTEMPT WHERE QUIZ_ATTEMPT.QUIZ_ID = QUIZ.QUIZ_ID),
             (SELECT AVG(SCORE) FROM QUIZ_ATTEMPT WHERE QUIZ_ATTEMPT.QUIZ_ID = QUIZ.QUIZ_ID)
