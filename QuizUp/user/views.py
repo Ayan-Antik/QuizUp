@@ -50,7 +50,7 @@ def LogIn(request):
                     request.session['type'] = "Player"
                     # sending to his own profile
                     #return HttpResponseRedirect(reverse('my_profile_detail', player_id=request.session['id']))
-                    return redirect('my_profile_detail',  player_name=username)
+                    return redirect('feed_detail')
 
                 elif pagehtml == "Quizmasterlogin":
                     request.session['type'] = "Quizmaster"
