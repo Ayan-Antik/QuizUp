@@ -47,7 +47,7 @@ def my_profile_detail(request, player_name):
             # print(rank)
 
             query = '''
-                SELECT USERNAME, EMAIL_ID, IMAGE, ROUND((SYSDATE - DATE_OF_BIRTH) / 365, 0), FULLNAME
+                SELECT USERNAME, EMAIL_ID, IMAGE, TO_CHAR(DATE_OF_BIRTH, 'Mon DD, YYYY'), FULLNAME
                 FROM USERS
                 WHERE USER_ID = %s
             '''

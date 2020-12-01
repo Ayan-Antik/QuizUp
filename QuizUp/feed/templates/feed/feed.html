@@ -58,7 +58,7 @@
       </div>
     </nav>
     
-    <div class="Feed">
+    <div class="Feed" >
 
       <div class="sidebar">
         <div class="mini-profile">
@@ -167,13 +167,13 @@
       </div>
       
       <div class="news">
-          <div class="post" style="width: 580px;">
+          <div class="post" style="width: fit-content; background-color: white; padding: 10px 16px;border-radius: 3mm">
             <form id="post_form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-                <textarea name="post" id="" cols="75" rows="6" placeholder="What's Up?" 
+                <textarea name="post" id="" cols="69" rows="6" placeholder="What's Up?"
                           style="border-color: transparent; outline-color: transparent; padding: 15px 15px; border-radius: 3mm;" required></textarea>
-                
-                <svg width="2.5em" height="2.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="currentColor" 
+                <hr style="margin: 4px; padding: 4px 0px">
+                <svg width="2.5em" height="2.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="#ff3333"
                             xmlns="http://www.w3.org/2000/svg" onclick="fileclick()" style="cursor: pointer;">
                             <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                             <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 
@@ -182,11 +182,11 @@
                     <title>Add Photos</title>
                 </svg>
 
-                <img id="output" width="120" style="padding: 6px;"/>
+                <img id="output" width="120"  style="padding: 6px;"/>
                 <input type="file" id="post_img" name="post_img" accept="image/*" onchange="loadfile(event)" hidden>
                 <button type="submit" class="btn btn-danger" style="float: right;">Post</button>
 
-               <div class="selector" style="float: right;"> 
+               <div class="selector" style="float: right; padding-right: 12px">
                 <select class="selectpicker" multiple id="Topics" title="Select Topic" name="Topics" form="post_form">
                   <!--LOOP TOPICS-->
                     {%  for topic in topics %}
@@ -201,7 +201,7 @@
           <!-- ALL POSTS  -->
 
       {% for post in all_posts_list %}
-          <div class="view_post">
+          <div class="view_post" style="border-radius: 2mm; border-style: hidden; padding: 8px 0px">
             <div class="post_info" style="margin: 15px 15px; height: 80px;">
               
               <div class="post_dp">
@@ -233,7 +233,7 @@
 
             {% if post.5 != None %}
                 <div class="show_img">
-                  <img src="{% get_media_prefix %}{{ post.5 }}" alt=" " style = "max-height: 530px; width: 578px;"  id="img_post" onerror="remove()">
+                  <img src="{% get_media_prefix %}{{ post.5 }}" alt=" " style = "width: 580px;"  id="img_post" onerror="remove()">
                 </div>
            {% endif %}
 
