@@ -9,23 +9,26 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'quiz/quiz.css' %}">
-
     <title>{{ quiz.3 }}</title>
   </head>
 
   <body>
-    <div class="container">
+    <div class="container" style="min-height: 640px; margin: auto; margin-top: 48px; background-color: white; border-radius: 3mm;">
       <h3 id="timer" class="border"></h3>
-      <h1 class="text-center mb-5">{{ quiz.3 }}</h1>
-        <div id="question"></div>
-    </div>
+        <!--div class="round-time-bar" data-style="smooth">
+              <div class="rtb"></div>
+        </div-->
+        <div id="app" style=""></div>
+        <div><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 48px; font-size: 48px" >{{ quiz.3 }}</h1></div>
+        <div id="question" style=" margin: 24px; padding-left: 36px"></div>
 
-    <!-- Optional JavaScript -->
+        </div>
+       <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <!--<script src="{% static 'quiz/quiz.js' %}"></script>-->
+    <script src="{% static 'quiz/quiz.js' %}"></script>
     <script>
         var questions = [];
         {% for question in questions %}
@@ -37,7 +40,7 @@
                             'd': '{{question.6}}',
                             'answer': '{{question.7}}',});
         {% endfor %}
-        const timeLimit = 10;
+        const timeLimit = 600;
         var timeLeft = timeLimit;
         var i = 0;
         var question = $('#question');
@@ -59,16 +62,29 @@
         }, 1000);
 
     function add_question_and_button_listener(i) {
-        question.html('<h5 class="mb-3">'+questions[i]['description']+'</h5>' +
+         reset();
+        question.html('<h3 class="mb-4" style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
+                        '<hr style="border-top: 1px solid black; margin-bottom: 32px;">' +
                         '<form id="form">'+ '{% csrf_token %}' +
-                        '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options">' +
-                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['a']+'"><br>' +
-                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['b']+'"><br>' +
-                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['c']+'"><br>' +
-                      '<input type="button" class="btn btn-success btn-block" value="'+questions[i]['d']+'"><br>' +
-                      '</div>'+
-                      '</form>');
+
+                        '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options" style = "padding-bottom: 24px;">' +
+
+                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['a']+'" ' +
+                        'style=""><br>' +
+
+                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['b']+'" ' +
+                        'style=""><br>' +
+
+                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['c']+'" ' +
+                        'style=""><br>' +
+
+                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['d']+'" ' +
+                        'style=""><br>' +
+                                  '</div>'+
+                                  '</form>');
+
         $('#buttons input').click(function() {
+
                 var score = timeLeft * (this.value === questions[i]['answer']);
                 $.ajax({
                     type: 'POST',
@@ -87,7 +103,6 @@
                 timeLeft = timeLimit;
             });
     }
-
 
 
     </script>

@@ -62,7 +62,7 @@
           <table class="table mt-2">
             <tbody>
               <tr class="text-center">
-                <td><h6>Followers</h6> <h4>
+                <td><h5>Followers</h5> <h4>
                      <p style="margin: 0; font-size: larger; font-weight: 600; color: #02d174; cursor: pointer;"
                           onclick="unhide(follower_list)" class="dropbtn"> {{ num_of_followers }} </p>
                         <div id="follower_list" class="dropdown-content">
@@ -76,8 +76,8 @@
                         {% endfor %}
                         </div>
                 </h4></td>
-                <td><h6>Your Rank</h6> <h4>{{ rank }}</h4></td>
-                <td><h6>Quiz Completed</h6> <h4>{{ quiz_completed }}/{{ total_quiz }}</h4></td>
+                <td><h5>Rank</h5> <h4>{{ rank }}</h4></td>
+                <td><h5>Completed</h5> <h4 style="font-size: x-large; font-weight: 600; color: #ff5454;">{{ quiz_completed }}/{{ total_quiz }}</h4></td>
               </tr>
             </tbody>
           </table>
@@ -96,7 +96,7 @@
 
               {% for quiz in quiz_list %}
                   <tr>
-                    <td><a href="{% url 'quiz_detail' quiz.0 %}" style="color:green;">{{ quiz.3 }}</a></td>
+                    <td><a href="{% url 'quiz_detail' quiz.0 %}" style="color:#ff5454; font-size: x-large; font-weight: 600">{{ quiz.3 }}</a></td>
                       {% if quiz.4 == None %}
                           <td>-</td>
                       {% else %}

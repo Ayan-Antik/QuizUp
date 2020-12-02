@@ -11,6 +11,8 @@ img{
 body{
     background-color:rgba(224, 62, 62, 0.9);
 
+    /*background-color: rgb(36, 125, 219);*/
+
 }
 
 .setterHead{
@@ -38,8 +40,14 @@ body{
 
 #loginbtn1{
     background-color: rgba(224, 62, 62, 0.98);
+    /*background-color: rgb(4, 64, 133);*/
     border-color: rgba(224, 62, 62, 0.98);
+
+    /*border-color: rgb(36, 125, 219);*/
     width: 100%;
     
 }
-#loginbtn1:hover{background-color: rgba(192, 55, 55, 0.98);}
+#loginbtn1:hover{
+    background-color: rgba(192, 55, 55, 0.98);
+    /*background-color: rgb(4, 44, 88);*/
+}
