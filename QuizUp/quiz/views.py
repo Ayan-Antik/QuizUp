@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db import connection
 from django.urls import reverse
 
@@ -33,8 +33,14 @@ def quiz_detail(request, quiz_id):
             score = -1 if row is None else row[0]
             if row is not None:
                 # JHAMELA ASE
-                cursor.execute('''SELECT * FROM QUESTION LEFT JOIN QUESTION_ATTEMPT USING (QUESTION_ID)
-                                WHERE QUIZ_ID = %s AND PLAYER_ID = %s''', [quiz_id, player_id])
+                query = '''
+                    SELECT *
+                    FROM (SELECT * FROM QUESTION WHERE QUIZ_ID = %s) Q,
+                         (SELECT * FROM QUESTION_ATTEMPT WHERE PLAYER_ID = %s) QA
+                    
+                    WHERE Q.QUESTION_ID = QA.QUESTION_ID(+)
+                '''
+                cursor.execute(query, [quiz_id, player_id])
                 results = cursor.fetchall()
             else:
                 results = None
@@ -51,10 +57,14 @@ def quiz_detail(request, quiz_id):
                     difficulty = 'Medium'
                 if row[0] > 20:
                     difficulty = 'Hard'''''
+
+            cursor.execute('SELECT USERNAME FROM USERS WHERE USER_ID = %s', [player_id])
+            row = cursor.fetchone()
+            player_name = row[0]
             return render(request, 'quiz/quizDetail.html', {'topics': topics, 'quiz': quiz, 'topic': topic,
                                                             'quizmaster': quizmaster, 'num_of_played': num_of_played,
                                                             'score': score, 'top_score': top_score, 'results': results,
-                                                            'difficulty': difficulty})
+                                                            'difficulty': difficulty, 'player_name': player_name})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -63,13 +73,13 @@ def play_quiz(request, quiz_id):
     if 'id' in request.session and request.session['type'] == "Player":
         player_id = request.session.get('id')
         if has_played(quiz_id, player_id) is not None:
-            return HttpResponseRedirect(reverse('quiz_detail', args=quiz_id))
+            return redirect('quiz_detail', quiz_id=quiz_id)
         with connection.cursor() as cursor:
             cursor.execute('SELECT * FROM QUIZ WHERE QUIZ_ID = %s', [quiz_id])
             quiz = cursor.fetchone()
             cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s', [quiz_id])
             questions = cursor.fetchall()
-            #cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
+            cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
         return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:
         return HttpResponseRedirect(reverse('login'))
