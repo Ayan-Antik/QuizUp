@@ -46,7 +46,7 @@
         var timer = setInterval(function() {
             $('#timer').text("Time Left: "+timeLeft+" sec");
             if(timeLeft === timeLimit) {
-                if(i === 5) {
+                if(i === 10) {
                     window.location='{% url 'quiz_detail' quiz.0%}';
                 }
                 add_question_and_button_listener(i);
