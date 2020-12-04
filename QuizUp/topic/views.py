@@ -11,17 +11,18 @@ import feed.forms
 
 def update_follow(request):
     if 'id' in request.session and request.session['type'] == "Player":
-        player_id = request.session.get('id')
-        with connection.cursor() as cursor:
-            topic_id = request.POST.get('topic_id')
-            is_follow = request.POST.get('is_follow')
-            if is_follow == 'Follow':
-                cursor.execute('INSERT INTO TOPIC_FOLLOW VALUES(%s, %s)', [topic_id, player_id])
-                is_follow = 'Following'
-            else:
-                cursor.execute('DELETE FROM TOPIC_FOLLOW WHERE TOPIC_ID = %s AND FOLLOWER_ID = %s', [topic_id, player_id])
-                is_follow = 'Follow'
-            return JsonResponse({'is_follow': is_follow})
+        if request.method == 'POST':
+            player_id = request.session.get('id')
+            with connection.cursor() as cursor:
+                topic_id = request.POST.get('topic_id')
+                is_follow = request.POST.get('is_follow')
+                if is_follow == 'Follow':
+                    cursor.execute('INSERT INTO TOPIC_FOLLOW VALUES(%s, %s)', [topic_id, player_id])
+                    is_follow = 'Following'
+                else:
+                    cursor.execute('DELETE FROM TOPIC_FOLLOW WHERE TOPIC_ID = %s AND FOLLOWER_ID = %s', [topic_id, player_id])
+                    is_follow = 'Follow'
+                return JsonResponse({'is_follow': is_follow})
     else:
         return HttpResponseRedirect(reverse('login'))
 

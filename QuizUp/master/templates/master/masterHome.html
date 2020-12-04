@@ -30,6 +30,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'create_quiz' %}">Create Quiz</a>
           </li>
+            <li class="nav-item">
+            <a class="nav-link" href="" data-toggle="modal" data-target="#addTopicModal">Add Topic</a>
+          </li>
           {% if curr_name != master_name %}<li class="nav-item dropdown active">
             {% else %}<li class="nav-item dropdown">{% endif %}
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -96,6 +99,27 @@
         </div>
     </div>
   </div>
+    <div class="modal fade" id="addTopicModal" tabindex="-1" role="dialog" aria-labelledby="addTopicLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addTopicLabel">Add Topic</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="post">{% csrf_token %}
+              <div class="form-group">
+                <label for="newTopicName">Topic Title</label>
+                <input type="text" class="form-control" id="newTopicName">
+              </div>
+                <button type="submit" class="btn btn-primary" id="addTopic">Add</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
@@ -122,6 +146,19 @@
                 }
              })
 
+        });
+        $( "form" ).on( "submit", function(e) {
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'add_topic' %}',
+                data: {
+                    'topic_name': $('#newTopicName').val(),
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                },
+                dataType: 'json',
+                success: function (response) {},
+                error: function (response) {}
+            });
         });
     </script>
   </body>
