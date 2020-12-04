@@ -77,8 +77,15 @@ def play_quiz(request, quiz_id):
         with connection.cursor() as cursor:
             cursor.execute('SELECT * FROM QUIZ WHERE QUIZ_ID = %s', [quiz_id])
             quiz = cursor.fetchone()
-            cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s', [quiz_id])
+            cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s ORDER BY QUESTION_ID', [quiz_id])
             questions = cursor.fetchall()
+            print(questions)
+            questions = [list(elem) for elem in questions]
+
+            subtractor = questions[0][0] - 1
+            for question in questions:
+                question[0] = question[0] - subtractor
+            print(questions)
            # cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
         return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:

@@ -20,8 +20,8 @@
         </div>
 
         <div id="app" style=""></div>
-        <div style="padding: 24px;"><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 48px; font-size: 48px" >{{ quiz.3 }}</h1>
-
+        <div style="padding: 24px;"><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 48px; font-size: 48px" >{{ quiz.3 }} </h1>
+        <h3 id="qcount" style="padding-left: 36px; color: #ff3333"></h3>
         </div>
         <div id="question" style=" margin: 24px; padding-left: 36px; padding-top: 24px"></div>
 
@@ -91,7 +91,7 @@
     function add_question_and_button_listener(i) {
         reset();
 
-
+        document.getElementById('qcount').innerHTML = 'Question ' + questions[i]['id'] + ' of 10'
         question.html('<h3 style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
                         '<hr style="border-top: 1px solid black; margin-bottom: 32px;">'+
                         '<form id="form">'+ '{% csrf_token %}' +
