@@ -138,8 +138,12 @@ def SignUp(request):
 
 
             else:
+                if password1 != password2:
+                    error = "passwords don't match!"
+                else:
+                    error = "invalid username"
                 print("Signup Form Not Properly filled")
-                return render(request, 'user/signup.html')
+                return render(request, 'user/signup.html', {'error': error})
         else:
             print("Signup Form Error")
             return render(request, 'user/signup.html')

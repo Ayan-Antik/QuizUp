@@ -14,7 +14,7 @@
 
   <body>
     <div class="container" style="max-height: fit-content">
-      <h3 id="timer" class="border"></h3>
+      <!--h3 id="timer" class="border"></h3-->
         <div style="float: right; padding-top: 16px; padding-right: 16px; ">
             <a href="{% url 'quiz_detail' quiz.0 %}"> <button type="button" class="btn btn-danger" style="font-weight: bold; background: #ff3333; font-size: 18px">Skip Quiz</button></a>
         </div>
@@ -52,7 +52,7 @@
 
         var timer = setInterval(showq, 1000);
         function showq() {
-            $('#timer').text("Time Left: "+timeLeft+" sec");
+            //$('#timer').text("Time Left: "+timeLeft+" sec");
             if(timeLeft === timeLimit) {
                 if(i === 10) {
                     window.location='{% url 'quiz_detail' quiz.0%}';
@@ -90,8 +90,8 @@
 
     function add_question_and_button_listener(i) {
         reset();
-
-        document.getElementById('qcount').innerHTML = 'Question ' + questions[i]['id'] + ' of 10'
+        var qno = i+1
+        document.getElementById('qcount').innerHTML = 'Question ' + qno + ' of 10'
         question.html('<h3 style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
                         '<hr style="border-top: 1px solid black; margin-bottom: 32px;">'+
                         '<form id="form">'+ '{% csrf_token %}' +

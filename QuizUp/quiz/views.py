@@ -19,9 +19,11 @@ def quiz_detail(request, quiz_id):
             topics = cursor.fetchall()
             cursor.execute('SELECT * FROM QUIZ WHERE QUIZ_ID = %s', [quiz_id])
             quiz = cursor.fetchone()
-            cursor.execute('SELECT NAME FROM TOPIC WHERE TOPIC_ID = (SELECT TOPIC_ID FROM QUIZ WHERE QUIZ_ID = %s)',
+            cursor.execute('SELECT NAME,TOPIC_ID '
+                           'FROM TOPIC '
+                           'WHERE TOPIC_ID = (SELECT TOPIC_ID FROM QUIZ WHERE QUIZ_ID = %s)',
                            [quiz_id])
-            topic = cursor.fetchone()[0]
+            topic = cursor.fetchone()
             cursor.execute('''SELECT USERNAME FROM USERS WHERE USER_ID = (SELECT MASTER_ID FROM QUIZ
                                                     WHERE QUIZ_ID = %s)''', [quiz_id])
             quizmaster = cursor.fetchone()[0]
@@ -42,6 +44,7 @@ def quiz_detail(request, quiz_id):
                 '''
                 cursor.execute(query, [quiz_id, player_id])
                 results = cursor.fetchall()
+                print(results)
             else:
                 results = None
             cursor.execute('''SELECT USERNAME, MAX(SCORE) FROM QUIZ_ATTEMPT JOIN USERS ON (PLAYER_ID = USER_ID)
@@ -61,10 +64,20 @@ def quiz_detail(request, quiz_id):
             cursor.execute('SELECT USERNAME FROM USERS WHERE USER_ID = %s', [player_id])
             row = cursor.fetchone()
             player_name = row[0]
+
+            query = '''
+                SELECT QUIZ_ID, NAME
+                FROM QUIZ
+                WHERE TOPIC_ID = (SELECT TOPIC_ID FROM QUIZ WHERE QUIZ_ID = %s)
+                AND QUIZ_ID <> %s
+            '''
+            cursor.execute(query, [quiz_id, quiz_id])
+            other_quiz = cursor.fetchall()
             return render(request, 'quiz/quizDetail.html', {'topics': topics, 'quiz': quiz, 'topic': topic,
                                                             'quizmaster': quizmaster, 'num_of_played': num_of_played,
                                                             'score': score, 'top_score': top_score, 'results': results,
-                                                            'difficulty': difficulty, 'player_name': player_name})
+                                                            'difficulty': difficulty, 'player_name': player_name,
+                                                            'other_quiz': other_quiz})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -79,14 +92,10 @@ def play_quiz(request, quiz_id):
             quiz = cursor.fetchone()
             cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s ORDER BY QUESTION_ID', [quiz_id])
             questions = cursor.fetchall()
-            print(questions)
-            questions = [list(elem) for elem in questions]
+            #print(questions)
 
-            subtractor = questions[0][0] - 1
-            for question in questions:
-                question[0] = question[0] - subtractor
-            print(questions)
-           # cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
+            #print(questions)
+            cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
         return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:
         return HttpResponseRedirect(reverse('login'))
@@ -100,14 +109,13 @@ def update_score(request):
             quiz_id = request.POST.get('quiz_id')
             score = request.POST.get('score')
             choice = request.POST.get('choice')
-            print(score);
-            print(choice);
-            '''cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
+            print(score)
+            cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
                            [question_id, player_id, score, choice])
             row = has_played(quiz_id, player_id)
             prev_score = row[0]
             cursor.execute('UPDATE QUIZ_ATTEMPT SET SCORE = %s WHERE QUIZ_ID = %s AND PLAYER_ID = %s',
-                           [prev_score + int(score), quiz_id, player_id])'''
+                           [prev_score + int(score), quiz_id, player_id])
             return HttpResponse('')
     else:
         return HttpResponseRedirect(reverse('login'))

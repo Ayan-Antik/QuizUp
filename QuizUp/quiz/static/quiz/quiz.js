@@ -43,7 +43,7 @@ const COLOR_CODES = {
   }
 };
 
-const TIME_LIMIT = 600;
+const TIME_LIMIT = 10;
 let timePassed = 0;
 let timeLft = TIME_LIMIT;
 let timerInterval = null;

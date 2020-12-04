@@ -29,7 +29,9 @@
                     <h2>
                         Sign Up
                     </h2>
-                    
+                     {% if error %}
+                        <p style="color: white"> ({{ error }})</p>
+                    {% endif %}
                     <input id="inputUser" name="username" type="text" placeholder = "Username" class="form-control"  required> <br>
 
                     <input id="inputName" name="fullname" type="text" placeholder = "Full Name" class="form-control"  required> <br>
