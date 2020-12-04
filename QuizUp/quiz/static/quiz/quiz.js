@@ -24,7 +24,7 @@ var timer = setInterval(function() {
       //$('form').submit();
     }
   }, 1000);*/
-window.onload = function (){reset();};
+
 const FULL_DASH_ARRAY = 283;
 const WARNING_THRESHOLD = 6;
 const ALERT_THRESHOLD = 3;

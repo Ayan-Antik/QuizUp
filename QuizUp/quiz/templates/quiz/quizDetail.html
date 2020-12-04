@@ -60,8 +60,7 @@
               {% if score == -1 %}
                   <button type="button" class="btn btn-danger " data-toggle="modal" data-target="#play" style="background: #ff3333; margin: 4px">
                   Play Quiz</button>
-                {% else %}
-                  <h4 style="color: #ff5454; padding-bottom: 18px;">Your Score : <b>{{ score }}</b></h4>
+
                 {% endif %}
           </div>
           </div>
@@ -103,7 +102,9 @@
           <div class="statistics" style="padding: 16px 24px; border-style: hidden; color: #262626; margin-top: 16px; border-radius: 3mm">
 
               <h1 class="text-center" style="padding-bottom: 0px">Quiz Statistics</h1>
-
+              {% if score != -1 %}
+                 <h1 class="text-center" style="color: #ff5454; padding-bottom: 24px; padding-top: 12px;"> Your Score : <b>{{ score }}</b></h1>
+               {% endif %}
               <table class="table-striped" style="">
                 {% for result in results %}
                     <tr><td>

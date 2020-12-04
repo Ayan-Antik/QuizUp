@@ -79,7 +79,7 @@ def play_quiz(request, quiz_id):
             quiz = cursor.fetchone()
             cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s', [quiz_id])
             questions = cursor.fetchall()
-            cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
+           # cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
         return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:
         return HttpResponseRedirect(reverse('login'))

@@ -13,14 +13,20 @@
   </head>
 
   <body>
-    <div class="container" style="min-height: 640px; margin: auto; margin-top: 48px; background-color: white; border-radius: 3mm;">
-      <!--h3 id="timer" class="border"></h3-->
+    <div class="container" style="max-height: fit-content">
+      <h3 id="timer" class="border"></h3>
+        <div style="float: right; padding-top: 16px; padding-right: 16px; ">
+            <a href="{% url 'quiz_detail' quiz.0 %}"> <button type="button" class="btn btn-danger" style="font-weight: bold; background: #ff3333; font-size: 18px">Skip Quiz</button></a>
+        </div>
 
         <div id="app" style=""></div>
-        <div style="padding: 24px;"><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 48px; font-size: 48px" >{{ quiz.3 }}</h1></div>
-        <div id="question" style=" margin: 24px; padding-left: 36px"></div>
+        <div style="padding: 24px;"><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 48px; font-size: 48px" >{{ quiz.3 }}</h1>
 
         </div>
+        <div id="question" style=" margin: 24px; padding-left: 36px; padding-top: 24px"></div>
+
+        </div>
+
        <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
@@ -42,41 +48,53 @@
         var timeLeft = timeLimit;
         var i = 0;
         var question = $('#question');
+        var id;
 
-        var timer = setInterval(function() {
+        var timer = setInterval(showq, 1000);
+        function showq() {
             $('#timer').text("Time Left: "+timeLeft+" sec");
             if(timeLeft === timeLimit) {
                 if(i === 10) {
                     window.location='{% url 'quiz_detail' quiz.0%}';
                 }
+                if(questions[i]['a'] == questions[i]['answer'])id = "btn-a";
+                else if(questions[i]['b'] == questions[i]['answer'])id = "btn-b";
+                else if(questions[i]['c'] == questions[i]['answer'])id = "btn-c";
+                else if(questions[i]['d'] == questions[i]['answer'])id = "btn-d";
                 add_question_and_button_listener(i);
                 i++;
             }
             if(timeLeft === 0) {
+                document.getElementById(id).style.backgroundColor = "green";
+                document.getElementById(id).style.color = "white";
                 timeLeft = timeLimit;
                 return;
             }
             timeLeft--;
-        }, 1000);
+        };
+
+
 
     function add_question_and_button_listener(i) {
-         reset();
-        question.html('<h3 class="mb-4" style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
-                        '<hr style="border-top: 1px solid black; margin-bottom: 32px;">' +
+        reset();
+
+
+        question.html('<h3 style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
+                        '<hr style="border-top: 1px solid black; margin-bottom: 32px;">'+
                         '<form id="form">'+ '{% csrf_token %}' +
 
                         '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options" style = "padding-bottom: 24px;">' +
 
-                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['a']+'" ' +
+                        '<input type="button" class="btn btn-light btn-block" id="btn-a" value="'+questions[i]['a']+'" ' +
                         'style=""><br>' +
 
-                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['b']+'" ' +
+                        '<input type="button" class="btn btn-light btn-block" id="btn-b" value="'+questions[i]['b']+'" ' +
                         'style=""><br>' +
 
-                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['c']+'" ' +
+                        '<input type="button" class="btn btn-light btn-block" id="btn-c" value="'+questions[i]['c']+'" ' +
                         'style=""><br>' +
 
-                        '<input type="button" class="btn btn-danger btn-block" value="'+questions[i]['d']+'" ' +
+                        '<input type="button" class="btn btn-light btn-block" id="btn-d" value="'+questions[i]['d']+'" ' +
                         'style=""><br>' +
                                   '</div>'+
                                   '</form>');
@@ -84,6 +102,17 @@
         $('#buttons input').click(function() {
 
                 var score = timeLeft * (this.value === questions[i]['answer']);
+                if(this.value != questions[i]['answer'])
+                {
+                    this.style.backgroundColor = "red";
+                    this.style.color = "white";
+                }
+                else{
+                    score = score + 1;
+                }
+                document.getElementById(id).style.backgroundColor = "green";
+                document.getElementById(id).style.color = "white";
+
                 $.ajax({
                     type: 'POST',
                     url: '{% url 'update_score' %}',
@@ -98,7 +127,16 @@
                     success: function (response) {
                     },
                 });
-                timeLeft = timeLimit;
+                clearInterval(timer);
+                onTimesUp();
+                setTimeout(function (){
+
+                    timeLeft = timeLimit;
+                    timer = setInterval(showq, 1000);
+                }, 1500);
+
+
+
             });
     }
 
