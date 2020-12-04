@@ -26,7 +26,9 @@ body{
 
   background: #8c8c8c;
 }
-
+.btn-light:focus{
+  background: #bebaba;
+}
 #app{
   float: right;
 

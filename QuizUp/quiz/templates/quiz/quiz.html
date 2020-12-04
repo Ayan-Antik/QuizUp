@@ -65,6 +65,11 @@
                 i++;
             }
             if(timeLeft === 0) {
+                document.getElementById('btn-a').disabled = true;
+                document.getElementById('btn-b').disabled = true;
+                document.getElementById('btn-c').disabled = true;
+                document.getElementById('btn-d').disabled = true;
+
                 document.getElementById(id).style.backgroundColor = "green";
                 document.getElementById(id).style.color = "white";
                 timeLeft = timeLimit;
@@ -73,7 +78,15 @@
             timeLeft--;
         };
 
+    function cleaner(){
+        clearInterval(timer);
+        onTimesUp();
+        setTimeout(function (){
 
+            timeLeft = timeLimit;
+            timer = setInterval(showq, 1000);
+        }, 1500);
+    }
 
     function add_question_and_button_listener(i) {
         reset();
@@ -101,6 +114,11 @@
 
         $('#buttons input').click(function() {
 
+                document.getElementById('btn-a').disabled = true;
+                document.getElementById('btn-b').disabled = true;
+                document.getElementById('btn-c').disabled = true;
+                document.getElementById('btn-d').disabled = true;
+
                 var score = timeLeft * (this.value === questions[i]['answer']);
                 if(this.value != questions[i]['answer'])
                 {
@@ -127,13 +145,7 @@
                     success: function (response) {
                     },
                 });
-                clearInterval(timer);
-                onTimesUp();
-                setTimeout(function (){
-
-                    timeLeft = timeLimit;
-                    timer = setInterval(showq, 1000);
-                }, 1500);
+                cleaner();
 
 
 

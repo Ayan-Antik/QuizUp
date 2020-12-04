@@ -93,12 +93,14 @@ def update_score(request):
             quiz_id = request.POST.get('quiz_id')
             score = request.POST.get('score')
             choice = request.POST.get('choice')
-            cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
+            print(score);
+            print(choice);
+            '''cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
                            [question_id, player_id, score, choice])
             row = has_played(quiz_id, player_id)
             prev_score = row[0]
             cursor.execute('UPDATE QUIZ_ATTEMPT SET SCORE = %s WHERE QUIZ_ID = %s AND PLAYER_ID = %s',
-                           [prev_score + int(score), quiz_id, player_id])
+                           [prev_score + int(score), quiz_id, player_id])'''
             return HttpResponse('')
     else:
         return HttpResponseRedirect(reverse('login'))
