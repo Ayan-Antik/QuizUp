@@ -79,3 +79,18 @@ def show_questions(request):
             return JsonResponse({'questions': questions})
     else:
         return HttpResponseRedirect(reverse("login"))
+
+
+def add_topic(request):
+    if 'id' in request.session and request.session['type'] == "Quizmaster":
+        if request.method == 'POST':
+            with connection.cursor() as cursor:
+                topic_name = request.POST['topic_name']
+                logo = 'topic/defaultLogo.png'
+                cover = 'topic/defaultCover.jpg'
+                cursor.execute('SELECT * FROM TOPIC WHERE NAME=%s', [topic_name])
+                if cursor.fetchone() is None:
+                    cursor.execute('INSERT INTO TOPIC VALUES(TOPIC_SEQ.NEXTVAL, %s, %s, %s)', [topic_name, logo, cover])
+                return HttpResponse('')
+    else:
+        return HttpResponseRedirect(reverse("login"))
