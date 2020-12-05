@@ -91,7 +91,7 @@
                     <td><h5>{{ top_score.1 }} (<a href="{% url 'my_profile_detail' top_score.0 %}" style="color: #ff5454">{{ top_score.0 }}</a>)</h5></td>
                 {% endif %}
               </tr>
-            {% if other_quiz != None %}
+            {% if other_quiz is not None %}
               <tr>
                 <td><h5>More Quiz From {{ topic.0 }} </h5></td>
                <td>

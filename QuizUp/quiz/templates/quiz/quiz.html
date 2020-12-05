@@ -13,17 +13,17 @@
   </head>
 
   <body>
-    <div class="container" style="max-height: fit-content">
+    <div class="container" >
       <!--h3 id="timer" class="border"></h3-->
         <div style="float: right; padding-top: 16px; padding-right: 16px; ">
             <a href="{% url 'quiz_detail' quiz.0 %}"> <button type="button" class="btn btn-danger" style="font-weight: bold; background: #ff3333; font-size: 18px">Skip Quiz</button></a>
         </div>
 
         <div id="app" style=""></div>
-        <div style="padding: 24px;"><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 48px; font-size: 48px" >{{ quiz.3 }} </h1>
+        <div style="padding: 24px;"><h1 class="text-center" style="color: #ff3333; max-width: fit-content ;padding: 36px; font-size: 48px" >{{ quiz.3 }} </h1>
         <h3 id="qcount" style="padding-left: 36px; color: #ff3333"></h3>
         </div>
-        <div id="question" style=" margin: 24px; padding-left: 36px; padding-top: 24px"></div>
+        <div id="question" style="margin: 24px; padding-left: 36px; padding-top: 24px"></div>
 
         </div>
 
@@ -44,7 +44,7 @@
                             'd': '{{question.6}}',
                             'answer': '{{question.7}}',});
         {% endfor %}
-        const timeLimit = 10;
+        const timeLimit = 600;
         var timeLeft = timeLimit;
         var i = 0;
         var question = $('#question');
@@ -96,18 +96,18 @@
                         '<hr style="border-top: 1px solid black; margin-bottom: 32px;">'+
                         '<form id="form">'+ '{% csrf_token %}' +
 
-                        '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options" style = "padding-bottom: 24px;">' +
+                        '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options" style = "display:block; padding-bottom: 24px; margin:auto">' +
 
-                        '<input type="button" class="btn btn-light btn-block" id="btn-a" value="'+questions[i]['a']+'" ' +
+                        '<input type="button" class="btn btn-light" id="btn-a" value="'+questions[i]['a']+'" ' +
                         'style=""><br>' +
 
-                        '<input type="button" class="btn btn-light btn-block" id="btn-b" value="'+questions[i]['b']+'" ' +
+                        '<input type="button" class="btn btn-light" id="btn-b" value="'+questions[i]['b']+'" ' +
                         'style=""><br>' +
 
-                        '<input type="button" class="btn btn-light btn-block" id="btn-c" value="'+questions[i]['c']+'" ' +
+                        '<input type="button" class="btn btn-light " id="btn-c" value="'+questions[i]['c']+'" ' +
                         'style=""><br>' +
 
-                        '<input type="button" class="btn btn-light btn-block" id="btn-d" value="'+questions[i]['d']+'" ' +
+                        '<input type="button" class="btn btn-light " id="btn-d" value="'+questions[i]['d']+'" ' +
                         'style=""><br>' +
                                   '</div>'+
                                   '</form>');

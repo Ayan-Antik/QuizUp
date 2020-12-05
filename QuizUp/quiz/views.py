@@ -73,6 +73,9 @@ def quiz_detail(request, quiz_id):
             '''
             cursor.execute(query, [quiz_id, quiz_id])
             other_quiz = cursor.fetchall()
+            if len(other_quiz) == 0:
+                other_quiz = None
+            #print(other_quiz)
             return render(request, 'quiz/quizDetail.html', {'topics': topics, 'quiz': quiz, 'topic': topic,
                                                             'quizmaster': quizmaster, 'num_of_played': num_of_played,
                                                             'score': score, 'top_score': top_score, 'results': results,
@@ -95,7 +98,7 @@ def play_quiz(request, quiz_id):
             #print(questions)
 
             #print(questions)
-            cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
+            #cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
         return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:
         return HttpResponseRedirect(reverse('login'))
@@ -110,12 +113,12 @@ def update_score(request):
             score = request.POST.get('score')
             choice = request.POST.get('choice')
             print(score)
-            cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
+            '''cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
                            [question_id, player_id, score, choice])
             row = has_played(quiz_id, player_id)
             prev_score = row[0]
             cursor.execute('UPDATE QUIZ_ATTEMPT SET SCORE = %s WHERE QUIZ_ID = %s AND PLAYER_ID = %s',
-                           [prev_score + int(score), quiz_id, player_id])
+                           [prev_score + int(score), quiz_id, player_id])'''
             return HttpResponse('')
     else:
         return HttpResponseRedirect(reverse('login'))

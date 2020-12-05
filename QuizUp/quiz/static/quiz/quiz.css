@@ -5,7 +5,8 @@ body{
 }
 .container{
   background-color: white;
-  height: 700px; margin: auto; margin-top: 48px;border-radius: 3mm;
+  min-height: 700px;
+  margin: auto; margin-top: 48px;border-radius: 3mm;
   /*box-shadow: -4px 4px 3px gray;*/
   /*border:4px solid #ff3333;*/
  /* box-shadow: -6px 6px 6px grey;*/
@@ -18,17 +19,16 @@ body{
     background-color: #ccffdd;
 }
 .btn-light{
-  font-size: 18px;
+  font-size: 24px;
   font-family: "Lucinda Grande", "Lucinda Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
   background: #bebaba;
+  padding: 24px;
 }
 .btn-light:hover{
 
   background: #8c8c8c;
 }
-.btn-light:focus{
-  background: #bebaba;
-}
+
 #app{
   float: right;
 
