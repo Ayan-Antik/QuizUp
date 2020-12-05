@@ -37,7 +37,6 @@ def quiz_detail(request, quiz_id):
             row = has_played(quiz_id, player_id)
             score = -1 if row is None else row[0]
             if row is not None:
-                # JHAMELA ASE
                 query = '''
                     SELECT *
                     FROM (SELECT * FROM QUESTION WHERE QUIZ_ID = %s) Q,
@@ -72,8 +71,7 @@ def quiz_detail(request, quiz_id):
             return render(request, 'quiz/quizDetail.html', {'topics': topics, 'quiz': quiz, 'topic': topic,
                                                             'quizmaster': quizmaster, 'num_of_played': num_of_played,
                                                             'score': score, 'top_score': top_score, 'results': results,
-                                                            'difficulty': difficulty, 'player_name': player_name,
-                                                            'other_quiz': other_quiz})
+                                                            'player_name': player_name, 'other_quiz': other_quiz})
     else:
         return HttpResponseRedirect(reverse('login'))
 

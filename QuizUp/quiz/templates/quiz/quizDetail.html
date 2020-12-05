@@ -77,14 +77,14 @@
               </tr>
               <tr>
                 <td><h5>Quiz Difficulty</h5></td>
-                    <td><h5>{{ difficulty }}</h5></td>
+                  <td><h5>{% if quiz.4 is None %} - {% else %} {{ quiz.4 }} {% endif %}</h5></td>
               </tr>
               <tr>
                 <td><h5>#Played</h5></td>
                 <td><h5>{{ num_of_played }}</h5></td>
               </tr>
             <tr>
-                <td><h5>High Score</h5></td>
+                <td><h5>Top Score</h5></td>
                 {% if top_score is None %}
                     <td> - </td>
                 {% else %}
@@ -111,8 +111,8 @@
         <div class="col-lg">
           <div class="statistics" style="padding: 16px 24px; border-style: hidden; color: #262626; margin-top: 16px; border-radius: 3mm">
 
-              <h1 class="text-center" style="padding-bottom: 0px">Quiz Statistics</h1>
               {% if score != -1 %}
+                  <h1 class="text-center" style="padding-bottom: 0px">Quiz Statistics</h1>
                  <h1 class="text-center" style="color: #ff5454; padding-bottom: 24px; padding-top: 12px;"> Your Score : <b>{{ score }}</b></h1>
                {% endif %}
               <table class="table-striped" style="">
