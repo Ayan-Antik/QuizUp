@@ -425,11 +425,7 @@ def feed_detail(request):
             cursor.execute(query)
             leaderboard = cursor.fetchall()
 
-            leaderboard = [list(elem) for elem in leaderboard]
-            position = 1
-            for row in leaderboard:
-                row.append(position)
-                position += 1
+
 
             cursor.close()
             return render(request, 'feed/feed.html', {'player_info': player_info,

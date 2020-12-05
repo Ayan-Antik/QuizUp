@@ -152,7 +152,7 @@
             <tbody>
             {% for player in leaderboard %}
               <tr>
-                <th scope="row">{{ player.2 }}</th>
+                <th scope="row">{{ forloop.counter }}</th>
                 <td><a href="{% url 'my_profile_detail' player.0 %}" style="color: black;">{{ player.0 }}</a></td>
                 <td>{{ player.1 }}</td>
               </tr>

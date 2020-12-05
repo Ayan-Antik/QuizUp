@@ -81,7 +81,7 @@ def my_profile_detail(request, player_name):
             followees = cursor.fetchone()
 
             query = '''
-                SELECT T.NAME, NVL(TA.TOPIC_RANK, 1), T.LOGO, T.TOPIC_ID
+                SELECT T.NAME, NVL(TA.LEVEL_, 0), T.LOGO, T.TOPIC_ID
                 FROM TOPIC_FOLLOW TF, TOPIC_ATTEMPT TA, TOPIC T
                 WHERE TF.TOPIC_ID = TA.TOPIC_ID(+)
                 AND T.TOPIC_ID = TF.TOPIC_ID

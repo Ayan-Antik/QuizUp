@@ -76,8 +76,8 @@
                         {% endfor %}
                         </div>
                 </h4></td>
-                <td><h5>Rank</h5> <h4>{{ rank }}</h4></td>
-                <td><h5>Completed</h5> <h4 style="font-size: x-large; font-weight: 600; color: #ff5454;">{{ quiz_completed }}/{{ total_quiz }}</h4></td>
+                <td><h5>Level</h5> <h3 style="color:#ff5454; ">{{ rank }}</h3></td>
+                <td><h5>Completed</h5> <h3 style="color: #ff5454;">{{ quiz_completed }}/{{ total_quiz }}</h3></td>
               </tr>
             </tbody>
           </table>
@@ -98,11 +98,11 @@
                   <tr>
                     <td><a href="{% url 'quiz_detail' quiz.0 %}" style="color:#ff5454; font-size: x-large; font-weight: 600">{{ quiz.3 }}</a></td>
                       {% if quiz.4 == None %}
-                          <td>-</td>
+                          <td style="color:#ff5454; font-size:x-large; font-weight: 600; ">-</td>
                       {% else %}
-                          <td>{{ quiz.4 }}</td>
+                          <td style="color:#ff5454; font-size:x-large; font-weight: 600; ">{{ quiz.4 }}</td>
                       {% endif %}
-                    <td>-</td>
+                    <td style="color:#ff5454; font-size:x-large; font-weight: 600; "> {{ quiz.5 }}</td>
                   </tr>
               {% endfor %}
             </tbody>
@@ -116,16 +116,18 @@
             <tbody>
               <thead class="thead-dark">
                 <tr>
-                  <th scope="col">Rank</th>
-                  <th scope="col">Username</th>
-                  <th scope="col">Score{{ t }}</th>
+                  <th scope="col">Position</th>
+                  <th scope="col">Player</th>
+                  <th scope="col">Level</th>
                 </tr>
               </thead>
+              {% for leader in topic_leaderboard %}
               <tr>
-                <td>1</td>
-                <td><a href="" style= "color: black;"> Alex</a> </td>
-                <td>100</td>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'my_profile_detail' leader.0 %}" style= "color: black;"> {{ leader.0 }}</a> </td>
+                <td>{{ leader.1 }}</td>
               </tr>
+              {% endfor %}
             </tbody>
           </table></div>
       </div>

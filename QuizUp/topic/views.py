@@ -81,7 +81,7 @@ def topic_detail(request, topic_id):
             cursor.execute('SELECT COUNT(*) FROM TOPIC_FOLLOW GROUP BY TOPIC_ID HAVING TOPIC_ID = %s', [topic_id])
             row = cursor.fetchone()
             num_of_followers = 0 if row is None else row[0]
-            cursor.execute('SELECT TOPIC_RANK FROM TOPIC_ATTEMPT WHERE TOPIC_ID = %s AND PLAYER_ID = %s', [topic_id, player_id])
+            cursor.execute('SELECT LEVEL_ FROM TOPIC_ATTEMPT WHERE TOPIC_ID = %s AND PLAYER_ID = %s', [topic_id, player_id])
             row = cursor.fetchone()
             rank = '-' if row is None else row[0]
             cursor.execute('''SELECT COUNT(*) FROM QUIZ_ATTEMPT QA JOIN QUIZ Q USING (QUIZ_ID)
@@ -91,15 +91,46 @@ def topic_detail(request, topic_id):
             cursor.execute('SELECT COUNT(*) FROM QUIZ GROUP BY TOPIC_ID HAVING TOPIC_ID = %s', [topic_id])
             row = cursor.fetchone()
             total_quiz = 0 if row is None else row[0]
-            cursor.execute('SELECT * FROM QUIZ WHERE TOPIC_ID = %s', [topic_id])
+            cursor.execute('SELECT * FROM QUIZ WHERE TOPIC_ID = %s ORDER BY QUIZ_ID', [topic_id])
             quiz_list = cursor.fetchall()
-            if quiz_list is None:
-                quiz_list = []
 
             cursor.execute('''SELECT USERNAME FROM USERS WHERE USER_ID = %s''', [player_id])
             player_info = cursor.fetchone()
 
+            # Get how many times each quiz has been played
+            query = '''
+                SELECT QUIZ_ID, COUNT(QUIZ_ID)
+                FROM QUIZ_ATTEMPT
+                WHERE QUIZ_ID IN (SELECT QUIZ_ID FROM TOPIC WHERE TOPIC_ID = %s)
+                GROUP BY QUIZ_ID
+                ORDER BY QUIZ_ID
+            '''
+            cursor.execute(query, [topic_id])
+            times_played = cursor.fetchall()
+            if quiz_list is None:
+                quiz_list = []
+            else:
+                quiz_list = [list(elem) for elem in quiz_list]
+                for quiz in quiz_list:
+                    for itr in times_played:
+                        if itr[0] == quiz[0]:
+                            quiz.append(itr[1])
+                            break
+                        else:
+                            continue
+                        quiz.append("-")
+                print(quiz_list)
 
+            query = '''
+                SELECT U.USERNAME, TA.LEVEL_
+                FROM TOPIC_ATTEMPT TA, USERS U
+                WHERE TA.PLAYER_ID = U.USER_ID
+                AND TA.TOPIC_ID = %s
+                AND ROWNUM <= 5
+                ORDER BY TA.LEVEL_ DESC
+            '''
+            cursor.execute(query, [topic_id])
+            topic_leaderboard = cursor.fetchall()
 
             # TOPIC POSTS
 
@@ -164,7 +195,8 @@ def topic_detail(request, topic_id):
                                                         'num_of_followers': num_of_followers, 'rank': rank,
                                                         'quiz_completed': quiz_completed, 'total_quiz': total_quiz,
                                                         'quiz_list': quiz_list, 'player_info': player_info,
-                                                        'topic_posts': topic_posts, 'follower_info': follower_info})
+                                                        'topic_posts': topic_posts, 'follower_info': follower_info,
+                                                        'times_played': times_played, 'topic_leaderboard': topic_leaderboard})
     else:
         return HttpResponseRedirect(reverse('login'))
 

@@ -19,6 +19,9 @@ def quiz_detail(request, quiz_id):
             topics = cursor.fetchall()
             cursor.execute('SELECT * FROM QUIZ WHERE QUIZ_ID = %s', [quiz_id])
             quiz = cursor.fetchone()
+            difficulty = quiz[4]
+            if difficulty is None:
+                difficulty = '-'
             cursor.execute('SELECT NAME,TOPIC_ID '
                            'FROM TOPIC '
                            'WHERE TOPIC_ID = (SELECT TOPIC_ID FROM QUIZ WHERE QUIZ_ID = %s)',
@@ -50,16 +53,6 @@ def quiz_detail(request, quiz_id):
             cursor.execute('''SELECT USERNAME, MAX(SCORE) FROM QUIZ_ATTEMPT JOIN USERS ON (PLAYER_ID = USER_ID)
                            WHERE QUIZ_ID = %s GROUP BY USERNAME''', [quiz_id])
             top_score = cursor.fetchone()
-            cursor.execute('SELECT AVG(SCORE) FROM QUIZ_ATTEMPT WHERE QUIZ_ID = %s', [quiz_id])
-            row = cursor.fetchone()
-            difficulty = '-'
-            '''if row[0] is None: # can do it in oracle function
-                if row[0] >= 20:
-                    difficulty = 'Easy'
-                elif row[0] >= 15:
-                    difficulty = 'Medium'
-                if row[0] > 20:
-                    difficulty = 'Hard'''''
 
             cursor.execute('SELECT USERNAME FROM USERS WHERE USER_ID = %s', [player_id])
             row = cursor.fetchone()
@@ -98,7 +91,7 @@ def play_quiz(request, quiz_id):
             #print(questions)
 
             #print(questions)
-            #cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
+            cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
         return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:
         return HttpResponseRedirect(reverse('login'))
@@ -113,12 +106,13 @@ def update_score(request):
             score = request.POST.get('score')
             choice = request.POST.get('choice')
             print(score)
-            '''cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
+            cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
                            [question_id, player_id, score, choice])
-            row = has_played(quiz_id, player_id)
+            '''row = has_played(quiz_id, player_id) --------TRIGGER USED HERE-------
             prev_score = row[0]
             cursor.execute('UPDATE QUIZ_ATTEMPT SET SCORE = %s WHERE QUIZ_ID = %s AND PLAYER_ID = %s',
                            [prev_score + int(score), quiz_id, player_id])'''
+            cursor.callproc("UPDATE_DIFFICULTY", [quiz_id])  # PROCEDURE CALLED
             return HttpResponse('')
     else:
         return HttpResponseRedirect(reverse('login'))
