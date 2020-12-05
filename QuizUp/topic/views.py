@@ -81,7 +81,7 @@ def topic_detail(request, topic_id):
             cursor.execute('SELECT COUNT(*) FROM TOPIC_FOLLOW GROUP BY TOPIC_ID HAVING TOPIC_ID = %s', [topic_id])
             row = cursor.fetchone()
             num_of_followers = 0 if row is None else row[0]
-            cursor.execute('SELECT TOPIC_RANK FROM TOPIC_ATTEMPT WHERE TOPIC_ID = %s AND PLAYER_ID = %s', [topic_id, player_id])
+            cursor.execute('SELECT LEVEL_ FROM TOPIC_ATTEMPT WHERE TOPIC_ID = %s AND PLAYER_ID = %s', [topic_id, player_id])
             row = cursor.fetchone()
             rank = '-' if row is None else row[0]
             cursor.execute('''SELECT COUNT(*) FROM QUIZ_ATTEMPT QA JOIN QUIZ Q USING (QUIZ_ID)

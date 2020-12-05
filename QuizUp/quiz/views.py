@@ -34,7 +34,6 @@ def quiz_detail(request, quiz_id):
             row = has_played(quiz_id, player_id)
             score = -1 if row is None else row[0]
             if row is not None:
-                # JHAMELA ASE
                 query = '''
                     SELECT *
                     FROM (SELECT * FROM QUESTION WHERE QUIZ_ID = %s) Q,
@@ -52,15 +51,6 @@ def quiz_detail(request, quiz_id):
             top_score = cursor.fetchone()
             cursor.execute('SELECT AVG(SCORE) FROM QUIZ_ATTEMPT WHERE QUIZ_ID = %s', [quiz_id])
             row = cursor.fetchone()
-            difficulty = '-'
-            '''if row[0] is None: # can do it in oracle function
-                if row[0] >= 20:
-                    difficulty = 'Easy'
-                elif row[0] >= 15:
-                    difficulty = 'Medium'
-                if row[0] > 20:
-                    difficulty = 'Hard'''''
-
             cursor.execute('SELECT USERNAME FROM USERS WHERE USER_ID = %s', [player_id])
             row = cursor.fetchone()
             player_name = row[0]
@@ -79,8 +69,7 @@ def quiz_detail(request, quiz_id):
             return render(request, 'quiz/quizDetail.html', {'topics': topics, 'quiz': quiz, 'topic': topic,
                                                             'quizmaster': quizmaster, 'num_of_played': num_of_played,
                                                             'score': score, 'top_score': top_score, 'results': results,
-                                                            'difficulty': difficulty, 'player_name': player_name,
-                                                            'other_quiz': other_quiz})
+                                                            'player_name': player_name, 'other_quiz': other_quiz})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -95,11 +84,8 @@ def play_quiz(request, quiz_id):
             quiz = cursor.fetchone()
             cursor.execute('SELECT * FROM QUESTION WHERE QUIZ_ID = %s ORDER BY QUESTION_ID', [quiz_id])
             questions = cursor.fetchall()
-            #print(questions)
-
-            #print(questions)
-            #cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
-        return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
+            cursor.execute('INSERT INTO QUIZ_ATTEMPT VALUES(%s, %s, 0)', [quiz_id, player_id])
+            return render(request, 'quiz/quiz.html', {'quiz': quiz, 'questions': questions})
     else:
         return HttpResponseRedirect(reverse('login'))
 
@@ -113,12 +99,9 @@ def update_score(request):
             score = request.POST.get('score')
             choice = request.POST.get('choice')
             print(score)
-            '''cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
+            cursor.execute('INSERT INTO QUESTION_ATTEMPT VALUES(%s, %s, %s, %s)',
                            [question_id, player_id, score, choice])
-            row = has_played(quiz_id, player_id)
-            prev_score = row[0]
-            cursor.execute('UPDATE QUIZ_ATTEMPT SET SCORE = %s WHERE QUIZ_ID = %s AND PLAYER_ID = %s',
-                           [prev_score + int(score), quiz_id, player_id])'''
+            cursor.callproc('UPDATE_DIFFICULTY', [quiz_id])
             return HttpResponse('')
     else:
         return HttpResponseRedirect(reverse('login'))
