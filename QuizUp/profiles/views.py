@@ -82,13 +82,14 @@ def my_profile_detail(request, player_name):
 
             query = '''
                 SELECT T.NAME, NVL(TA.LEVEL_, 0), T.LOGO, T.TOPIC_ID
-                FROM TOPIC_FOLLOW TF, TOPIC_ATTEMPT TA, TOPIC T
+                FROM (SELECT TOPIC_ID FROM TOPIC_FOLLOW WHERE FOLLOWER_ID = %s) TF,
+                     (SELECT TOPIC_ID, LEVEL_ FROM TOPIC_ATTEMPT WHERE PLAYER_ID = %s) TA, TOPIC T
                 WHERE TF.TOPIC_ID = TA.TOPIC_ID(+)
-                AND T.TOPIC_ID = TF.TOPIC_ID
-                AND TF.FOLLOWER_ID = %s
+                AND TF.TOPIC_ID = T.TOPIC_ID
             '''
-            cursor.execute(query, [player_id])
+            cursor.execute(query, [player_id, player_id])
             followed_topics = cursor.fetchall()
+            print(followed_topics)
 
             # print(followed_topics)
             if len(followed_topics) == 0:
