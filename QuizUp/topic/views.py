@@ -122,12 +122,13 @@ def topic_detail(request, topic_id):
                 print(quiz_list)
 
             query = '''
-                SELECT U.USERNAME, TA.LEVEL_
+               SELECT *
+               FROM( SELECT U.USERNAME, TA.LEVEL_
                 FROM TOPIC_ATTEMPT TA, USERS U
                 WHERE TA.PLAYER_ID = U.USER_ID
                 AND TA.TOPIC_ID = %s
-                AND ROWNUM <= 5
-                ORDER BY TA.LEVEL_ DESC
+                ORDER BY TA.LEVEL_ DESC) TLB
+                WHERE ROWNUM <= 5
             '''
             cursor.execute(query, [topic_id])
             topic_leaderboard = cursor.fetchall()

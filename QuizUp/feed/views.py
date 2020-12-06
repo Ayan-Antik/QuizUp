@@ -414,11 +414,12 @@ def feed_detail(request):
                # print(post)
             query = '''
                 
-                SELECT U.USERNAME, P.RANK
-                FROM PLAYER P, USERS U
-                WHERE P.PLAYER_ID = U.USER_ID
-                AND ROWNUM <= 5
-                ORDER BY P.RANK DESC
+                SELECT *
+                FROM (  SELECT   U.USERNAME, P.RANK
+                        FROM PLAYER P, USERS U
+                        WHERE P.PLAYER_ID = U.USER_ID
+                        ORDER BY P.RANK DESC) LB
+                WHERE ROWNUM <=5
             
             '''
 
