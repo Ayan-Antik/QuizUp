@@ -88,7 +88,7 @@
                 {% if top_score is None %}
                     <td> - </td>
                 {% else %}
-                    <td><h5>{{ top_score.1 }} (<a href="{% url 'my_profile_detail' top_score.0 %}" style="color: #ff5454">{{ top_score.0 }}</a>)</h5></td>
+                    <td><h5>{{ top_score.1 }}/100 (<a href="{% url 'my_profile_detail' top_score.0 %}" style="color: #ff5454">{{ top_score.0 }}</a>)</h5></td>
                 {% endif %}
               </tr>
             {% if other_quiz is not None %}
@@ -113,7 +113,7 @@
 
               {% if score != -1 %}
                   <h1 class="text-center" style="padding-bottom: 0px">Quiz Statistics</h1>
-                 <h1 class="text-center" style="color: #ff5454; padding-bottom: 24px; padding-top: 12px;"> Your Score : <b>{{ score }}</b></h1>
+                 <h1 class="text-center" style="color: #ff5454; padding-bottom: 24px; padding-top: 12px;"> Your Score : <b>{{ score }}/100</b></h1>
                {% endif %}
               <table class="table-striped" style="">
                 {% for result in results %}

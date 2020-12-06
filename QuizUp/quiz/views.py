@@ -49,8 +49,16 @@ def quiz_detail(request, quiz_id):
                 print(results)
             else:
                 results = None
-            cursor.execute('''SELECT USERNAME, MAX(SCORE) FROM QUIZ_ATTEMPT JOIN USERS ON (PLAYER_ID = USER_ID)
-                           WHERE QUIZ_ID = %s GROUP BY USERNAME''', [quiz_id])
+
+            query = '''
+                SELECT U.USERNAME, QA.SCORE
+                FROM USERS U, QUIZ_ATTEMPT QA
+                WHERE QUIZ_ID = %s
+                AND SCORE = (SELECT MAX(SCORE) FROM QUIZ_ATTEMPT WHERE QUIZ_ID = %s)
+                AND U.USER_ID = QA.PLAYER_ID
+  
+            '''
+            cursor.execute(query, [quiz_id, quiz_id])
             top_score = cursor.fetchone()
 
             cursor.execute('SELECT USERNAME FROM USERS WHERE USER_ID = %s', [player_id])
