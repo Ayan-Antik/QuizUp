@@ -34,7 +34,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script src="{% static 'quiz/quiz.js' %}"></script>
     <script>
-        var questions = [];
+        let questions = [];
         {% for question in questions %}
             questions.push({'id': {{ question.0 }},
                             'description': '{{question.2}}',
@@ -44,93 +44,74 @@
                             'd': '{{question.6}}',
                             'answer': '{{question.7}}',});
         {% endfor %}
-        const timeLimit = 10;
-        var timeLeft = timeLimit;
-        var i = 0;
-        var question = $('#question');
-        var id;
+        const timeLimit = 13;
+        let timeLeft = timeLimit;
+        let i = 0; //index of question array
+        let question = $('#question');
+        let ans_id;
 
-        var timer = setInterval(showq, 1000);
-        function showq() {
+        let timer = setInterval(showQA, 1000);
+
+        function showQA() {
             //$('#timer').text("Time Left: "+timeLeft+" sec");
             if(timeLeft === timeLimit) {
                 if(i === 10) {
                     window.location='{% url 'quiz_detail' quiz.0%}';
                 }
-                if(questions[i]['a'] == questions[i]['answer'])id = "btn-a";
-                else if(questions[i]['b'] == questions[i]['answer'])id = "btn-b";
-                else if(questions[i]['c'] == questions[i]['answer'])id = "btn-c";
-                else if(questions[i]['d'] == questions[i]['answer'])id = "btn-d";
-                add_question_and_button_listener(i);
+                show_question(i);
+            }
+            if(timeLeft === 10) {
+                show_options(i);
+                if(questions[i]['a'] === questions[i]['answer']) ans_id = "btn-a";
+                else if(questions[i]['b'] === questions[i]['answer']) ans_id = "btn-b";
+                else if(questions[i]['c'] === questions[i]['answer']) ans_id = "btn-c";
+                else if(questions[i]['d'] === questions[i]['answer']) ans_id = "btn-d";
                 i++;
             }
             if(timeLeft === 0) {
-                document.getElementById('btn-a').disabled = true;
-                document.getElementById('btn-b').disabled = true;
-                document.getElementById('btn-c').disabled = true;
-                document.getElementById('btn-d').disabled = true;
-
-                document.getElementById(id).style.backgroundColor = "green";
-                document.getElementById(id).style.color = "white";
-                timeLeft = timeLimit;
+                showAnswer();
+                setTimeout(function (){
+                    timeLeft = timeLimit;
+                }, 3000);
                 return;
             }
             timeLeft--;
-        };
+        }
 
-    function cleaner(){
-        clearInterval(timer);
-        onTimesUp();
-        setTimeout(function (){
+        function show_question(i) {
+            reset();
+            let qno = i+1;
+            document.getElementById('qcount').innerHTML = 'Question ' + qno + ' of 10';
+            question.html('<h3 style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
+                            '<hr style="border-top: 1px solid black; margin-bottom: 32px;">');
+        }
 
-            timeLeft = timeLimit;
-            timer = setInterval(showq, 1000);
-        }, 1500);
-    }
+        function show_options(i) {
+            onOptionsAppear();
+            question.append('<form id="form">'+ '{% csrf_token %}' +
 
-    function add_question_and_button_listener(i) {
-        reset();
-        var qno = i+1
-        document.getElementById('qcount').innerHTML = 'Question ' + qno + ' of 10'
-        question.html('<h3 style: "font-weight:bold;">'+  questions[i]['description']+'</h3>' +
-                        '<hr style="border-top: 1px solid black; margin-bottom: 32px;">'+
-                        '<form id="form">'+ '{% csrf_token %}' +
+                            '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options" style = "display:block; padding-bottom: 24px; margin:auto">' +
 
-                        '<div id="buttons" class="btn-group-vertical" role="group" aria-label="Options" style = "display:block; padding-bottom: 24px; margin:auto">' +
+                            '<input type="button" class="btn btn-light" id="btn-a" value="'+questions[i]['a']+'" ' +
+                            'style=""><br>' +
 
-                        '<input type="button" class="btn btn-light" id="btn-a" value="'+questions[i]['a']+'" ' +
-                        'style=""><br>' +
+                            '<input type="button" class="btn btn-light" id="btn-b" value="'+questions[i]['b']+'" ' +
+                            'style=""><br>' +
 
-                        '<input type="button" class="btn btn-light" id="btn-b" value="'+questions[i]['b']+'" ' +
-                        'style=""><br>' +
+                            '<input type="button" class="btn btn-light " id="btn-c" value="'+questions[i]['c']+'" ' +
+                            'style=""><br>' +
 
-                        '<input type="button" class="btn btn-light " id="btn-c" value="'+questions[i]['c']+'" ' +
-                        'style=""><br>' +
-
-                        '<input type="button" class="btn btn-light " id="btn-d" value="'+questions[i]['d']+'" ' +
-                        'style=""><br>' +
-                                  '</div>'+
-                                  '</form>');
-
-        $('#buttons input').click(function() {
-
-                document.getElementById('btn-a').disabled = true;
-                document.getElementById('btn-b').disabled = true;
-                document.getElementById('btn-c').disabled = true;
-                document.getElementById('btn-d').disabled = true;
-
-                var score = timeLeft * (this.value === questions[i]['answer']);
-                if(this.value != questions[i]['answer'])
-                {
+                            '<input type="button" class="btn btn-light " id="btn-d" value="'+questions[i]['d']+'" ' +
+                            'style=""><br>' +
+                                      '</div>'+
+                                      '</form>');
+            $('#buttons input').click(function() {
+                showAnswer();
+                let score = (timeLeft+1) * (this.value === questions[i]['answer']);
+                if(this.value !== questions[i]['answer']) {
                     this.style.backgroundColor = "red";
                     this.style.color = "white";
                 }
-                else{
-                    score = score + 1;
-                }
-                document.getElementById(id).style.backgroundColor = "green";
-                document.getElementById(id).style.color = "white";
-
                 $.ajax({
                     type: 'POST',
                     url: '{% url 'update_score' %}',
@@ -142,17 +123,27 @@
                         'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
                     },
                     dataType: 'json',
-                    success: function (response) {
-                    },
+                    success: function (response) {},
                 });
                 cleaner();
-
-
-
             });
-    }
+        }
 
+        function showAnswer() {
+            document.getElementById('btn-a').disabled = true;
+            document.getElementById('btn-b').disabled = true;
+            document.getElementById('btn-c').disabled = true;
+            document.getElementById('btn-d').disabled = true;
+            document.getElementById(ans_id).style.backgroundColor = "green";
+            document.getElementById(ans_id).style.color = "white";
+        }
 
+        function cleaner(){
+            onTimesUp();
+            setTimeout(function (){
+                timeLeft = timeLimit;
+            }, 3000);
+        }
     </script>
   </body>
 </html>

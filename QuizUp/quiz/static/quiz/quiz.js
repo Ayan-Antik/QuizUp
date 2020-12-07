@@ -81,8 +81,12 @@ function reset()
     </div>
     `;
 
-    startTimer();
 
+
+}
+
+function onOptionsAppear() {
+  startTimer();
 }
 
 function onTimesUp() {
