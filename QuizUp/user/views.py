@@ -1,5 +1,6 @@
 import hashlib
 
+from django.db.utils import IntegrityError, DatabaseError
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponseRedirect
@@ -7,6 +8,15 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.db import connection
 from . import forms
+
+
+def clear_session(request):
+    try:
+        del request.session['id']
+        del request.session['type']
+        del request.session['username']
+    except KeyError:
+        pass
 
 
 def root(request):
@@ -36,12 +46,7 @@ def LogIn(request):
             if id >= 0:
                 print("Login Successful")
                 # clear all prev log ins
-                try:
-                    del request.session['id']
-                    del request.session['type']
-                    del request.session['username']
-                except KeyError:
-                    pass
+                clear_session(request)
 
                 request.session['id'] = id
                 request.session['username'] = username
@@ -115,7 +120,6 @@ def authenticate(username, password, pagehtml):
 
 
 def SignUp(request):
-
     if request.method == 'POST':
         signupform = forms.SignUpForm(request.POST)
 
@@ -128,22 +132,32 @@ def SignUp(request):
             password1 = signupform.cleaned_data['password1']
             password2 = signupform.cleaned_data['password2']
 
-            #print(username, dob, email)
-
-            if validUsername(username) and (password1 == password2):
-                createPlayer(username, fullname, password1, email, dob)
-                print("User Created")
-                # TODO : send user to home
-                return HttpResponseRedirect(reverse('login'))
-
-
+            if password1 == password2:
+                hashed_password = hashlib.sha256(password1.encode()).hexdigest()
+                with connection.cursor() as cursor:
+                    try:
+                        cursor.execute('''INSERT INTO USERS VALUES (USERS_SEQ.NEXTVAL , %s, %s, %s,
+                        'dp/default-dp.png', %s, %s)''', [username, hashed_password, email, dob, fullname])
+                    except (IntegrityError, DatabaseError) as e:
+                        error_message = str(e)
+                        if 'USERNAME_UNIQUE' in error_message:
+                            error = "username already exists!"
+                        elif 'EMAIL_ID_UNIQUE' in error_message:
+                            error = "an account has already been created with this email!"
+                        elif 'INVALID_DOB' in error_message:
+                            error = "invalid date of birth!"
+                        else:
+                            error = 'failed to sign up, try again later :('
+                        return render(request, 'user/signup.html', {'error': error})
+                    cursor.execute('SELECT USERS_SEQ.CURRVAL FROM DUAL')
+                    id = cursor.fetchone()[0]
+                    clear_session(request)
+                    request.session['id'] = id
+                    request.session['username'] = username
+                    request.session['type'] = 'Player'
+                    return redirect('feed_detail')
             else:
-                if password1 != password2:
-                    error = "passwords don't match!"
-                else:
-                    error = "invalid username"
-                print("Signup Form Not Properly filled")
-                return render(request, 'user/signup.html', {'error': error})
+                return render(request, 'user/signup.html', {'error': 'passwords don\'t match!'})
         else:
             print("Signup Form Error")
             return render(request, 'user/signup.html')
@@ -153,40 +167,11 @@ def SignUp(request):
         return render(request, 'user/signup.html')
 
 
-def validUsername(username):
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT USERNAME FROM USERS WHERE USERNAME = %s', [username])
-        row = cursor.fetchone()
-        if row is None:
-            # Username Valid
-            return True
-        else:
-            return False
-
-
-def createPlayer(username, fullname, password, email, dob):
-
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    with connection.cursor() as cursor:
-        cursor.execute('SELECT COUNT(*) FROM USERS')
-        row = cursor.fetchone()
-        total_users = row[0]
-        user_query = '''
-            INSERT INTO USERS VALUES (%s , %s, %s, %s, 'dp/default-dp.png', %s, %s)
-        
-        '''
-
-        cursor.execute(user_query, [total_users + 1, username, hashed_password, email, dob, fullname])
-        # cursor.execute(player_query, [total_users + 1])
-
-
 def Logout(request):
     try:
         print("Logging Out...")
         print(request.session['id'])
-        del request.session['id']
-        del request.session['username']
-        del request.session['type']
+        clear_session(request)
         return HttpResponseRedirect(reverse('login'))
     except:
         print("Logout Error")

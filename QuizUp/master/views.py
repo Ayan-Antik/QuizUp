@@ -1,4 +1,5 @@
-from django.http import HttpResponse
+import django
+from django.http import HttpResponse, Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -11,7 +12,11 @@ def master_profile(request, master_name):
     if 'id' in request.session and request.session['type'] == "Quizmaster":
         with connection.cursor() as cursor:
             cursor.execute('SELECT * FROM USERS WHERE USERNAME = %s', [master_name])
-            master_id = cursor.fetchone()[0]
+            row = cursor.fetchone()
+            if row is None:
+                raise Http404("User doesn't exist")
+            master_id = row[0]
+            fullname = row[6]
             cursor.execute('''SELECT QUIZ_ID,NAME,
             (SELECT NAME FROM TOPIC WHERE TOPIC.TOPIC_ID = QUIZ.TOPIC_ID),
             (SELECT COUNT(*) FROM QUIZ_ATTEMPT WHERE QUIZ_ATTEMPT.QUIZ_ID = QUIZ.QUIZ_ID),
@@ -34,7 +39,18 @@ def master_profile(request, master_name):
             return render(request, 'master/masterHome.html', {'curr_name': request.session['username'],
                                                               'master_name': master_name, 'quiz_infos': quiz_infos,
                                                               'masters': masters, 'topic_count': topic_count,
-                                                              'favourite_topic': favourite_topic})
+                                                              'favourite_topic': favourite_topic, 'fullname': fullname})
+    else:
+        return HttpResponseRedirect(reverse("login"))
+
+
+def check_quiz_title(request):
+    if 'id' in request.session and request.session['type'] == "Quizmaster":
+        if request.method == 'GET':
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM QUIZ WHERE NAME = %s', [request.GET['title']])
+                is_exist = 0 if cursor.fetchone() is None else 1
+                return JsonResponse({'is_exist': is_exist})
     else:
         return HttpResponseRedirect(reverse("login"))
 
@@ -47,7 +63,7 @@ def create_quiz(request):
                 cursor.execute('SELECT * FROM TOPIC WHERE NAME = %s', [request.POST['topic']])
                 topic_id = cursor.fetchone()[0]
                 cursor.execute('''INSERT INTO QUIZ(QUIZ_ID, TOPIC_ID, MASTER_ID, NAME)
-                               VALUES(QUIZ_SEQ.NEXTVAL, %s, %s, %s)''',
+                                                                   VALUES(QUIZ_SEQ.NEXTVAL, %s, %s, %s)''',
                                [topic_id, master_id, request.POST['title']])
                 for i in range(1, 2):
                     c = str(i)
@@ -89,8 +105,11 @@ def add_topic(request):
                 logo = 'topic/defaultLogo.png'
                 cover = 'topic/defaultCover.jpg'
                 cursor.execute('SELECT * FROM TOPIC WHERE NAME=%s', [topic_name])
-                if cursor.fetchone() is None:
+                is_added = 1
+                try:
                     cursor.execute('INSERT INTO TOPIC VALUES(TOPIC_SEQ.NEXTVAL, %s, %s, %s)', [topic_name, logo, cover])
-                return HttpResponse('')
+                except django.db.utils.IntegrityError:
+                    is_added = 0
+                return JsonResponse({'is_added': is_added})
     else:
         return HttpResponseRedirect(reverse("login"))
