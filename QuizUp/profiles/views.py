@@ -20,12 +20,18 @@ def my_profile_detail(request, player_name):
 
         if request.method == 'POST' and player_name == request.session['username']:
             # print("In post")
-            if request.FILES['dp_file']:
+            if request.FILES.get('dp_file', False):
                 # print("In dp")
                 image = request.FILES["dp_file"]
                 fs = FileSystemStorage(location='media/dp/')
                 fs.save(image.name, image)
                 storeImage(request.session['id'], 'dp/' + image.name)
+                return redirect('my_profile_detail', player_name=request.session['username'])
+
+            elif request.POST.get('input', False):
+                print(request.POST['input'])
+                post_id = request.POST['input']
+                delete_post(post_id)
                 return redirect('my_profile_detail', player_name=request.session['username'])
             else:
                 print("error in img upload")
@@ -272,3 +278,13 @@ def update_player_follow(request):
 
     else:
         return HttpResponseRedirect(reverse('login'))
+
+
+def delete_post(post_id):
+
+    with connection.cursor() as cursor:
+        query = '''
+            DELETE FROM POST WHERE POST_ID = %s
+        '''
+        cursor.execute(query, [post_id])
+        cursor.close()

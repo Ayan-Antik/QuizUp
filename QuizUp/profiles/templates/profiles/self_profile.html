@@ -230,11 +230,25 @@
 
                 <div class="post_username">
                     <a href="{% url 'my_profile_detail' player_name %}" style="color: black;"> {{ player_info.0}} </a>
+                {% if player_in_session == player_name %}
+                <svg id="post_del_icon{{ post.3 }}" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="float: right; cursor: pointer">
+                  <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                </svg>
+                {% endif %}
                 </div>
                 <div>
-                    <p style="color: grey; font-size: 14px;">
+
+                    <p style="color: grey; font-size: 14px; display: inline">
                         {{ post.2}}
                     </p>
+
+                    {% if player_in_session == player_name %}
+                    <button id="post_del{{ post.3 }}" class="btn-dark btn-sm" style="float: right; display: none;" data-toggle="modal" data-target="#exampleModal">
+
+                        <i class="fa fa-trash-o" style="font-size:24px"></i>
+                        Delete Post
+                    </button>
+                    {% endif %}
                 </div>
 
              </div>
@@ -286,6 +300,30 @@
         </div>
     {% endfor %}
 
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to Delete this post?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Go Back</button>
+      <form method="post" id="delform">
+          {% csrf_token %}
+          <button type="button" class="btn btn-primary" data-dismiss = "modal"  id="sure_del" value="-1" >Delete</button>
+          <input type="text" id="delete_post_id" name="input" hidden/>
+      </form>
+
+      </div>
+    </div>
+  </div>
+</div>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
@@ -411,8 +449,49 @@
             });
 
 
+            $('#post_del_icon{{ post.3 }}').click(function () {
+               var btn = document.getElementById("post_del{{ post.3 }}");
+               if(btn.style.display == "none")
+               btn.style.display = "block";
+               else{
+                   btn.style.display = "none";
+               }
+            });
+
+            $('#post_del{{ post.3 }}').click(function () {
+                /*var modal_attr = document.getElementById("sure_del");
+                var pid = document.createAttribute("post_id");
+                pid.value = ;
+                modal_attr.setAttributeNode(pid);*/
+                console.log("Hi");
+                $('#delete_post_id').val("{{ post.3 }}");
+            })
+
+
 
         {% endfor %}
+        $('#sure_del').click(function () {
+
+
+            $('#delform').submit();
+
+           /* $.ajax({
+                type: 'POST',
+
+                data:{
+                    'post_id': pid,
+                    'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+
+                },
+                dataType: 'json',
+                success:function (){
+
+                },
+                error: function (response) {
+                }
+            })*/
+        });
+
 
 
         $('#follow_btn').click(function () {
@@ -439,6 +518,7 @@
 {% if error %}
     <p style="float: right"> {{ error }}</p>
 {% endif %}
+
 </body>
 
 </html>

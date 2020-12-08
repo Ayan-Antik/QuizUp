@@ -6,4 +6,5 @@ urlpatterns = [
     path('ajax/like/', views.update_like, name='update_like'),
     path('ajax/player_follow/', views.update_player_follow, name='update_player_follow'),
 
+
 ]

@@ -451,7 +451,7 @@ def feed_detail(request):
 def insert_post(text, topics, image, player_id):
     with connection.cursor() as cursor:
 
-        cursor.execute("SELECT COUNT(*) FROM POST")
+        cursor.execute("SELECT MAX(POST_ID) FROM POST")
         row = cursor.fetchone()
         post_id = row[0] + 1
 
