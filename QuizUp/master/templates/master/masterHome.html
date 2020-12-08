@@ -128,17 +128,23 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
     <script>
         $('.title').click(function() {
-            var title = $(this).text();
+            let title = $(this).text();
+            let quiz_id = $(this).attr('id');
           $.ajax({
                 type:"GET",
                 url: '{% url "show_questions" %}',
-                data:{quiz_id: $(this).attr('id')},
+                data:{quiz_id: quiz_id},
                 success: function( data ){
-                    var question_list = $('#question_list');
+                    let question_list = $('#question_list');
                    question_list.empty();
                    question_list.append('<h6 class="text-center">Quiz Name: '+title+'</h6>');
+                   let url_mask = '{% url 'edit_quiz' 0 %}'.replace(/0/, quiz_id.toString());
+                   if('{{ curr_name }}' === '{{ master_name }}') {
+                       question_list.append('<button id="editQ"><a href='+url_mask+'>' +
+                       'Edit</a></button>');
+                   }
                    questions = data['questions'];
-                   for(var i=0; i<questions.length; i++) {
+                   for(let i=0; i<questions.length; i++) {
                        question_list.append(i+1 + '. ' + questions[i][2] + '<br>'
                        +'a) ' + questions[i][3] + '<br>' +'b) ' + questions[i][4] + '<br>'
                        +'c) ' + questions[i][5] + '<br>' +'d) ' + questions[i][6] + '<br>'

@@ -31,6 +31,9 @@
                         <h2 id="login">
                         Log In
                         </h2>
+                        {% if error %}
+                            <p style="color: white"> ({{ error }})</p>
+                        {% endif %}
                         <label for="inputUser" class="sr-only">Username</label>
                         <input id="inputUser" name="username" type="text" placeholder = "Username" class="form-control"  aria-describedby="emailHelp" required>
                   

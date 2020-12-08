@@ -45,44 +45,79 @@
     </nav>
 
     <div class="container">
-    <form method="post">{% csrf_token %}
-        <div class="form-group"><label for="title">Quiz Title</label>
-        <input type="text" class="form-control" id="title" name="title" required>
-      </div>
-        <div class="form-group"><label for="topic">Topic</label>
-        <select class="form-control" id="topic" name="topic" required>
-            {% for topic in topics %}
-                <option>{{ topic.1 }}</option>
-            {% endfor %}
-        </select>
-      </div><br>
-        {% for i in '0'|make_list %}
-            <div class="form-group"><label for="q{{forloop.counter}}">Question {{forloop.counter}}</label>
-            <input type="text" class="form-control" id="q{{forloop.counter}}" name="q{{forloop.counter}}">
+        <form method="post">{% csrf_token %}
+            <div class="form-group"><label for="title">Quiz Title</label>
+            <input type="text" class="form-control" id="title" name="title"
+            {% if quiz is not None %} value="{{ quiz.3 }}" {% endif %}required>
           </div>
-          <div class="form-row">
-            <div class="form-group col-lg-3">
-              <input type="text" class="form-control" id="o{{forloop.counter}}1" name="o{{forloop.counter}}1" placeholder="Option 1" required>
-            </div>
-            <div class="form-group col-lg-3">
-              <input type="text" class="form-control" id="o{{forloop.counter}}2" name="o{{forloop.counter}}2" placeholder="Option 2" required>
-            </div>
-            <div class="form-group col-lg-3">
-              <input type="text" class="form-control" id="o{{forloop.counter}}3" name="o{{forloop.counter}}3" placeholder="Option 3" required>
-            </div>
-            <div class="form-group col-lg">
-              <input type="text" class="form-control" id="o{{forloop.counter}}4" name="o{{forloop.counter}}4" placeholder="Option 4" required>
-            </div>
-          </div>
-            <div class="form-group col-lg-3"><label for="a{{forloop.counter}}">Answer</label>
-                <select class="form-control" id="a{{forloop.counter}}" name="a{{forloop.counter}}" required>
-                        <option>1</option><option>2</option><option>3</option><option>4</option>
-                </select>
-              </div>
-            <br>
-        {% endfor %}
-    </form>
-    <button class="btn btn-primary">Create!</button>
+            <div class="form-group"><label for="topic">Topic</label>
+            <select class="form-control" id="topic" name="topic"
+                    required>
+                {% for topic in topics %}
+                    <option{% if topic_name is not None and topic_name == topic.1 %} selected {% endif %}>
+                        {{ topic.1 }}</option>
+                {% endfor %}
+            </select>
+          </div><br>
+            {% if questions is not None %}
+                {% for question in questions %}
+                    <div class="form-group"><label for="q{{ question.0 }}">Question {{forloop.counter}}</label>
+                    <input type="text" class="form-control" id="q{{ question.0 }}" name="q{{ question.0 }}" value="{{ question.2 }}" required>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-lg-3">
+                      <input type="text" class="form-control" id="o{{ question.0 }}1" name="o{{ question.0 }}1" placeholder="Option 1" value="{{ question.3 }}" required>
+                    </div>
+                    <div class="form-group col-lg-3">
+                      <input type="text" class="form-control" id="o{{ question.0 }}2" name="o{{ question.0 }}2" placeholder="Option 2" value="{{ question.4 }}" required>
+                    </div>
+                    <div class="form-group col-lg-3">
+                      <input type="text" class="form-control" id="o{{ question.0 }}3" name="o{{ question.0 }}3" placeholder="Option 3" value="{{ question.5 }}" required>
+                    </div>
+                    <div class="form-group col-lg">
+                      <input type="text" class="form-control" id="o{{ question.0 }}4" name="o{{ question.0 }}4" placeholder="Option 4" value="{{ question.6 }}" required>
+                    </div>
+                  </div>
+                    <div class="form-group col-lg-3"><label for="a{{ question.0 }}">Answer</label>
+                        <select class="form-control" id="a{{ question.0 }}" name="a{{ question.0 }}" required>
+                            <option {% if question.7 == question.3 %} selected {% endif %}>1</option>
+                            <option {% if question.7 == question.4 %} selected {% endif %}>2</option>
+                            <option {% if question.7 == question.5 %} selected {% endif %}>3</option>
+                            <option {% if question.7 == question.6 %} selected {% endif %}>4</option>
+                        </select>
+                      </div>
+                    <br>
+                {% endfor %}
+            {% else %}
+                {% for i in '0123456789'|make_list %}
+                    <div class="form-group"><label for="q{{forloop.counter}}">Question {{forloop.counter}}</label>
+                    <input type="text" class="form-control" id="q{{forloop.counter}}" name="q{{forloop.counter}}" required>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-lg-3">
+                      <input type="text" class="form-control" id="o{{forloop.counter}}1" name="o{{forloop.counter}}1" placeholder="Option 1" required>
+                    </div>
+                    <div class="form-group col-lg-3">
+                      <input type="text" class="form-control" id="o{{forloop.counter}}2" name="o{{forloop.counter}}2" placeholder="Option 2" required>
+                    </div>
+                    <div class="form-group col-lg-3">
+                      <input type="text" class="form-control" id="o{{forloop.counter}}3" name="o{{forloop.counter}}3" placeholder="Option 3" required>
+                    </div>
+                    <div class="form-group col-lg">
+                      <input type="text" class="form-control" id="o{{forloop.counter}}4" name="o{{forloop.counter}}4" placeholder="Option 4" required>
+                    </div>
+                  </div>
+                    <div class="form-group col-lg-3"><label for="a{{forloop.counter}}">Answer</label>
+                        <select class="form-control" id="a{{forloop.counter}}" name="a{{forloop.counter}}" required>
+                                <option>1</option><option>2</option><option>3</option><option>4</option>
+                        </select>
+                      </div>
+                    <br>
+                {% endfor %}
+            {% endif %}
+        </form>
+        <button class="btn btn-primary">
+            {% if quiz is None %} Create! {% else %} Edit {% endif %}</button>
   </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -96,6 +131,7 @@
                 url: '{% url 'check_quiz_title' %}',
                 data: {
                     'title': $('#title').val(),
+                    'prevTitle': '{{ quiz.3 }}'
                 },
                 dataType: 'json',
                 success: function (response) {
