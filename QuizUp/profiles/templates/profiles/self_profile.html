@@ -231,7 +231,7 @@
                 <div class="post_username">
                     <a href="{% url 'my_profile_detail' player_name %}" style="color: black;"> {{ player_info.0}} </a>
                 {% if player_in_session == player_name %}
-                <svg id="post_del_icon{{ post.3 }}" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="float: right; cursor: pointer">
+                <svg id="post_del_icon{{ post.3 }}" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-three-dots-vertical" fill="grey" xmlns="http://www.w3.org/2000/svg" style="float: right; cursor: pointer">
                   <path fill-rule="evenodd" d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                 </svg>
                 {% endif %}
@@ -243,7 +243,9 @@
                     </p>
 
                     {% if player_in_session == player_name %}
-                    <button id="post_del{{ post.3 }}" class="btn-dark btn-sm" style="float: right; display: none;" data-toggle="modal" data-target="#exampleModal">
+                    <button id="post_del{{ post.3 }}" class="btn-dark btn-sm"
+                            style="border: hidden;float: right; display: none; "
+                            data-toggle="modal" data-target="#exampleModal">
 
                         <i class="fa fa-trash-o" style="font-size:24px"></i>
                         Delete Post
