@@ -144,17 +144,17 @@
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
+                <!--th scope="col">Position</th-->
                 <th scope="col">Position</th>
-                <th scope="col">Player</th>
-                <th scope="col">Player Rank</th>
+                <th scope="col">Rank</th>
               </tr>
             </thead>
             <tbody>
             {% for player in leaderboard %}
               <tr>
-                <th scope="row">{{ forloop.counter }}</th>
-                <td><a href="{% url 'my_profile_detail' player.0 %}" style="color: black;">{{ player.0 }}</a></td>
-                <td>{{ player.1 }}</td>
+
+                <td>{{ forloop.counter }}.  <img src="{% get_media_prefix %}{{ player.2 }}" style="height: 36px; width: 36px; border-radius: 50%; border: 3px solid #ff3333; margin-left: 6px"><a href="{% url 'my_profile_detail' player.0 %}" style="color: black;"> {{ player.0 }}</a></td>
+                  <td><h5 style="color: #ff3333">{{ player.1 }}</h5></td>
               </tr>
             {% endfor %}
               

@@ -415,7 +415,7 @@ def feed_detail(request):
             query = '''
                 
                 SELECT *
-                FROM (  SELECT   U.USERNAME, P.RANK
+                FROM (  SELECT   U.USERNAME, P.RANK, U.IMAGE
                         FROM PLAYER P, USERS U
                         WHERE P.PLAYER_ID = U.USER_ID
                         ORDER BY P.RANK DESC) LB

@@ -123,7 +123,7 @@ def topic_detail(request, topic_id):
 
             query = '''
                SELECT *
-               FROM( SELECT U.USERNAME, TA.LEVEL_
+               FROM( SELECT U.USERNAME, TA.LEVEL_, U.IMAGE
                 FROM TOPIC_ATTEMPT TA, USERS U
                 WHERE TA.PLAYER_ID = U.USER_ID
                 AND TA.TOPIC_ID = %s

@@ -117,15 +117,14 @@
               <thead class="thead-dark">
                 <tr>
                   <th scope="col">Position</th>
-                  <th scope="col">Player</th>
+                  <!--th scope="col">Player</th-->
                   <th scope="col">Level</th>
                 </tr>
               </thead>
               {% for leader in topic_leaderboard %}
-              <tr>
-                <td>{{ forloop.counter }}</td>
-                <td><a href="{% url 'my_profile_detail' leader.0 %}" style= "color: black;"> {{ leader.0 }}</a> </td>
-                <td>{{ leader.1 }}</td>
+             <tr>
+                <td>{{ forloop.counter }}.  <img src="{% get_media_prefix %}{{ leader.2 }}" style="height: 36px; width: 36px; border-radius: 50%; border: 3px solid #ff3333; margin-left: 6px"><a href="{% url 'my_profile_detail' leader.0 %}" style="color: black;"> {{ leader.0 }}</a></td>
+                  <td><h5 style="color: #ff3333">{{ leader.1 }}</h5></td>
               </tr>
               {% endfor %}
             </tbody>
