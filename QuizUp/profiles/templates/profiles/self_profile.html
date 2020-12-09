@@ -245,19 +245,21 @@
                     </p>
 
                     {% if player_in_session == player_name %}
-                    <button id="post_del{{ post.3 }}" class="btn-dark btn-sm"
+                    <div style="float: right">
+                        <button id="post_del{{ post.3 }}" class="btn-outline-dark btn-sm"
                             style="border: hidden;float: right; display: none; "
                             data-toggle="modal" data-target="#exampleModal">
 
                         <i class="fa fa-trash-o" style="font-size:24px"></i>
                         Delete Post
                     </button>
-                        <button id="post_edit{{ post.3 }}" class="btn-dark btn-sm"
+                        <button id="post_edit{{ post.3 }}" class="btn-outline-dark btn-sm"
                             style="border: hidden;float: right; display: none; "
                             data-toggle="modal" data-target="#editModal">
                         <i class="fa fa-pencil" style="font-size:24px"></i>
                         Edit
                     </button>
+                        </div>
                     {% endif %}
                 </div>
 
