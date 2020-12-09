@@ -59,7 +59,7 @@
                 {% endfor %}
             </select>
           </div><br>
-            {% if questions is not None %}
+            {% if questions is not None %} <!-- Edit Mode -->
                 {% for question in questions %}
                     <div class="form-group"><label for="q{{ question.0 }}">Question {{forloop.counter}}</label>
                     <input type="text" class="form-control" id="q{{ question.0 }}" name="q{{ question.0 }}" value="{{ question.2 }}" required>
@@ -88,7 +88,7 @@
                       </div>
                     <br>
                 {% endfor %}
-            {% else %}
+            {% else %} <!-- Create Mode -->
                 {% for i in '0123456789'|make_list %}
                     <div class="form-group"><label for="q{{forloop.counter}}">Question {{forloop.counter}}</label>
                     <input type="text" class="form-control" id="q{{forloop.counter}}" name="q{{forloop.counter}}" required>

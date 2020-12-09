@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
     integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
   <link rel="stylesheet" href="{% static 'profiles/self_profile.css' %}">
 
@@ -77,7 +79,7 @@
               style="float: right; margin-top: 8px; margin-right: 8px; background-color: #262626; border: transparent; font-weight: bold;"-->
 
               <svg id="camera" width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="#ff5454"
-                                xmlns="http://www.w3.org/2000/svg" onclick="fileclick()" style=" margin-top: -60px; margin-left: 135px; cursor: pointer">
+                                xmlns="http://www.w3.org/2000/svg" onclick="dpfileclick()" style=" margin-top: -60px; margin-left: 135px; cursor: pointer">
                                 <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                                 <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2
                                 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
@@ -250,6 +252,12 @@
                         <i class="fa fa-trash-o" style="font-size:24px"></i>
                         Delete Post
                     </button>
+                        <button id="post_edit{{ post.3 }}" class="btn-dark btn-sm"
+                            style="border: hidden;float: right; display: none; "
+                            data-toggle="modal" data-target="#editModal">
+                        <i class="fa fa-pencil" style="font-size:24px"></i>
+                        Edit
+                    </button>
                     {% endif %}
                 </div>
 
@@ -306,7 +314,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Post Deletion</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -326,14 +334,68 @@
     </div>
   </div>
 </div>
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="width:600px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Post Edit</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="post" style="width: fit-content; background-color: white; padding: 10px 16px;border-radius: 3mm">
+            <form id="post_form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                <textarea name="post" id="editTextArea" cols="69" rows="6" style="border-color: transparent; outline-color: transparent; padding: 15px 15px; border-radius: 3mm;" required></textarea>
+                <hr style="margin: 4px; padding: 4px 0px">
+                <svg width="2.5em" height="2.5em" viewBox="0 0 16 16" class="bi bi-camera-fill" fill="#ff3333"
+                            xmlns="http://www.w3.org/2000/svg" onclick="postfileclick()" style="cursor: pointer;">
+                            <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                            <path fill-rule="evenodd" d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2
+                            2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5
+                             2a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z"/>
+                    <title>Add Photos</title>
+                </svg>
+
+                <img id="output" width="120"  style="padding: 6px;"/>
+                <input type="file" id="post_img" name="post_img" accept="image/*" onchange="loadfile(event)" hidden>
+                <input type="text" id="post_id" name="post_id" hidden>
+                <button type="submit" class="btn btn-danger" style="float: right;">Save edits</button>
+
+               <div class="selector" style="float: right; padding-right: 12px">
+                <select class="selectpicker" multiple id="topics" title="Select Topic" name="topics" form="post_form">
+                  <!--LOOP TOPICS-->
+                    {%  for topic in topics %}
+                          <option> {{ topic.1 }}</option>
+                    {%  endfor %}
+                </select>
+              </div>
+            </form>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
   <script>
-    function fileclick() {
+    function dpfileclick() {
       document.getElementById("dp_file").click();
     }
+    function postfileclick() {
+      document.getElementById("post_img").click();
+    }
+
+    function loadfile(event) {
+        var image = document.getElementById('output');
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
 
     /*function submitForm() {
         document.getElementById('formid').submit();
@@ -452,11 +514,17 @@
 
 
             $('#post_del_icon{{ post.3 }}').click(function () {
-               var btn = document.getElementById("post_del{{ post.3 }}");
-               if(btn.style.display == "none")
-               btn.style.display = "block";
+               var btn1 = document.getElementById("post_del{{ post.3 }}");
+               var btn2 = document.getElementById("post_edit{{ post.3 }}");
+               if(btn1.style.display == "none")
+               btn1.style.display = "block";
                else{
-                   btn.style.display = "none";
+                   btn1.style.display = "none";
+               }
+               if(btn2.style.display == "none")
+               btn2.style.display = "block";
+               else{
+                   btn2.style.display = "none";
                }
             });
 
@@ -467,11 +535,15 @@
                 modal_attr.setAttributeNode(pid);*/
                 console.log("Hi");
                 $('#delete_post_id').val("{{ post.3 }}");
-            })
+            });
 
-
-
+            $('#post_edit{{ post.3 }}').click(function () {
+                $('#editTextArea').val("{{ post.0 }}");
+                $('#post_id').val("{{ post.3}}");
+                $('#output').attr("src", "/media/" + "{{ post.1 }}");
+            });
         {% endfor %}
+
         $('#sure_del').click(function () {
 
 

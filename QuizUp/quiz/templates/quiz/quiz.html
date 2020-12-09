@@ -16,7 +16,7 @@
     <div class="container" >
       <!--h3 id="timer" class="border"></h3-->
         <div style="float: right; padding-top: 16px; padding-right: 16px; ">
-            <a href="{% url 'quiz_detail' quiz.0 %}"> <button type="button" class="btn btn-danger" style="font-weight: bold; background: #ff3333; font-size: 18px">Skip Quiz</button></a>
+            <button id="skipbtn" type="button" class="btn btn-danger" style="font-weight: bold; background: #ff3333; font-size: 18px">Skip Quiz</button>
         </div>
 
         <div style="margin: auto; text-align: center; padding-top: 36px"><h1 style="color: #ff3333; font-size: 48px" >{{ quiz.3 }} </h1>
@@ -58,7 +58,7 @@
             //$('#timer').text("Time Left: "+timeLeft+" sec");
             if(timeLeft === timeLimit) {
                 if(i === 10) {
-                    window.location='{% url 'quiz_detail' quiz.0%}';
+                    window.location.replace('{% url 'quiz_detail' quiz.0%}');
                 }
                 if(i<10)
                 show_question(i);
@@ -150,6 +150,10 @@
                 timeLeft = timeLimit;
             }, 2000);
         }
+
+        $('#skipbtn').click(function () {
+            window.location.replace('{% url 'quiz_detail' quiz.0%}');
+        })
     </script>
   </body>
 </html>

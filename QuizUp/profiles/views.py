@@ -33,6 +33,28 @@ def my_profile_detail(request, player_name):
                 post_id = request.POST['input']
                 delete_post(post_id)
                 return redirect('my_profile_detail', player_name=request.session['username'])
+
+            elif request.POST.get('post', False):  # edit post
+                with connection.cursor() as cursor:
+                    post_id = request.POST['post_id']
+                    post = request.POST['post']
+                    img = request.FILES.get('post_img', False)
+                    topics = request.POST.getlist('topics', False)
+                    cursor.execute('DELETE FROM TAG WHERE POST_ID = %s', [post_id])
+                    if img is not False:
+                        fs = FileSystemStorage(location='media/post/')
+                        fs.save(img.name, img)
+                        cursor.execute('''UPDATE POST SET DESCRIPTION = %s, IMAGE = %s, TIME = SYSDATE
+                                        WHERE POST_ID = %s''', [post, 'post/' + img.name, post_id])
+                    else:
+                        cursor.execute('''UPDATE POST SET DESCRIPTION = %s, TIME = SYSDATE
+                                          WHERE POST_ID = %s''', [post, post_id])
+                    if topics is not False:
+                        for topic in topics:
+                            cursor.execute('SELECT TOPIC_ID FROM TOPIC WHERE NAME = %s', [topic])
+                            topic_id = cursor.fetchone()[0]
+                            cursor.execute('INSERT INTO TAG VALUES (%s, %s)', [post_id, topic_id])
+                    return redirect('my_profile_detail', player_name=request.session['username'])
             else:
                 print("error in img upload")
                 return render(request, 'profiles/self_profile.html')

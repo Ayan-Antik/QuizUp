@@ -95,8 +95,8 @@
           </table>
         </div>
       <div class="col-lg" id="question_list">
-            <div class="alert alert-primary" role="alert">
-                Click a title in quiz list to see questions.</div>
+            <h6 class="text-center" style="background-color: lightblue;">
+                Click a title in quiz list to see questions</h6>
         </div>
     </div>
   </div>
@@ -137,11 +137,11 @@
                 success: function( data ){
                     let question_list = $('#question_list');
                    question_list.empty();
-                   question_list.append('<h6 class="text-center">Quiz Name: '+title+'</h6>');
+                   question_list.append('<h5 id="quiz_title" class="text-center">Quiz Title: '+title+'</h5>');
                    let url_mask = '{% url 'edit_quiz' 0 %}'.replace(/0/, quiz_id.toString());
                    if('{{ curr_name }}' === '{{ master_name }}') {
-                       question_list.append('<button id="editQ"><a href='+url_mask+'>' +
-                       'Edit</a></button>');
+                       $('#quiz_title').append('<button class="btn btn-primary btn-sm ml-3" id="editQ">' +
+                           '<a href='+url_mask+' style="color:white;">Edit</a></button>');
                    }
                    questions = data['questions'];
                    for(let i=0; i<questions.length; i++) {
