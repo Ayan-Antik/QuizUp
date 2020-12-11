@@ -30,7 +30,7 @@ def update_follow(request):
 def insert_post(text, img, player_id, topic_id):
     with connection.cursor() as cursor:
 
-        cursor.execute("SELECT COUNT(*) FROM POST")
+        cursor.execute("SELECT MAX(POST_ID) FROM POST")
         row = cursor.fetchone()
         post_id = row[0] + 1
 

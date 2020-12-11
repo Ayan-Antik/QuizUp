@@ -79,7 +79,7 @@ def time_edit(diff):
 def insert_comment(comment, post_id, writer_id):
     with connection.cursor() as cursor:
         query = '''
-            SELECT COUNT(COMMENT_ID) 
+            SELECT MAX(COMMENT_ID) 
             FROM COMMENTS
         '''
 
