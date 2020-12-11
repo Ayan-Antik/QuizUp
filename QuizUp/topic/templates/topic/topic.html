@@ -102,7 +102,11 @@
                       {% else %}
                           <td style="color:#ff5454; font-size:x-large; font-weight: 600; ">{{ quiz.4 }}</td>
                       {% endif %}
-                    <td style="color:#ff5454; font-size:x-large; font-weight: 600; "> {{ quiz.5 }}</td>
+                        {% if quiz.5 == None %}
+                          <td style="color:#ff5454; font-size:x-large; font-weight: 600; ">0</td>
+                      {% else %}
+                          <td style="color:#ff5454; font-size:x-large; font-weight: 600; ">{{ quiz.5 }}</td>
+                      {% endif %}
                   </tr>
               {% endfor %}
             </tbody>
